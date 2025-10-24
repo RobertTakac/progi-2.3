@@ -1,4 +1,0 @@
-INDEX VERSION 1.134+C:\Users\lukab\OneDrive\Dokumenti\GitHub\progi-2.3\backend\GearShare\src\main\java\com\patuljci\gearshare\.metadata\.plugins\org.eclipse.jdt.core
-1865797976.index
-3784597625.index
-3413270776.index
