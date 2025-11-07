@@ -1,25 +1,28 @@
+//uvoz potrebnih funkcija i biblioteka
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { z } from 'zod' //provjera unosa
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useAuth } from '../auth/AuthContext'
+import { useAuth } from '../auth/AuthContext' //dohvacanje podataka o trenutno logiranom korisniku 
 
-const Schema = z.object({
-  fullName: z.string().min(2, 'Unesi ime i prezime'),
-  location: z.string().min(2, 'Unesi lokaciju (grad, država)'),
-  email: z.string().email('Unesi ispravan e-mail'),
+const Schema = z.object({  //pravila validacije forme
+  fullName: z.string().min(2, 'Unesi ime i prezime'), //barem 2 znaka
+  location: z.string().min(2, 'Unesi lokaciju (grad, država)'), //lokacija je obavezna
+  email: z.string().email('Unesi ispravan e-mail'), //email mora bit valjan
 })
 type FormValues = z.infer<typeof Schema>
 
-/** jedinstveni ključ po korisniku (email ili sub) */
+/** funkcija generira da svaki korisnik ima jedinstveni ključ  */
 const profileKey = (id: string) => `gs_client_profile_${id}`
 
 export default function ClientProfile() {
+  //dohvatimo korisnika koji je prijavljen
   const { user } = useAuth()
-  const userId = useMemo(
+  const userId = useMemo( //odredujemo ID korisniku 
     () => (user?.profile as any)?.email || (user?.profile as any)?.sub || 'me',
     [user]
   )
+  //podaci iz prijave, ime i email
   const name = (user?.profile as any)?.name as string | undefined
   const email = (user?.profile as any)?.email as string | undefined
 
@@ -31,18 +34,21 @@ export default function ClientProfile() {
     defaultValues: { fullName: '', location: '', email: '' },
   })
 
+  //kad se stranica ucita, pokusavamo ucitati spremljene podatke
   // učitaj iz localStorage ili iz OIDC profila
+  //ako ne postoje, popunimo ih podacima iz prijave
   useEffect(() => {
-    const raw = localStorage.getItem(profileKey(userId))
+    const raw = localStorage.getItem(profileKey(userId))  //citamo spremljeni profil
     if (raw) {
       try {
         reset(JSON.parse(raw) as FormValues)
         return
       } catch {}
     }
+      // ako nema spremljenih podataka, popunimo s imenom i emailom iz prijave
     reset({ fullName: name ?? '', location: '', email: email ?? '' })
   }, [userId, name, email, reset])
-
+  // Kad se forma posalje spremimo podatke u localStorage
   const onSubmit = async (values: FormValues) => {
     localStorage.setItem(profileKey(userId), JSON.stringify(values))
     alert('Profil spremljen ✅')
