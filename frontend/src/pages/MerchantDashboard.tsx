@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
 
+/** Model podataka za profil trgovca */
 type Merchant = {
   id: string
   name: string
@@ -10,6 +11,7 @@ type Merchant = {
   rating: number // 1–5
 }
 
+/*podaci za oglas*/
 type Listing = {
   id: string
   merchantId: string
@@ -46,6 +48,7 @@ function saveListings(data: Listing[]) {
 
 export default function MerchantDashboard() {
   const { user } = useAuth()
+  /*jedinstveni ID trgovca*/
   const merchantId = useMemo(() => {
     // bez backenda koristimo email kao stabilan ID
     return (user?.profile as any)?.email || 'demo-merchant'
@@ -103,9 +106,8 @@ export default function MerchantDashboard() {
 
     const all = loadListings()
     setMyListings(all.filter(l => l.merchantId === merchantId))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [merchantId])
-
+//spremi izmjene profila trgovca u localStorageu
   const handleMerchantSave = () => {
     if (!merchant) return
     const merchants = loadMerchants()
@@ -115,7 +117,7 @@ export default function MerchantDashboard() {
     setMerchant(merchants[idx])
     alert('Profil trgovca spremljen ✅')
   }
-
+//ucitavanje slike u oglas
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -130,6 +132,7 @@ export default function MerchantDashboard() {
 
   const handleListingCreate = () => {
     const price = Number(lForm.pricePerDay || 0)
+    //provjera obaveznih polja
     if (!lForm.title || !lForm.description || !lForm.availableFrom || !lForm.availableTo || !price || !lForm.pickupLocation || !lForm.returnLocation || !lForm.imageDataUrl) {
       alert('Ispuni sva obavezna polja i dodaj sliku.')
       return
@@ -274,7 +277,7 @@ export default function MerchantDashboard() {
               <input type="file" accept="image/*" onChange={onImageChange} />
               {preview && <img src={preview} alt="preview" className="mt-2 w-full max-w-sm rounded-xl border" />}
             </div>
-
+            {/*Kreiraj oglas*/}
             <div className="md:col-span-2">
               <button onClick={handleListingCreate} className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white">
                 Objavi oglas
@@ -288,6 +291,7 @@ export default function MerchantDashboard() {
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Moji oglasi</h2>
+          {/*link otvara javnu stranicu trgovca tj katalog u novom tabu*/}
           {merchant && (
             <a
               href={`/m/${encodeURIComponent(merchant.id)}`}
@@ -298,7 +302,7 @@ export default function MerchantDashboard() {
             </a>
           )}
         </div>
-
+        {/*ako nema oglasa, prikazi poruku*/}
         {myListings.length === 0 ? (
           <p className="text-gray-600">Još nemaš objavljenih oglasa.</p>
         ) : (
@@ -321,6 +325,7 @@ export default function MerchantDashboard() {
                       <span className="text-sm text-gray-500">Kaucija: {l.deposit.toFixed(2)} €</span>
                     )}
                   </div>
+                  {/*brisanje oglasa*/}
                   <button onClick={() => handleDelete(l.id)} className="mt-2 text-sm text-red-600 hover:underline">
                     Obriši
                   </button>
