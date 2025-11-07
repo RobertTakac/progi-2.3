@@ -25,6 +25,11 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 # Članovi tima 
 > Popis članova tima/linkovi/ glavni doprinos
 > Iva Šuker
+> Fran Matijević
+> Petar Marinović
+> Robert Takač
+> Luka Baršić
+> Andrija Barin
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
