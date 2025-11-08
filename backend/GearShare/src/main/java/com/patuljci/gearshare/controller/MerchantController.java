@@ -7,9 +7,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MerchantController {
 
-    @RequestMapping(method=RequestMethod.POST, value="/")
-    public void createAdvertisement(@RequestBody oglas oglas){
-
-    }
 
 }

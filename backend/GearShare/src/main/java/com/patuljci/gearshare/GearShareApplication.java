@@ -7,7 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class GearShareApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GearShareApplication.class, args);
+
+        //System.out.println(spring.application.name);
+
+        SpringApplication.run(GearShareApplication.class, args);
 	}
+
 
 }
