@@ -14,14 +14,6 @@ public class EquipmentListing {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
-    @ManyToOne
-    @JoinColumn(name="merchant")
-    private Merchant merchant_id;
 
-    @Column(nullable = false)
-    @ManyToOne
-    @JoinColumn(name="merchant")
-    private Merchant merchant_id;
 
 }
