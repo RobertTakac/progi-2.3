@@ -19,4 +19,10 @@ public class UserService {
         userRepository.findAll().forEach(users::add);
         return users;
     }
+
+
+    public User createUser(User user){
+        return userRepository.save(user);
+    }
+
 }

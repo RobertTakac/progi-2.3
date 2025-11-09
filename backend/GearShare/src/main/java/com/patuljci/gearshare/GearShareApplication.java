@@ -9,9 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 public class GearShareApplication {
 
 	public static void main(String[] args) {
-
-        //System.out.println(spring.application.name);
-
         SpringApplication.run(GearShareApplication.class, args);
 	}
 

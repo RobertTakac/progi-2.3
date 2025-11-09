@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,11 +18,11 @@ public class Merchant {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    @JoinColumn(name="users")
-    private long user_id;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
+    private User user;
 
-    @Column(nullable = false, name="business_name")
+    @Column(nullable = false, name = "business_name")
     private String businessName;
 
     @Column(nullable = false)
@@ -35,28 +34,31 @@ public class Merchant {
     @Column(nullable = false)
     private String postalCode;
 
-    @ColumnDefault("Croatia")
     @Column(nullable = false)
-    private String country;
+    @ColumnDefault("'Croatia'")
+    private String country = "Croatia";
 
-    @Column(nullable = true)
     private String description;
 
     @ColumnDefault("0.00")
-    private BigDecimal average_rating;
+    private BigDecimal averageRating = BigDecimal.ZERO;
 
+    @Column(name = "total_reviews")
     @ColumnDefault("0")
-    @Column(name="total_reviews")
-    private int totalReviews;
+    private int totalReviews = 0;
 
+    @Column(name = "membership_active")
     @ColumnDefault("false")
-    @Column(name="membership_active")
-    private boolean membershipActive;
+    private boolean membershipActive = false;
 
-    @Column(name="membership_expires_at")
+    @Column(name = "membership_expires_at")
     private LocalDateTime membershipExpiresAt;
 
-    //@ColumnDefault() treba dodati da je default current timestamp(nekako)
-    @Column(name="created_at")
-    private LocalDateTime  createdAt;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

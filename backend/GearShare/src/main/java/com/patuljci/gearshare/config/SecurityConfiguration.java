@@ -43,7 +43,7 @@ public class SecurityConfiguration {
                 )
 
                 .formLogin(form -> form
-                        .permitAll() // everyone can see login page
+                        .permitAll()
                 )
 
                 .oauth2Login(oauth2login -> oauth2login
@@ -58,7 +58,6 @@ public class SecurityConfiguration {
     }
 
 
-    // CORS configuration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
