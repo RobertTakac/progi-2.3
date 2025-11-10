@@ -33,6 +33,11 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
 
+
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+
+
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/auth/**", "/error").permitAll()
                         .anyRequest().authenticated()
@@ -61,7 +66,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://app-backend.com", "http://localhost:8080")); // Update backend URL
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Update backend URL
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
