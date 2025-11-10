@@ -1,0 +1,30 @@
+package com.patuljci.gearshare.dto;
+
+import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Setter
+@Getter
+public class ListingDto {
+    private String email;
+    private String categoryName;
+    private String title;
+    private String description;
+    private BigDecimal dailyPrice;
+    private BigDecimal depositAmount;
+    private String currency;
+    private LocalDateTime availableFrom;
+    private LocalDateTime availableUntil;
+    private String pickupLocation;
+    private String returnLocation;
+    private Integer quantityAvailable;
+    private Boolean isActive;
+    private BigDecimal averageRating;
+    private Integer totalReviews;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
