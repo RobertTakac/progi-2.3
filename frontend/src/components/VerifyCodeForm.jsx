@@ -9,11 +9,6 @@ const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
     e.preventDefault();
     setError('');
 
-    if (code.length < 4) { 
-      setError('Kod mora biti valjane duljine.');
-      return;
-    }
-
     try {
       const res = await fetch('/api/auth/verify-code', {
         method: 'POST',
@@ -23,14 +18,13 @@ const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Verifikacija nije uspjela.');
+        throw new Error(errorData.message || 'greska');
       }
 
-      alert('Račun uspješno verificiran! Molimo prijavite se.');
       onSuccess(); 
 
     } catch (error) {
-      console.error('Greška pri verifikaciji:', error);
+      console.error('greska', error);
       setError(error.message);
     }
   };

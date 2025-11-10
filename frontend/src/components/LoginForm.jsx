@@ -24,7 +24,7 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
           const errorData = await res.json();
           errorMsg = errorData.message || errorMsg;
         } catch (jsonError) {
-          console.warn('Odgovor o grešci nije bio JSON.');
+          console.warn('greska');
         }
         
         throw new Error(errorMsg);
@@ -35,7 +35,7 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
       onSuccess(data); 
 
     } catch (error) {
-      console.error('Greška pri prijavi:', error);
+      console.error('greska', error);
       setError(error.message); 
     }
   };

@@ -11,7 +11,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      setError('Lozinke se ne podudaraju!');
+      setError('greska');
       return;
     }
     setError('');
@@ -31,7 +31,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
       onSuccess(email); 
 
     } catch (error) {
-      console.error('Greška pri registraciji:', error);
+      console.error('greska', error);
       setError(error.message);
     }
   };
