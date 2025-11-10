@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 50px;
+    min-height: 100vh;
+}
+.form-box {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    max-width: 400px;
+    width: 100%;
+}
+.form-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form-box label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+.form-box input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.form-box button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.form-box button:hover {
+    background-color: #0056b3;
+}
+.google-btn {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.google-btn img {
+    height: 20px;
+    margin-right: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="form-box" id="loginBox">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="emailLogin">E-mail</label>
+        <input type="email" id="emailLogin" required>
+        
+        <label for="passwordLogin">Lozinka</label>
+        <input type="password" id="passwordLogin" required>
+        
+        <button type="submit">Login</button>
+    </form>
+    <div class="google-btn" id="googleLogin">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google logo">
+        Nastavi s Google
+    </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Login forma poslana!');
+});
+
+document.getElementById('googleLogin').addEventListener('click', () => {
+    alert('Google login klik!');
+});
+</script>
+
+</body>
+</html>

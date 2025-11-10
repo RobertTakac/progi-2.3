@@ -12,10 +12,10 @@ import java.util.Properties;
 @Configuration
 public class EmailConfiguration {
 
-    @Value("gearshare6@gmail.com")
+    @Value("${spring.mail.username}")
     private String emailUsername;
 
-    @Value("mwye zidd zhfd gnvn")
+    @Value("${spring.mail.password}")
     private String emailPassword;
 
     @Bean
