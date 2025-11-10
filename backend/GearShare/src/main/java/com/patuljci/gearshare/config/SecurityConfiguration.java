@@ -40,7 +40,7 @@ public class SecurityConfiguration {
 
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/auth/**", "/error").permitAll()
+                        .requestMatchers("/**", "/auth/**", "/error", "/listing/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

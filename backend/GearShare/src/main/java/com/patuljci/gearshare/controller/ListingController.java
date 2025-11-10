@@ -20,8 +20,9 @@ public class ListingController {
         this.listingService = listingService;
     }
 
-    @PostMapping("/crateListing")
-    public void createUser(@RequestBody ListingDto listingDto) {
+
+    @PostMapping("/createListing")
+    public void createListing(@RequestBody ListingDto listingDto) {
 
         listingService.createListing(listingDto);
     }

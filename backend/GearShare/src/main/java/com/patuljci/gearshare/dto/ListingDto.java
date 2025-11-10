@@ -23,8 +23,4 @@ public class ListingDto {
     private String returnLocation;
     private Integer quantityAvailable;
     private Boolean isActive;
-    private BigDecimal averageRating;
-    private Integer totalReviews;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
