@@ -15,7 +15,6 @@ public interface EquipmentListingRepository extends JpaRepository<EquipmentListi
 
     Optional<List<EquipmentListing>> findEquipmentListingByMerchant(Merchant merchant);
 
-    Optional<List<EquipmentListing>> findEquipmentListingByEquipmentCategory(EquipmentCategory equipmentCategory);
-
+    Optional<List<EquipmentListing>> findEquipmentListingByCategory(EquipmentCategory equipmentCategory);
 
 }
