@@ -1,12 +1,11 @@
 import React from "react";
-import CyclingImage from "../Assets/cycling.jpg";
-import Navbar from "./Navbar";
+import { assets} from "../assets/assets";
 import { FiArrowRight } from "react-icons/fi";
+import "./HomePage.css";
 
 const Home = () => {
   return (
     <div className="home-container">
-      <Navbar />
       <div className="home-banner-container">
         <div className="home-text-section">
           <h1 className="primary-heading">Iznajmi sportsku opremu bez brige</h1>
@@ -20,7 +19,7 @@ const Home = () => {
           </button>
         </div>
         <div className="home-image-section">
-          <img src={CyclingImage} alt="" />
+          <img src={assets.CyclingImage} alt="" />
         </div>
       </div>
     </div>

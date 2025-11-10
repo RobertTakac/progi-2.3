@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { assets, DUMMY_USER_STATE } from "../assets/assets";
+import { assets } from "../assets/assets";
 import "./Navbar.css";
 import Modal from "./Modal";
 import ChooseRole from "./ChooseRole";
@@ -9,9 +9,7 @@ import SignupForm from "./SignupForm";
 import VerifyCodeForm from "./VerifyCodeForm";
 
 const Navbar = () => {
-  const [currentUser, setCurrentUser] = useState(
-    DUMMY_USER_STATE.currentlyLoggedIn
-  );
+  const [currentUser, setCurrentUser] = useState(null);
 
   const [modalView, setModalView] = useState(null);
 
