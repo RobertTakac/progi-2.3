@@ -1,0 +1,141 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-container h2 {
+  text-align: center;
+  color: #333;
+  margin-top: 10px; 
+}
+
+.role-selection {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.role-button {
+  padding: 15px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid #0d47a1;
+  background-color: #f0f4f8;
+  color: #0d47a1;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.role-button:hover {
+  background-color: #e3f2fd;
+  transform: translateY(-2px);
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.auth-container .button-primary {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #ff6f00;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-container .button-primary:hover {
+  background-color: #e65100;
+}
+
+.form-switch {
+  text-align: center;
+  margin-top: 15px;
+  color: #555;
+}
+
+.form-switch span {
+  color: #0d47a1;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #d32f2f;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.oauth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border-radius: 4px;
+  text-decoration: none; 
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #ccc; 
+  background-color: #fff;
+  color: #333; 
+  transition: background-color 0.2s;
+  width: 100%;
+  box-sizing: border-box; 
+}
+
+.oauth-button:hover {
+  background-color: #f9f9f9;
+}
+
+.form-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 15px 0; 
+  color: #888;
+}
+
+.form-separator::before,
+.form-separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.form-separator span {
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+.verify-info {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+.verify-info strong {
+  color: #0d47a1;
+  display: block; 
+  font-size: 1.1em;
+}
