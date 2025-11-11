@@ -56,9 +56,9 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
         <div className="form-group">
           <label htmlFor="signup-username">Username</label>
           <input 
-            type="username" 
+            type="text" 
             id="signup-username" 
-            value={email} 
+            value={username} 
             onChange={(e) => setUsername(e.target.value)} 
             required 
           />
