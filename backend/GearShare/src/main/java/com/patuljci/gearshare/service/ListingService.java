@@ -10,6 +10,8 @@ import com.patuljci.gearshare.repository.EquipmentListingRepository;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ListingService {
 
@@ -25,6 +27,25 @@ public class ListingService {
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.userRepository = userRepository;
         this.merchantService = merchantService;
+    }
+
+
+    public List<EquipmentListing> allListings(){
+        return equipmentListingRepository.findAll();
+    }
+    public List<EquipmentCategory> allCategories(){
+        return equipmentCategoryRepository.findAll();
+    }
+
+
+    public List<EquipmentListing> allListingsByCategory(String category){
+
+        EquipmentCategory equipmentCategory = equipmentCategoryRepository.findEquipmentCategoryByName(category)
+                .orElseGet(()-> {return null;});
+        if(equipmentCategory == null){return null;}
+
+        return equipmentListingRepository.findEquipmentListingByCategory(equipmentCategory)
+                .orElseGet(()-> {return null; });//mozda bi se trebalo zamijenit s praznom listom
     }
 
     public EquipmentListing createListing(ListingDto listingDto) {
