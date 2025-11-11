@@ -16,32 +16,49 @@ public class ListingService {
     private final EquipmentListingRepository equipmentListingRepository;
     private final EquipmentCategoryRepository equipmentCategoryRepository;
     private final UserRepository userRepository;
+    private final MerchantService merchantService;
 
     ListingService(EquipmentListingRepository equipmentListingRepository,
                    EquipmentCategoryRepository equipmentCategoryRepository,
-                   UserRepository userRepository) {
+                   UserRepository userRepository,  MerchantService merchantService) {
         this.equipmentListingRepository = equipmentListingRepository;
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.userRepository = userRepository;
+        this.merchantService = merchantService;
     }
 
-    public void createListing(ListingDto listingDto) {
+    public EquipmentListing createListing(ListingDto listingDto) {
 
         EquipmentListing equipmentListing = new EquipmentListing();
 
         //provjera postoji li email
-        //TODO provjera jel to email od trgovca
         User newUser = userRepository.findByEmail(listingDto.getEmail())
                 .orElseGet(() -> {
+                    //System.out.println("nepostojeci mail");
                     return null;
                 });
-        equipmentListing.setMerchant(new Merchant());
+        if(newUser == null) { return null;}
+
+        //provjera jel to email od trgovca
+        Merchant merchant = merchantService.getMerchant(newUser.getId());
+
+
+        if(merchant == null) {
+            //System.out.println("nije trgovac");
+            return null;}
+
+        equipmentListing.setMerchant(merchant);
+
+
 
         //provjera postoji li kategorija
         EquipmentCategory equipmentCategory = equipmentCategoryRepository.findEquipmentCategoryByName(listingDto.getCategoryName())
                 .orElseGet(() -> {
                     return null;
                 });
+        if (equipmentCategory == null) {
+            return null;
+        }
 
         equipmentListing.setCategory(equipmentCategory);
 
@@ -59,7 +76,7 @@ public class ListingService {
         equipmentListing.setIsActive(listingDto.getIsActive());
 
 
-        equipmentListingRepository.save(equipmentListing);
+        return equipmentListingRepository.save(equipmentListing);
     }
 
 }
