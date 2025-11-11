@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
+const BASE_URL = "http://localhost:8080"; 
 
 const SignupForm = ({ role, onSwitch, onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+   const [username, setUsername] = useState('');
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,10 +20,10 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
     setError('');
     
     try {
-      const res = await fetch('/api/auth/signup', {
+      const res = await fetch(`${BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role })
+        body: JSON.stringify({ email,username, password, role })
       });
 
       if (!res.ok) {
@@ -50,6 +53,16 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
             required 
           />
         </div>
+        <div className="form-group">
+          <label htmlFor="signup-username">Username</label>
+          <input 
+            type="username" 
+            id="signup-username" 
+            value={email} 
+            onChange={(e) => setUsername(e.target.value)} 
+            required 
+          />
+           </div>
         <div className="form-group">
           <label htmlFor="signup-password">Lozinka</label>
           <input 
