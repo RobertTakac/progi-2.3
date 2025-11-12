@@ -5,7 +5,6 @@ import com.patuljci.gearshare.dto.RegisterUserDto;
 import com.patuljci.gearshare.dto.VerifyUserDto;
 import com.patuljci.gearshare.model.User;
 import com.patuljci.gearshare.repository.UserRepository;
-import jakarta.mail.MessagingException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -120,7 +119,7 @@ public class AuthenticationService {
 
         try {
             emailService.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             // Handle email sending exception
             e.printStackTrace();
         }
