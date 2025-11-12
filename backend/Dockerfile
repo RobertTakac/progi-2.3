@@ -1,4 +1,4 @@
-FROM openjdk:25-jdk-slim
+FROM openjdk:21-jdk-slim
 WORKDIR /app
 COPY mvnw .
 COPY pom.xml .
