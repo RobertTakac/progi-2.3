@@ -36,12 +36,10 @@ public class AuthenticationService {
 
     public User signup(RegisterUserDto input) {
         User user = new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()));
-        //user.setVerificationCode(generateVerificationCode());
-        //user.setVerificationCodeExpiresAt(String.valueOf(LocalDateTime.now().plusMinutes(15)));
-        //user.setEnabled(false);
-        //sendVerificationEmail(user);
-        user.setEnabled(true);
-
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(String.valueOf(LocalDateTime.now().plusMinutes(15)));
+        user.setEnabled(false);
+        sendVerificationEmail(user);
         return userRepository.save(user);
     }
 
