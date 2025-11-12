@@ -24,6 +24,8 @@ public class EmailService {
         Content content = new Content("text/html", htmlMessage);
         Mail mail = new Mail(from, subject, toEmail, content);
 
+        mail.setReplyTo(new Email("gearshare6@gmail.com"));
+
         Request request = new Request();
         try {
             request.setMethod(Method.POST);
