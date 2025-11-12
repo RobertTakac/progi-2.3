@@ -1,11 +1,11 @@
-FROM openjdk:17.0.1-jdk-slim
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-COPY mvnw .
-COPY pom.xml .
-COPY .mvn .mvn
+COPY GearShare/mvnw .
+COPY GearShare/pom.xml .
+COPY GearShare/.mvn .mvn
 RUN chmod +x mvnw
 RUN ./mvnw dependency:resolve
-COPY src ./src
+COPY GearShare/src ./src
 RUN ./mvnw clean package -DskipTests
 EXPOSE 8080
 CMD ["java", "-jar", "target/*.jar"]
