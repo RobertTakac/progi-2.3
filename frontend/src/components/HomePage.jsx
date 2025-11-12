@@ -9,7 +9,6 @@ const Home = () => {
       <div className="home-banner-container">
         <div className="home-text-section">
           <h1 className="primary-heading">Iznajmi sportsku opremu bez brige</h1>
-          <h1 className="primary-heading">Auto Deploy test final</h1>
           <p className="primary-text">
             Pronađi, rezerviraj i preuzmi sportsku opremu na jednom mjestu.
             <br />
