@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
-const BASE_URL = "https://progi-2-3-backend.onrender.com"; 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const LoginForm = ({ role, onSwitch, onSuccess }) => {
   const [email, setEmail] = useState('');

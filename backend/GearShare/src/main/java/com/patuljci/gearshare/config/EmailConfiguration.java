@@ -1,4 +1,4 @@
-package com.patuljci.gearshare.config;
+/*package com.patuljci.gearshare.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class EmailConfiguration {
     private String password;
 
     @Bean
-    public JavaMailSender javaMailSender() {
+    /*public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);
@@ -42,4 +42,4 @@ public class EmailConfiguration {
 
         return mailSender;
     }
-}
+}*/
