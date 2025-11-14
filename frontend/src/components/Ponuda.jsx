@@ -1,10 +1,11 @@
 import React from 'react';
 import './MojiOglasi.css';
+import { assets} from "../assets/assets";
 
 const OFFER_MOCK_ADS = [
-  { id: 1, title: "Ronilačka oprema set", price: 65.00, location: "Pula", description: "Kompletan set za ljetno ronjenje." },
-  { id: 2, title: "Teniski reket Wilson", price: 10.00, location: "Rijeka", description: "Profesionalni reket za napredne igrače." },
-  { id: 3, title: "Kajak za 2 osobe", price: 40.00, location: "Zadar", description: "Stabilan kajak za obiteljske izlete." },
+  { id: 1, title: "Ronilačka oprema set", price: 65.00, location: "Pula", imageUrl: assets.diving, description: "Kompletan set za ljetno ronjenje." },
+  { id: 2, title: "Teniski reket Wilson", price: 10.00, location: "Rijeka", imageUrl: assets.racket, description: "Profesionalni reket za napredne igrače." },
+  { id: 3, title: "Kajak za 2 osobe", price: 40.00, location: "Zadar", imageUrl: assets.kayak, description: "Stabilan kajak za obiteljske izlete." },
 ];
 
 const Ponuda = () => {
@@ -15,7 +16,7 @@ const Ponuda = () => {
         {OFFER_MOCK_ADS.map((item) => (
           <div className="card" key={item.id}>
             <img 
-              src={`https://placehold.co/600x400?text=${item.title.replace(/\s/g, '+')}`} 
+              src={item.imageUrl}
               alt={item.title}
             />
             <h1>{item.title}</h1>
