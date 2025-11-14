@@ -23,9 +23,12 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
+        System.out.println("Signup request received: " + registerUserDto.getEmail());
         User registeredUser = authenticationService.signup(registerUserDto);
+        System.out.println("User registered: " + registeredUser.getEmail());
         return ResponseEntity.ok(registeredUser);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto){

@@ -8,6 +8,8 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import VerifyCodeForm from "./VerifyCodeForm";
 
+
+
 const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
 
   const baseLinks = [

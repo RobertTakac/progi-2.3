@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const LoginForm = ({ role, onSwitch, onSuccess }) => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, role })

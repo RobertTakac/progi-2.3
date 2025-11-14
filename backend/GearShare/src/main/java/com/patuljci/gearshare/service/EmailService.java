@@ -1,25 +1,41 @@
 package com.patuljci.gearshare.service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
-    @Autowired
-    private JavaMailSender emailSender;
 
-    public void sendVerificationEmail(String to, String subject, String text) throws MessagingException {
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+    private final SendGrid sendGrid;
+    private final String fromEmail;
 
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(text, true);
+    public EmailService(@Value("${SENDGRID_API_KEY}") String apiKey,
+                        @Value("${SUPPORT_EMAIL}") String fromEmail) {
+        this.sendGrid = new SendGrid(apiKey);
+        this.fromEmail = fromEmail;
+    }
 
-        emailSender.send(message);
+    public void sendVerificationEmail(String to, String subject, String htmlMessage) {
+        Email from = new Email(fromEmail);
+        Email toEmail = new Email(to);
+        Content content = new Content("text/html", htmlMessage);
+        Mail mail = new Mail(from, subject, toEmail, content);
+
+        mail.setReplyTo(new Email("gearshare6@gmail.com"));
+
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sendGrid.api(request);
+            System.out.println("SendGrid response code: " + response.getStatusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send email: " + e.getMessage());
+        }
     }
 }

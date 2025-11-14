@@ -1,14 +1,13 @@
 package com.patuljci.gearshare.controller;
 
-import com.patuljci.gearshare.dto.ListingDto;
+import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
-import com.patuljci.gearshare.model.User;
 import com.patuljci.gearshare.service.ListingService;
-import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jdk.jfr.Category;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/listing")
 @RestController
@@ -20,11 +19,25 @@ public class ListingController {
         this.listingService = listingService;
     }
 
+    @GetMapping("/categories")
+    public ResponseEntity<List<EquipmentCategory>> allCategories(){
 
-    @PostMapping("/createListing")
-    public void createListing(@RequestBody ListingDto listingDto) {
+        return ResponseEntity.ok(listingService.allCategories());
 
-        listingService.createListing(listingDto);
+    }
+
+
+    @GetMapping("/getListing")
+    public ResponseEntity<List<EquipmentListing>> getListing(){
+
+        return ResponseEntity.ok(listingService.allListings());
+    }
+
+    @GetMapping(value = "/getListing", params = {"categoryName"})
+    public ResponseEntity<List<EquipmentListing>> getListing(@RequestParam String categoryName){
+
+
+        return ResponseEntity.ok(listingService.allListingsByCategory(categoryName));
     }
 
 }
