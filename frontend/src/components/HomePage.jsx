@@ -1,9 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; 
 import { assets} from "../assets/assets";
 import { FiArrowRight } from "react-icons/fi";
 import "./HomePage.css";
 
-const Home = () => {
+const HomePage = ({ currentUser, openLoginModal }) => {
+
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    if (currentUser) {
+      navigate('/ponuda'); 
+    } else {
+      openLoginModal('login'); 
+    }
+  };
+
   return (
     <div className="home-container">
       <div className="home-banner-container">
@@ -14,7 +26,7 @@ const Home = () => {
             <br />
             Jednostavno, brzo i sigurno, bilo da si klijent ili trgovac.
           </p>
-          <button className="secondary-button">
+          <button className="secondary-button" onClick={handleButtonClick}>
             Pogledaj ponudu <FiArrowRight />{" "}
           </button>
         </div>
@@ -26,4 +38,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

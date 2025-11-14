@@ -15,7 +15,7 @@ const ChooseRole = ({ action, onSelect }) => {
         </button>
         <button 
           className="role-button" 
-          onClick={() => onSelect('trader')}
+          onClick={() => onSelect('merchant')}
         >
           Trgovac
         </button>
