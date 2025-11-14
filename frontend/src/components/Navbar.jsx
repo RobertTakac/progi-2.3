@@ -10,50 +10,12 @@ import VerifyCodeForm from "./VerifyCodeForm";
 
 
 
-const Navbar = () => {
-  const [currentUser, setCurrentUser] = useState(null);
-
-  const [modalView, setModalView] = useState(null);
-
-  const [selectedRole, setSelectedRole] = useState(null);
-
-  const [emailToVerify, setEmailToVerify] = useState(null);
-
-  const openModal = (view) => {
-    setModalView(view);
-    setSelectedRole(null);
-  };
-
-  const closeModal = () => {
-    setModalView(null);
-    setSelectedRole(null);
-  };
-
-  const handleRoleSelect = (role) => {
-    setSelectedRole(role);
-  };
-
-  const switchForm = (newView) => {
-    setModalView(newView);
-  };
-
-  const handleVerificationNeeded = (email) => {
-    setEmailToVerify(email);
-    setModalView("verify");
-  };
-
-  const handleLoginSuccess = (userData) => {
-    setCurrentUser(userData);
-    closeModal();
-  };
-
-  const handleSignOut = () => {
-    setCurrentUser(null);
-  };
+const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
 
   const baseLinks = [
     { name: "Home", path: "/" },
     { name: "Lokacije", path: "/lokacije" },
+    ...(currentUser ? [{ name: 'Ponuda', path: '/ponuda' }] : [])
   ];
 
   let navigationLinks = [...baseLinks];
@@ -86,13 +48,13 @@ const Navbar = () => {
           ) : (
             <>
               <button
-                onClick={() => openModal("login")}
+                onClick={() => openLoginModal("login")}
                 className="nav-item button-secondary"
               >
                 Prijavi se
               </button>
               <button
-                onClick={() => openModal("signup")}
+                onClick={() => openLoginModal("signup")}
                 className="nav-item button-primary"
               >
                 Registriraj se
@@ -101,38 +63,6 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-
-      <Modal isOpen={!!modalView} onClose={closeModal}>
-        {!selectedRole && (
-          <ChooseRole action={modalView} onSelect={handleRoleSelect} />
-        )}
-
-        {selectedRole && modalView === "login" && (
-          <LoginForm
-            role={selectedRole}
-            onSwitch={() => switchForm("signup")}
-            onSuccess={handleLoginSuccess}
-          />
-        )}
-
-        {selectedRole && modalView === "signup" && (
-          <SignupForm
-            role={selectedRole}
-            onSwitch={() => switchForm("login")}
-            onSuccess={handleVerificationNeeded}
-          />
-        )}
-
-        {modalView === "verify" && (
-          <VerifyCodeForm
-            email={emailToVerify}
-            onSuccess={() => switchForm("login")}
-            onCancel={() => {
-              openModal("signup");
-            }}
-          />
-        )}
-      </Modal>
     </>
   );
 };
