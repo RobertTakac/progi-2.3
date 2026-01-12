@@ -1,5 +1,6 @@
 package com.patuljci.gearshare.controller;
 
+import com.patuljci.gearshare.dto.ListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.service.ListingService;
@@ -28,13 +29,13 @@ public class ListingController {
 
 
     @GetMapping("/getListing")
-    public ResponseEntity<List<EquipmentListing>> getListing(){
+    public ResponseEntity<List<ListingDto>> getListing(){
 
         return ResponseEntity.ok(listingService.allListings());
     }
 
     @GetMapping(value = "/getListing", params = {"categoryName"})
-    public ResponseEntity<List<EquipmentListing>> getListing(@RequestParam String categoryName){
+    public ResponseEntity<List<ListingDto>> getListing(@RequestParam String categoryName){
 
 
         return ResponseEntity.ok(listingService.allListingsByCategory(categoryName));
