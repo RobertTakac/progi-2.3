@@ -30,14 +30,19 @@ public class MerchantController {
 
 
     @PostMapping(value="createListing")
-    public ResponseEntity<ListingDto> createListing(){
+    public ResponseEntity<ListingDto> createListing(ListingDto dto){
+
+
 
         Optional<Merchant> merchant = merchantService.optionalMerchant();
         if (!merchant.isPresent()) {
             return  ResponseEntity.notFound().build();
         }
+        System.out.println(merchant.get().getBusinessName());
 
-        return ResponseEntity.ok(new ListingDto());
+        ListingDto listingDto = merchantService.addListing(merchant.get(), dto);
+
+        return ResponseEntity.ok(listingDto);
     }
 
     /*
