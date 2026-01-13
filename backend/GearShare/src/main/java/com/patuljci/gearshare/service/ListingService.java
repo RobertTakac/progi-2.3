@@ -7,6 +7,7 @@ import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.repository.EquipmentCategoryRepository;
 import com.patuljci.gearshare.repository.EquipmentListingRepository;
+import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +20,19 @@ public class ListingService {
     private final EquipmentListingRepository equipmentListingRepository;
     private final EquipmentCategoryRepository equipmentCategoryRepository;
     private final UserRepository userRepository;
+    private final MerchantRepository merchantRepository;
     //private final MerchantService merchantService;
 
     ListingService(EquipmentListingRepository equipmentListingRepository,
                    EquipmentCategoryRepository equipmentCategoryRepository,
-                   UserRepository userRepository
-            //,  MerchantService merchantService
+                   UserRepository userRepository, MerchantRepository merchantRepository
+                   //,  MerchantService merchantService
     ) {
         this.equipmentListingRepository = equipmentListingRepository;
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.userRepository = userRepository;
         //this.merchantService = merchantService;
+        this.merchantRepository = merchantRepository;
     }
 
     public ListingDto equipmentListingToListingDTO(EquipmentListing listing){
@@ -67,6 +70,30 @@ public class ListingService {
         return equipmentCategoryRepository.findAll();
     }
 
+
+    public List<ListingDto> getListingsByMerchantUsername(String username){
+
+        UserEntity user = userRepository.findByUsername(username);
+        Optional<Merchant> merchant = merchantRepository.findMerchantByUserId(user.getId());
+
+        if (merchant.isEmpty()){
+            return null;
+        }
+        Optional<List<EquipmentListing>> lista = equipmentListingRepository.findEquipmentListingByMerchant(merchant.get());
+
+        if(!lista.isPresent()){
+            return null;
+        }
+
+        List<ListingDto> response = new java.util.ArrayList<>(List.of());
+
+
+
+        for(EquipmentListing listing : lista.get()){
+            response.add(equipmentListingToListingDTO(listing));
+        }
+        return response;
+    }
 
     public List<ListingDto> allListingsByCategory(String category){
 

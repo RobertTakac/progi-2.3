@@ -1,6 +1,7 @@
 package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
+import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.service.ListingService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/merchant")
@@ -28,17 +30,32 @@ public class MerchantController {
     }
 
 
+    @PostMapping(value="/testCategory", params = {"categoryName"})
+    public ResponseEntity<String> testCategory(@RequestParam String categoryName){
+
+        if(merchantService.test(categoryName)){
+            return ResponseEntity.ok("postoji kategorija");
+        }
+        return ResponseEntity.ok("ne postoji kategorija");
+    }
+
+    @GetMapping(value="getListing")
+    public ResponseEntity<List<ListingDto>> getListingsFromMerchant(){
+
+        String merchant = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchant));
+    }
 
     @PostMapping(value="createListing")
-    public ResponseEntity<ListingDto> createListing(ListingDto dto){
-
+    public ResponseEntity<ListingDto> createListing(@RequestBody ListingDto dto){
 
 
         Optional<Merchant> merchant = merchantService.optionalMerchant();
         if (!merchant.isPresent()) {
             return  ResponseEntity.notFound().build();
         }
-        System.out.println(merchant.get().getBusinessName());
+        //System.out.println(merchant.get().getBusinessName());
 
         ListingDto listingDto = merchantService.addListing(merchant.get(), dto);
 

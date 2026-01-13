@@ -51,15 +51,26 @@ public class MerchantService {
         //UserEntity currentUser = userRepository.findByUsername(username);
     }
 
+    public boolean test(String categoryName){
+        Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(categoryName);
+        if  (category.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
     public ListingDto addListing(Merchant merchant, ListingDto listingDto){
 
         EquipmentListing listing = new EquipmentListing();
         listing.setMerchant(merchant);
 
+
         Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(listingDto.getCategoryName());
-        if(!category.isPresent()){
+        if(category.isEmpty()){
+            System.out.println("Category not found");
             return null;
         }
+
         listing.setCategory(category.get());
         listing.setTitle(listingDto.getTitle());
         listing.setDescription(listingDto.getDescription());
@@ -71,6 +82,7 @@ public class MerchantService {
         listing.setPickupLocation(listingDto.getPickupLocation());
         listing.setReturnLocation(listingDto.getReturnLocation());
         listing.setIsActive(listingDto.getIsActive());
+
 
         equipmentListingRepository.save(listing);
 
