@@ -17,7 +17,7 @@ public class Client{
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName="id", nullable = false)
-    private User user;
+    private UserEntity user;
 
     @Column
     private String location;

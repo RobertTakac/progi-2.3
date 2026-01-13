@@ -4,7 +4,7 @@ import com.patuljci.gearshare.dto.ListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
-import com.patuljci.gearshare.model.User;
+import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.repository.EquipmentCategoryRepository;
 import com.patuljci.gearshare.repository.EquipmentListingRepository;
 import com.patuljci.gearshare.repository.UserRepository;
@@ -19,15 +19,17 @@ public class ListingService {
     private final EquipmentListingRepository equipmentListingRepository;
     private final EquipmentCategoryRepository equipmentCategoryRepository;
     private final UserRepository userRepository;
-    private final MerchantService merchantService;
+    //private final MerchantService merchantService;
 
     ListingService(EquipmentListingRepository equipmentListingRepository,
                    EquipmentCategoryRepository equipmentCategoryRepository,
-                   UserRepository userRepository,  MerchantService merchantService) {
+                   UserRepository userRepository
+            //,  MerchantService merchantService
+    ) {
         this.equipmentListingRepository = equipmentListingRepository;
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.userRepository = userRepository;
-        this.merchantService = merchantService;
+        //this.merchantService = merchantService;
     }
 
     public ListingDto equipmentListingToListingDTO(EquipmentListing listing){
@@ -89,13 +91,14 @@ public class ListingService {
         //        .orElseGet(()-> {return null; });//mozda bi se trebalo zamijenit s praznom listom
     }
 
-    
+
+    /*
     public EquipmentListing createListing(ListingDto listingDto) {
 
         EquipmentListing equipmentListing = new EquipmentListing();
 
         //provjera postoji li email
-        User newUser = userRepository.findByEmail(listingDto.getEmail())
+        UserEntity newUser = userRepository.findByEmail(listingDto.getEmail())
                 .orElseGet(() -> {
                     //System.out.println("nepostojeci mail");
                     return null;
@@ -141,5 +144,6 @@ public class ListingService {
 
         return equipmentListingRepository.save(equipmentListing);
     }
+    */
 
 }

@@ -1,6 +1,6 @@
 package com.patuljci.gearshare.controller;
 
-import com.patuljci.gearshare.model.User;
+import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,20 +18,42 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> authenticatedUser() {
+    public ResponseEntity<UserEntity> authenticatedUser() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(currentUser);
+        String username = authentication.getName();
+
+        System.out.println("username: " + username);
+        //UserEntity currentUser = userRepository.findByUsername(username);
+
+        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+        //return ResponseEntity.ok(currentUser);
+        return ResponseEntity.ok(new UserEntity());
+    }
+    @GetMapping("/test")
+    public ResponseEntity<String> testing() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        System.out.println("username: " + username);
+        //UserEntity currentUser = userRepository.findByUsername(username);
+
+        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+        //return ResponseEntity.ok(currentUser);
+        return ResponseEntity.ok("proslo");
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<User>> allUsers() {
-        List <User> users = userService.allUsers();
+    public ResponseEntity<List<UserEntity>> allUsers() {
+        List <UserEntity> users = userService.allUsers();
         return ResponseEntity.ok(users);
     }
 
     @PostMapping("/crateUser")
-    public User createUser(@RequestBody User user) {
+    public UserEntity createUser(@RequestBody UserEntity user) {
         return userService.createUser(user);
     }
 

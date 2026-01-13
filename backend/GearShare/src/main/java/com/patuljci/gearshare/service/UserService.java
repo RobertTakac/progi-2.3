@@ -1,6 +1,6 @@
 package com.patuljci.gearshare.service;
 
-import com.patuljci.gearshare.model.User;
+import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +14,16 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> allUsers() {
-        List<User> users = new ArrayList<>();
+    public List<UserEntity> allUsers() {
+        List<UserEntity> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
         return users;
     }
 
 
-    public User createUser(User user){
+    public UserEntity createUser(UserEntity user){
 
-        User newUser = userRepository.findByEmail(user.getEmail())
+        UserEntity newUser = userRepository.findByEmail(user.getEmail())
                 .orElseGet(() -> userRepository.save(user));
 
         return newUser;

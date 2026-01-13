@@ -13,9 +13,9 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -30,13 +30,13 @@ public class User implements UserDetails {
     @Column(name  = "verification_expiration")
     private String verificationCodeExpiresAt;
 
-    public User(String username, String email, String password) {
+    public UserEntity(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    public User() {
+    public UserEntity() {
     }
 
     @Override

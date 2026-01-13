@@ -1,7 +1,6 @@
 package com.patuljci.gearshare.repository;
 
 import com.patuljci.gearshare.model.Merchant;
-import com.patuljci.gearshare.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
