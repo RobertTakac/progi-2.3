@@ -36,12 +36,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         String role = "";
         if(merchant.isPresent()) {
-            role="merchant";
+            role="ROLE_MERCHANT";
         } else if (client.isPresent()) {
-            role="client";
+            role="ROLE_CLIENT";
         }
         else{
-            role="norole";
+            role="ROLE_NOROLE";
             //throw new UsernameNotFoundException("User not found: " + username);
         }
 

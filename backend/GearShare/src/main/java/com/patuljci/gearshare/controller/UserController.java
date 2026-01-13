@@ -38,6 +38,18 @@ public class UserController {
         String username = authentication.getName();
 
         System.out.println("username: " + username);
+
+        boolean isMerchant = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_MERCHANT"));
+        System.out.println("isMerchant: " + isMerchant);
+
+        isMerchant = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENT"));
+        System.out.println("isClient: " + isMerchant);
+
+        isMerchant = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_NOROLE"));
+        System.out.println("norole: " + isMerchant);
         //UserEntity currentUser = userRepository.findByUsername(username);
 
         //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
