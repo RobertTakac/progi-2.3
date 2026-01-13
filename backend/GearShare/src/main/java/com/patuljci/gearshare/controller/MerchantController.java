@@ -4,19 +4,45 @@ import com.patuljci.gearshare.dto.ListingDto;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.service.ListingService;
+import com.patuljci.gearshare.service.MerchantService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RequestMapping("/merchant")
 @RestController
 public class MerchantController {
 
     private final ListingService listingService;
+    private final MerchantService  merchantService;
 
-    MerchantController(ListingService listingService) {
+    MerchantController(ListingService listingService, MerchantService merchantService) {
         this.listingService = listingService;
+        this.merchantService = merchantService;
+    }
+
+
+
+    @PostMapping(value="createListing")
+    public ResponseEntity<ListingDto> createListing(ListingDto dto){
+
+
+
+        Optional<Merchant> merchant = merchantService.optionalMerchant();
+        if (!merchant.isPresent()) {
+            return  ResponseEntity.notFound().build();
+        }
+        System.out.println(merchant.get().getBusinessName());
+
+        ListingDto listingDto = merchantService.addListing(merchant.get(), dto);
+
+        return ResponseEntity.ok(listingDto);
     }
 
     /*
@@ -34,14 +60,10 @@ public class MerchantController {
     } */
 
 
-    @PostMapping("/createListing")
-    public ResponseEntity<EquipmentListing> createListing(@RequestBody ListingDto listingDto) {
+    @GetMapping("/test")
+    public ResponseEntity<String> testing(){
 
-        EquipmentListing equipmentListing = listingService.createListing(listingDto);
-
-        if (equipmentListing==null) return ResponseEntity.badRequest().build();
-
-        return ResponseEntity.ok(equipmentListing);
+        return ResponseEntity.ok("ok");
     }
 
 }
