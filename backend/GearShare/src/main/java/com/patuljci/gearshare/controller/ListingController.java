@@ -41,31 +41,6 @@ public class ListingController {
 
         return ResponseEntity.ok(listingService.allListingsByCategory(categoryName));
     }
-
-    @PostMapping("/createListing")
-    public ResponseEntity<ListingDto> createListing(@AuthenticationPrincipal UserEntity user){
-
-        System.out.println("trazim listinge nove");
-
-        //User korisnik = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("korisnik: " + user);
-
-        return ResponseEntity.ok(new ListingDto());
-
-    }
-    /*
-    @GetMapping(value="/createListing")
-    public ResponseEntity<ListingDto> createListing(){//Authentication authentication){//,@RequestBody ListingDto dto){
-
-        System.out.println("Usao sam ovdje");
-        //User korisnik = (User) authentication.getPrincipal();
-
-        //System.out.println(korisnik.getUsername());
-
-        ListingDto dto = new ListingDto();
-        dto.setEmail("nesto barem");
-
-        return ResponseEntity.ok(dto);
-    } */
+    
 
 }

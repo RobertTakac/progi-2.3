@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="clients")
@@ -12,7 +13,7 @@ import java.security.Timestamp;
 @Getter
 public class Client{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long client_id;
 
     @ManyToOne
@@ -26,5 +27,11 @@ public class Client{
     private Boolean canRent=true;
 
     @Column
-    private Timestamp createdAt;//default bi trebao biti current timestamp
+    private LocalDateTime createdAt;
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

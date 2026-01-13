@@ -1,9 +1,12 @@
 package com.patuljci.gearshare.service;
 
+import com.patuljci.gearshare.dto.ClientRegisterDTO;
 import com.patuljci.gearshare.dto.LoginUserDto;
 import com.patuljci.gearshare.dto.RegisterUserDto;
 import com.patuljci.gearshare.dto.VerifyUserDto;
+import com.patuljci.gearshare.model.Client;
 import com.patuljci.gearshare.model.UserEntity;
+import com.patuljci.gearshare.repository.ClientRepository;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,16 +20,18 @@ import java.util.Random;
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
     public AuthenticationService(
-            UserRepository userRepository,
+            UserRepository userRepository, ClientRepository clientRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
             EmailService emailService
     ) {
+        this.clientRepository = clientRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -40,6 +45,23 @@ public class AuthenticationService {
         user.setEnabled(false);
         sendVerificationEmail(user);
         return userRepository.save(user);
+    }
+
+    public Client signupClient(ClientRegisterDTO clientRegisterDTO) {
+        Client client = new Client();
+
+        UserEntity user = new UserEntity(clientRegisterDTO.getUsername(), clientRegisterDTO.getEmail(), passwordEncoder.encode(clientRegisterDTO.getPassword()));
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(String.valueOf(LocalDateTime.now().plusMinutes(15)));
+        user.setEnabled(false);
+        sendVerificationEmail(user);
+
+        client.setCanRent(true);
+
+
+        client.setUser(userRepository.save(user));
+        client.setLocation(clientRegisterDTO.getLocation());
+        return clientRepository.save(client);
     }
 
     public UserEntity authenticate(LoginUserDto input) {
