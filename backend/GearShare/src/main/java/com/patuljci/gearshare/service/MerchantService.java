@@ -1,6 +1,6 @@
 package com.patuljci.gearshare.service;
 
-import com.patuljci.gearshare.dto.ListingDto;
+import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
@@ -59,35 +59,35 @@ public class MerchantService {
         return false;
     }
 
-    public ListingDto addListing(Merchant merchant, ListingDto listingDto){
+    public NewListingDto addListing(Merchant merchant, NewListingDto newListingDto){
 
         EquipmentListing listing = new EquipmentListing();
         listing.setMerchant(merchant);
 
 
-        Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(listingDto.getCategoryName());
+        Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(newListingDto.getCategoryName());
         if(category.isEmpty()){
             System.out.println("Category not found");
             return null;
         }
 
         listing.setCategory(category.get());
-        listing.setTitle(listingDto.getTitle());
-        listing.setDescription(listingDto.getDescription());
-        listing.setDailyPrice(listingDto.getDailyPrice());
-        listing.setDepositAmount(listingDto.getDepositAmount());
-        listing.setCurrency(listingDto.getCurrency());
-        listing.setAvailableFrom(listingDto.getAvailableFrom());
-        listing.setAvailableUntil(listingDto.getAvailableUntil());
-        listing.setPickupLocation(listingDto.getPickupLocation());
-        listing.setReturnLocation(listingDto.getReturnLocation());
-        listing.setIsActive(listingDto.getIsActive());
+        listing.setTitle(newListingDto.getTitle());
+        listing.setDescription(newListingDto.getDescription());
+        listing.setDailyPrice(newListingDto.getDailyPrice());
+        listing.setDepositAmount(newListingDto.getDepositAmount());
+        listing.setCurrency(newListingDto.getCurrency());
+        listing.setAvailableFrom(newListingDto.getAvailableFrom());
+        listing.setAvailableUntil(newListingDto.getAvailableUntil());
+        listing.setPickupLocation(newListingDto.getPickupLocation());
+        listing.setReturnLocation(newListingDto.getReturnLocation());
+        listing.setIsActive(newListingDto.getIsActive());
 
 
         equipmentListingRepository.save(listing);
 
-        listingDto.setEmail(merchant.getUser().getEmail());
-        return listingDto;
+        newListingDto.setEmail(merchant.getUser().getEmail());
+        return newListingDto;
     }
 
 }

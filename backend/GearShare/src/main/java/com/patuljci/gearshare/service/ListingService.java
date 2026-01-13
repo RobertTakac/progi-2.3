@@ -1,6 +1,7 @@
 package com.patuljci.gearshare.service;
 
 import com.patuljci.gearshare.dto.ListingDto;
+import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
@@ -25,20 +26,23 @@ public class ListingService {
 
     ListingService(EquipmentListingRepository equipmentListingRepository,
                    EquipmentCategoryRepository equipmentCategoryRepository,
-                   UserRepository userRepository, MerchantRepository merchantRepository
-                   //,  MerchantService merchantService
+                   UserRepository userRepository,
+                   MerchantRepository merchantRepository
     ) {
         this.equipmentListingRepository = equipmentListingRepository;
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.userRepository = userRepository;
-        //this.merchantService = merchantService;
         this.merchantRepository = merchantRepository;
     }
 
     public ListingDto equipmentListingToListingDTO(EquipmentListing listing){
         ListingDto dto = new ListingDto();
 
-        dto.setEmail(listing.getMerchant().getUser().getEmail());
+        //dto.setEmail(listing.getMerchant().getUser().getEmail());
+
+        dto.setId(listing.getListingId());
+        dto.setMerchantID(listing.getMerchant().getId());
+
         dto.setCategoryName(listing.getCategory().getName());
         dto.setTitle(listing.getTitle());
         dto.setDescription(listing.getDescription());

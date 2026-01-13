@@ -1,17 +1,12 @@
 package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.model.EquipmentCategory;
-import com.patuljci.gearshare.model.EquipmentListing;
+import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.service.ListingService;
 import com.patuljci.gearshare.service.MerchantService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,7 +43,7 @@ public class MerchantController {
     }
 
     @PostMapping(value="createListing")
-    public ResponseEntity<ListingDto> createListing(@RequestBody ListingDto dto){
+    public ResponseEntity<NewListingDto> createListing(@RequestBody NewListingDto dto){
 
 
         Optional<Merchant> merchant = merchantService.optionalMerchant();
@@ -57,9 +52,9 @@ public class MerchantController {
         }
         //System.out.println(merchant.get().getBusinessName());
 
-        ListingDto listingDto = merchantService.addListing(merchant.get(), dto);
+        NewListingDto newListingDto = merchantService.addListing(merchant.get(), dto);
 
-        return ResponseEntity.ok(listingDto);
+        return ResponseEntity.ok(newListingDto);
     }
 
     /*
