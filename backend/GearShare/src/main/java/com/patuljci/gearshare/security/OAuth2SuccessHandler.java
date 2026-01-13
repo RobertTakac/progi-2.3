@@ -5,6 +5,7 @@ import com.patuljci.gearshare.service.AuthenticationService;
 import com.patuljci.gearshare.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -18,7 +19,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
 
-    public OAuth2SuccessHandler(AuthenticationService authenticationService,
+    public OAuth2SuccessHandler(@Lazy AuthenticationService authenticationService,
                                 JwtService jwtService) {
         this.authenticationService = authenticationService;
         this.jwtService = jwtService;

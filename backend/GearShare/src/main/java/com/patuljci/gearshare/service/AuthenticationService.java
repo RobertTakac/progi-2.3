@@ -7,6 +7,7 @@ import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.repository.ClientRepository;
 import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +23,7 @@ public class AuthenticationService {
     private final ClientRepository clientRepository;
     private final MerchantRepository merchantRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+    private final @Lazy AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
     public AuthenticationService(
