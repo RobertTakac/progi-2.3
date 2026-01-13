@@ -100,7 +100,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://progi-2-3.onrender.com")); // Update backend URL
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://progi-2-3-ah5i.onrender.com")); // Update backend URL
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
