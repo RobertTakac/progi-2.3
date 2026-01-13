@@ -86,7 +86,7 @@ public class MerchantService {
 
         equipmentListingRepository.save(listing);
 
-        newListingDto.setEmail(merchant.getUser().getEmail());
+        //newListingDto.setEmail(merchant.getUser().getEmail());
         return newListingDto;
     }
 
