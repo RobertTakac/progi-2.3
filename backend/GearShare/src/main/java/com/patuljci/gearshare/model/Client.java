@@ -3,6 +3,8 @@ package com.patuljci.gearshare.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.security.Timestamp;
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ public class Client{
     private Long client_id;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", referencedColumnName="id", nullable = false)
     private UserEntity user;
 
