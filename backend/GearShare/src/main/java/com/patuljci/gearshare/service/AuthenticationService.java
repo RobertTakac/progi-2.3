@@ -1,12 +1,11 @@
 package com.patuljci.gearshare.service;
 
-import com.patuljci.gearshare.dto.ClientRegisterDTO;
-import com.patuljci.gearshare.dto.LoginUserDto;
-import com.patuljci.gearshare.dto.RegisterUserDto;
-import com.patuljci.gearshare.dto.VerifyUserDto;
+import com.patuljci.gearshare.dto.*;
 import com.patuljci.gearshare.model.Client;
+import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.repository.ClientRepository;
+import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,17 +20,19 @@ import java.util.Random;
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final MerchantRepository merchantRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
     public AuthenticationService(
-            UserRepository userRepository, ClientRepository clientRepository,
+            UserRepository userRepository, ClientRepository clientRepository, MerchantRepository merchantRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
             EmailService emailService
     ) {
         this.clientRepository = clientRepository;
+        this.merchantRepository = merchantRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -58,10 +59,30 @@ public class AuthenticationService {
 
         client.setCanRent(true);
 
-
-        client.setUser(userRepository.save(user));
         client.setLocation(clientRegisterDTO.getLocation());
+        client.setUser(userRepository.save(user));
+
         return clientRepository.save(client);
+    }
+
+    public Merchant signupMerchant(MerchantRegisterDTO dto){
+        Merchant merchant = new Merchant();
+
+        UserEntity user = new UserEntity(dto.getUsername(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(String.valueOf(LocalDateTime.now().plusMinutes(15)));
+        user.setEnabled(false);
+        sendVerificationEmail(user);
+
+        merchant.setBusinessName(dto.getBusinessName());
+        merchant.setAddress(dto.getAddress());
+        merchant.setCity(dto.getCity());
+        merchant.setCountry(dto.getCountry());
+        merchant.setDescription(dto.getDescription());
+        merchant.setPostalCode(dto.getPostalCode());
+
+        merchant.setUser(userRepository.save(user));
+        return merchantRepository.save(merchant);
     }
 
     public UserEntity authenticate(LoginUserDto input) {
