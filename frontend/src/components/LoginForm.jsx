@@ -45,9 +45,14 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
     <div className="auth-container">
       <h2>Prijava ({role === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
       
-      <a href={`/api/auth/google?role=${role}`} className="oauth-button">
-        Prijavi se putem Google-a
-      </a>
+      <button
+        onClick={() => {
+          window.location.href ="https://progi-2-3-backend.onrender.com/oauth2/authorization/google";
+        }}
+      >
+        Sign up / Login with Google
+      </button>
+
       <div className="form-separator"><span>ILI</span></div>
 
       <form onSubmit={handleSubmit}>

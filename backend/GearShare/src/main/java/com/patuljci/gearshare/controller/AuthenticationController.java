@@ -1,8 +1,5 @@
 package com.patuljci.gearshare.controller;
-import com.patuljci.gearshare.dto.ClientRegisterDTO;
-import com.patuljci.gearshare.dto.LoginUserDto;
-import com.patuljci.gearshare.dto.RegisterUserDto;
-import com.patuljci.gearshare.dto.VerifyUserDto;
+import com.patuljci.gearshare.dto.*;
 import com.patuljci.gearshare.model.Client;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.model.UserEntity;
@@ -44,18 +41,15 @@ public class AuthenticationController {
         return ResponseEntity.ok(client);
     }
 
-    /*
+
     @PostMapping("/merchantSignup")
-    public ResponseEntity<Merchant> registerAsMerchant(@RequestBody ClientRegisterDTO clientRegisterDTO) {
-        //System.out.println("Signup request received: " + registerUserDto.getEmail());
+    public ResponseEntity<Merchant> registerAsMerchant(@RequestBody MerchantRegisterDTO dto) {
 
-        //UserEntity registeredUser = authenticationService.signup(registerUserDto);
 
-        Client client = authenticationService.signupClient(clientRegisterDTO);
+        Merchant merchant = authenticationService.signupMerchant(dto);
 
-        //System.out.println("User registered: " + registeredUser.getEmail());
-        return ResponseEntity.ok(client);
-    } */
+        return ResponseEntity.ok(merchant);
+    }
 
 
     @PostMapping("/login")

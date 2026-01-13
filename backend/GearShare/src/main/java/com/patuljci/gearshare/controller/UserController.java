@@ -4,6 +4,7 @@ import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/me")
+    /*
+    @GetMapping("/mee")
     public ResponseEntity<UserEntity> authenticatedUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -30,7 +32,17 @@ public class UserController {
         //UserEntity currentUser = (UserEntity) authentication.getPrincipal();
         //return ResponseEntity.ok(currentUser);
         return ResponseEntity.ok(new UserEntity());
+    } */
+
+    @GetMapping("/me")
+    public String getMyRole(Authentication authentication) {
+
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_NOROLE"); //ne bi se smjelo dogodit
     }
+
     @GetMapping("/test")
     public ResponseEntity<String> testing() {
 

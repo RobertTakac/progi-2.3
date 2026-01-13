@@ -8,10 +8,8 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-public class ListingDto {
-    private Long id;
-    private Long merchantID;
-
+public class NewListingDto {
+    //private String email;
     private String categoryName;
     private String title;
     private String description;

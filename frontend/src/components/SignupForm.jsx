@@ -42,6 +42,19 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
   return (
     <div className="auth-container">
       <h2>Registracija ({role === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
+
+      <button
+        onClick={() => {
+          window.location.href ="https://progi-2-3-backend.onrender.com/oauth2/authorization/google";
+        }}
+      >
+        Sign up / Login with Google
+      </button>
+
+      <div className="form-separator">
+        <span>ILI</span>
+      </div>
+
       <form onSubmit={handleSubmit}>
          <div className="form-group">
           <label htmlFor="signup-email">Email</label>

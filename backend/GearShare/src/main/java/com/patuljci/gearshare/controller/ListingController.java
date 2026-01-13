@@ -1,11 +1,10 @@
 package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
+import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
-import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.service.ListingService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +40,12 @@ public class ListingController {
 
         return ResponseEntity.ok(listingService.allListingsByCategory(categoryName));
     }
-    
+
+    @GetMapping(value="/getListing", params={"merchantUsername"})
+    public ResponseEntity<List<ListingDto>> getListingByMerchant(@RequestParam String merchant){
+
+        return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchant));
+    }
+
 
 }
