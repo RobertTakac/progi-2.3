@@ -1,6 +1,7 @@
 package com.patuljci.gearshare.config;
 
 import com.patuljci.gearshare.repository.CustomUserDetailsService;
+import com.patuljci.gearshare.security.OAuth2SuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,16 +28,20 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService userDetailsService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
 
     @Autowired
     public SecurityConfiguration(
             JwtAuthenticationFilter jwtAuthenticationFilter,
             AuthenticationProvider authenticationProvider
-            ,CustomUserDetailsService userDetailsService
+            ,CustomUserDetailsService userDetailsService,
+            OAuth2SuccessHandler oAuth2SuccessHandler
     ) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     }
 
     @Bean
@@ -50,7 +55,7 @@ public class SecurityConfiguration {
 
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**", "/error", "/listing/**").permitAll()
+                        .requestMatchers("/auth/**", "/error", "/listing/**", "/oauth2/**").permitAll()
                         .requestMatchers("/merchant/**").hasRole("MERCHANT")
                         .requestMatchers("/client/**").hasRole("CLIENT")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -65,9 +70,8 @@ public class SecurityConfiguration {
                         .permitAll()
                 )
 
-                .oauth2Login(oauth2login -> oauth2login
-                        .successHandler((request, response, authentication) ->
-                                response.sendRedirect("/profile"))
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

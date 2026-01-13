@@ -151,4 +151,26 @@ public class AuthenticationService {
         int code = random.nextInt(900000) + 100000;
         return String.valueOf(code);
     }
+
+    public UserEntity processGoogleUser(String email, String name) {
+
+        Optional<UserEntity> existingUser = userRepository.findByEmail(email);
+
+        if (existingUser.isPresent()) {
+            return existingUser.get();
+        }
+
+        UserEntity user = new UserEntity();
+        user.setEmail(email);
+        user.setUsername(name);
+
+        user.setPassword(null);
+
+        user.setEnabled(true);
+
+        user.setVerificationCode(null);
+        user.setVerificationCodeExpiresAt(null);
+
+        return userRepository.save(user);
+    }
 }
