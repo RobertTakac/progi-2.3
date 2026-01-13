@@ -1,4 +1,13 @@
 package com.patuljci.gearshare.repository;
 
-public class ClientRepository {
+import com.patuljci.gearshare.model.Client;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface ClientRepository extends JpaRepository<Client, Long> {
+
+    Optional<Client> findClientByUserId(Long id);
 }

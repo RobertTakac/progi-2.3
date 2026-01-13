@@ -1,16 +1,18 @@
 package com.patuljci.gearshare.repository;
 
 
-import com.patuljci.gearshare.model.User;
+import com.patuljci.gearshare.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    Optional<User> findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
-    Optional<User> findByVerificationCode(String verificationCode);
+    Optional<UserEntity> findByVerificationCode(String verificationCode);
+
+    UserEntity findByUsername(String username);
 }

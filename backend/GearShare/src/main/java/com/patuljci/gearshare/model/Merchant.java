@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 public class Merchant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
-    private User user;
+    private UserEntity user;
 
     @Column(nullable = false, name = "business_name")
     private String businessName;

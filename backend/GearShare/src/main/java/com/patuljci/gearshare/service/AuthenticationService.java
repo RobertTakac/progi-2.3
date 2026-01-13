@@ -1,9 +1,12 @@
 package com.patuljci.gearshare.service;
 
+import com.patuljci.gearshare.dto.ClientRegisterDTO;
 import com.patuljci.gearshare.dto.LoginUserDto;
 import com.patuljci.gearshare.dto.RegisterUserDto;
 import com.patuljci.gearshare.dto.VerifyUserDto;
-import com.patuljci.gearshare.model.User;
+import com.patuljci.gearshare.model.Client;
+import com.patuljci.gearshare.model.UserEntity;
+import com.patuljci.gearshare.repository.ClientRepository;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,24 +20,26 @@ import java.util.Random;
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
     public AuthenticationService(
-            UserRepository userRepository,
+            UserRepository userRepository, ClientRepository clientRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
             EmailService emailService
     ) {
+        this.clientRepository = clientRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
 
-    public User signup(RegisterUserDto input) {
-        User user = new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()));
+    public UserEntity signup(RegisterUserDto input) {
+        UserEntity user = new UserEntity(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()));
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(String.valueOf(LocalDateTime.now().plusMinutes(15)));
         user.setEnabled(false);
@@ -42,8 +47,25 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public User authenticate(LoginUserDto input) {
-        User user = userRepository.findByEmail(input.getEmail())
+    public Client signupClient(ClientRegisterDTO clientRegisterDTO) {
+        Client client = new Client();
+
+        UserEntity user = new UserEntity(clientRegisterDTO.getUsername(), clientRegisterDTO.getEmail(), passwordEncoder.encode(clientRegisterDTO.getPassword()));
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(String.valueOf(LocalDateTime.now().plusMinutes(15)));
+        user.setEnabled(false);
+        sendVerificationEmail(user);
+
+        client.setCanRent(true);
+
+
+        client.setUser(userRepository.save(user));
+        client.setLocation(clientRegisterDTO.getLocation());
+        return clientRepository.save(client);
+    }
+
+    public UserEntity authenticate(LoginUserDto input) {
+        UserEntity user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!user.isEnabled()) {
@@ -60,13 +82,13 @@ public class AuthenticationService {
     }
 
     public void verifyUser(VerifyUserDto input) {
-        Optional<User> optionalUser = userRepository.findByEmail(input.getEmail());
+        Optional<UserEntity> optionalUser = userRepository.findByEmail(input.getEmail());
 
         if (optionalUser.isEmpty()) {
             throw new RuntimeException("User not found");
         }
 
-        User user = optionalUser.get();
+        UserEntity user = optionalUser.get();
 
 
         if (user.getVerificationCodeExpiresAt() == null ||
@@ -86,9 +108,9 @@ public class AuthenticationService {
     }
 
     public void resendVerificationCode(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<UserEntity> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+            UserEntity user = optionalUser.get();
             if (user.isEnabled()) {
                 throw new RuntimeException("Account is already verified");
             }
@@ -101,7 +123,7 @@ public class AuthenticationService {
         }
     }
 
-    private void sendVerificationEmail(User user) {
+    private void sendVerificationEmail(UserEntity user) {
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"

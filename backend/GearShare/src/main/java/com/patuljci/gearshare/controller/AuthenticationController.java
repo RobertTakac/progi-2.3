@@ -1,8 +1,10 @@
 package com.patuljci.gearshare.controller;
+import com.patuljci.gearshare.dto.ClientRegisterDTO;
 import com.patuljci.gearshare.dto.LoginUserDto;
 import com.patuljci.gearshare.dto.RegisterUserDto;
 import com.patuljci.gearshare.dto.VerifyUserDto;
-import com.patuljci.gearshare.model.User;
+import com.patuljci.gearshare.model.Client;
+import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.responses.LoginResponse;
 import com.patuljci.gearshare.service.AuthenticationService;
 import com.patuljci.gearshare.service.JwtService;
@@ -22,17 +24,29 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
+    public ResponseEntity<UserEntity> register(@RequestBody RegisterUserDto registerUserDto) {
         System.out.println("Signup request received: " + registerUserDto.getEmail());
-        User registeredUser = authenticationService.signup(registerUserDto);
+        UserEntity registeredUser = authenticationService.signup(registerUserDto);
         System.out.println("User registered: " + registeredUser.getEmail());
         return ResponseEntity.ok(registeredUser);
+    }
+
+    @PostMapping("/clientSignup")
+    public ResponseEntity<Client> registerAsClient(@RequestBody ClientRegisterDTO clientRegisterDTO) {
+        //System.out.println("Signup request received: " + registerUserDto.getEmail());
+
+        //UserEntity registeredUser = authenticationService.signup(registerUserDto);
+
+        Client client = authenticationService.signupClient(clientRegisterDTO);
+
+        //System.out.println("User registered: " + registeredUser.getEmail());
+        return ResponseEntity.ok(client);
     }
 
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto){
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
+        UserEntity authenticatedUser = authenticationService.authenticate(loginUserDto);
         String jwtToken = jwtService.generateToken(authenticatedUser);
         LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
         return ResponseEntity.ok(loginResponse);

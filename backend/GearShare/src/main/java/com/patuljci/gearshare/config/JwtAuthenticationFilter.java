@@ -1,11 +1,13 @@
 package com.patuljci.gearshare.config;
 
+import com.patuljci.gearshare.repository.CustomUserDetailsService;
 import com.patuljci.gearshare.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.CachingUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,16 +25,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    //private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     public JwtAuthenticationFilter(
             JwtService jwtService,
-            UserDetailsService userDetailsService,
-            HandlerExceptionResolver handlerExceptionResolver
+            //UserDetailsService userDetailsService,
+            HandlerExceptionResolver handlerExceptionResolver,
+            CustomUserDetailsService userDetailsService
     ) {
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
+        //this.userDetailsService = userDetailsService;
+
         this.handlerExceptionResolver = handlerExceptionResolver;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -54,8 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (userEmail != null && authentication == null) {
+            if (userEmail != null && (authentication == null || 1==1)) {
+
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
