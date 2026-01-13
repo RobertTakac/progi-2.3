@@ -4,6 +4,7 @@ package com.patuljci.gearshare.config;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,6 +32,7 @@ public class ApplicationConfiguration {
         return new BCryptPasswordEncoder();
     }
     @Bean
+    @Lazy
     AuthenticationManager authenticationManager( AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();
     }
