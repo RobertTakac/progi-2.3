@@ -41,7 +41,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String jwt = jwtService.generateToken(user);
 
         response.sendRedirect(
-                "https://progi-2-3.onrender.com/oauth2/redirect?token=" + jwt
+                "https://backend-9p6u.onrender.com/oauth2/redirect?token=" + jwt
         );
     }
 }
