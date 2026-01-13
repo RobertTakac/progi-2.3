@@ -24,7 +24,7 @@ public class EmailService {
         Content content = new Content("text/html", htmlMessage);
         Mail mail = new Mail(from, subject, toEmail, content);
 
-        mail.setReplyTo(new Email("gearshare6@gmail.com"));
+        mail.setReplyTo(new Email("gearshare8@gmail.com"));
 
         Request request = new Request();
         try {
