@@ -186,7 +186,7 @@ public class AuthenticationService {
         user.setEmail(email);
         user.setUsername(name);
 
-        user.setPassword("google_oauth_password");
+        user.setPassword("googleoauthpassword");
 
         user.setEnabled(true);
 
