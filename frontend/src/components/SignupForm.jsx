@@ -45,7 +45,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
 
       <button
         onClick={() => {
-          window.location.href ="https://progi-2-3-backend.onrender.com/oauth2/authorization/google";
+          window.location.href ="https://backend-9p6u.onrender.com/oauth2/authorization/google";
         }}
       >
         Sign up / Login with Google
