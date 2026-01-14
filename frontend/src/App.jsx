@@ -10,6 +10,8 @@ import ChooseRole from './components/ChooseRole';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import VerifyCodeForm from './components/VerifyCodeForm';
+import OAuth2Redirect from "./components/OAuth2Redirect";
+
 
 const App = () => {
 
@@ -67,6 +69,7 @@ const App = () => {
           <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
           <Route path="/moji-oglasi" element={<MojiOglasi />} />
           <Route path="/ponuda" element={<Ponuda />} />
+          <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
         </Routes>
       </main>
       <Modal isOpen={!!modalView} onClose={closeModal}>
