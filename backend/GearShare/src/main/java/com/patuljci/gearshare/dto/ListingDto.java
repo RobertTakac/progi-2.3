@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class ListingDto {
     private Long id;
     private Long merchantID;
-
     private String categoryName;
     private String title;
     private String description;

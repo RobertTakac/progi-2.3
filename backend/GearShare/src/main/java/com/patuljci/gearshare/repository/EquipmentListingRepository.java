@@ -16,4 +16,5 @@ public interface EquipmentListingRepository extends JpaRepository<EquipmentListi
 
     Optional<List<EquipmentListing>> findEquipmentListingByCategory(EquipmentCategory equipmentCategory);
 
+    EquipmentListing findEquipmentListingBylistingId(Long id);
 }

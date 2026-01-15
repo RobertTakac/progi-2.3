@@ -70,6 +70,7 @@ public class UserController {
         return ResponseEntity.ok("proslo");
     }
 
+    /*
     @GetMapping("/")
     public ResponseEntity<List<UserEntity>> allUsers() {
         List <UserEntity> users = userService.allUsers();
@@ -80,5 +81,6 @@ public class UserController {
     public UserEntity createUser(@RequestBody UserEntity user) {
         return userService.createUser(user);
     }
+    */
 
 }

@@ -25,13 +25,16 @@ public class MerchantController {
     }
 
 
-    @PostMapping(value="/testCategory", params = {"categoryName"})
-    public ResponseEntity<String> testCategory(@RequestParam String categoryName){
 
-        if(merchantService.test(categoryName)){
-            return ResponseEntity.ok("postoji kategorija");
-        }
-        return ResponseEntity.ok("ne postoji kategorija");
+    @PostMapping(value="updateListing")
+    public ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) {
+
+        System.out.println(listingDto.getTitle());
+        System.out.println(listingDto.getDescription());
+
+        //return ResponseEntity.ok(listingDto);
+
+        return ResponseEntity.ok(merchantService.updateListing(listingDto));
     }
 
     @GetMapping(value="getListing")
@@ -43,7 +46,7 @@ public class MerchantController {
     }
 
     @PostMapping(value="createListing")
-    public ResponseEntity<NewListingDto> createListing(@RequestBody NewListingDto dto){
+    public ResponseEntity<ListingDto> createListing(@RequestBody NewListingDto dto){
 
 
         Optional<Merchant> merchant = merchantService.optionalMerchant();
@@ -52,7 +55,7 @@ public class MerchantController {
         }
         //System.out.println(merchant.get().getBusinessName());
 
-        NewListingDto newListingDto = merchantService.addListing(merchant.get(), dto);
+        ListingDto newListingDto = merchantService.addListing(merchant.get(), dto);
 
         return ResponseEntity.ok(newListingDto);
     }
@@ -77,5 +80,12 @@ public class MerchantController {
 
         return ResponseEntity.ok("ok");
     }
+    @PostMapping(value="/testCategory", params = {"categoryName"})
+    public ResponseEntity<String> testCategory(@RequestParam String categoryName){
 
+        if(merchantService.test(categoryName)){
+            return ResponseEntity.ok("postoji kategorija");
+        }
+        return ResponseEntity.ok("ne postoji kategorija");
+    }
 }

@@ -1,5 +1,6 @@
 package com.patuljci.gearshare.service;
 
+import com.patuljci.gearshare.dto.ListingDto;
 import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
@@ -59,7 +60,81 @@ public class MerchantService {
         return false;
     }
 
-    public NewListingDto addListing(Merchant merchant, NewListingDto newListingDto){
+
+    public ListingDto updateListing(ListingDto listingDto) {
+        //String merchant = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserEntity user = userRepository.findByUsername(authentication.getName());
+        Optional<Merchant> merchantOptional = merchantRepository.findMerchantByUserId(user.getId());
+
+        if(merchantOptional.isEmpty()){
+            System.out.println("User is not a merchant");
+            return null;
+        }
+        Merchant merchant = merchantOptional.get();
+
+        //System.out.println(authentication.get
+
+        //UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+        //Merchant merchant = (Merchant) authentication.getPrincipal();
+
+        //System.out.println("Merchant Id: " + currentUser.getId());
+        //System.out.println("Merchant name: " + currentUser.getUsername());
+
+
+        EquipmentListing equipmentListing = equipmentListingRepository.findEquipmentListingBylistingId(listingDto.getId());
+
+        //if (listingDto.getMerchantID() != merchant.getId()){
+        if (equipmentListing.getMerchant().getId() != merchant.getId()){
+            System.out.println("This merchant is not the owner of the listing");
+            return null;
+        }
+
+        if(listingDto.getCategoryName() != null) {
+            Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(listingDto.getCategoryName());
+            if(category.isPresent()){
+                equipmentListing.setCategory(category.get());
+            }
+        }
+        if(listingDto.getTitle()!= null) {
+            equipmentListing.setTitle(listingDto.getTitle());
+        }
+        if(listingDto.getDescription()!= null) {
+            equipmentListing.setDescription(listingDto.getDescription());
+        }
+        if(listingDto.getDailyPrice()!= null) {
+            equipmentListing.setDailyPrice(listingDto.getDailyPrice());
+        }
+        if(listingDto.getDepositAmount()!=null){
+            equipmentListing.setDepositAmount(listingDto.getDepositAmount());
+        }
+        if(listingDto.getCurrency()!=null){
+            equipmentListing.setCurrency(listingDto.getCurrency());
+        }
+        if(listingDto.getAvailableFrom()!=null) {
+            equipmentListing.setAvailableFrom(listingDto.getAvailableFrom());
+        }
+        if(listingDto.getAvailableUntil()!=null) {
+            equipmentListing.setAvailableUntil(listingDto.getAvailableUntil());
+        }
+        if(listingDto.getPickupLocation()!=null) {
+            equipmentListing.setPickupLocation(listingDto.getPickupLocation());
+        }
+        if(listingDto.getReturnLocation()!=null) {
+            equipmentListing.setReturnLocation(listingDto.getReturnLocation());
+        }
+        if(listingDto.getQuantityAvailable()!=null) {
+            equipmentListing.setQuantityAvailable(listingDto.getQuantityAvailable());
+        }
+        if(listingDto.getIsActive()!=null) {
+            equipmentListing.setIsActive(listingDto.getIsActive());
+        }
+
+        return listingService.equipmentListingToListingDTO(equipmentListingRepository.save(equipmentListing));
+    }
+
+    public ListingDto addListing(Merchant merchant, NewListingDto newListingDto){
 
         EquipmentListing listing = new EquipmentListing();
         listing.setMerchant(merchant);
@@ -86,8 +161,23 @@ public class MerchantService {
 
         equipmentListingRepository.save(listing);
 
+        ListingDto listingDto = new ListingDto();
+
+        //listingDto.setCategory(category.get());
+        listingDto.setCategoryName(newListingDto.getCategoryName());
+        listingDto.setTitle(newListingDto.getTitle());
+        listingDto.setDescription(newListingDto.getDescription());
+        listingDto.setDailyPrice(newListingDto.getDailyPrice());
+        listingDto.setDepositAmount(newListingDto.getDepositAmount());
+        listingDto.setCurrency(newListingDto.getCurrency());
+        listingDto.setAvailableFrom(newListingDto.getAvailableFrom());
+        listingDto.setAvailableUntil(newListingDto.getAvailableUntil());
+        listingDto.setPickupLocation(newListingDto.getPickupLocation());
+        listingDto.setReturnLocation(newListingDto.getReturnLocation());
+        listingDto.setIsActive(newListingDto.getIsActive());
+
         //newListingDto.setEmail(merchant.getUser().getEmail());
-        return newListingDto;
+        return listingDto;
     }
 
 }
