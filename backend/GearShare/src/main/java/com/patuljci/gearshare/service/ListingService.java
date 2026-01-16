@@ -10,8 +10,10 @@ import com.patuljci.gearshare.repository.EquipmentCategoryRepository;
 import com.patuljci.gearshare.repository.EquipmentListingRepository;
 import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,6 +124,76 @@ public class ListingService {
         //        .orElseGet(()-> {return null; });//mozda bi se trebalo zamijenit s praznom listom
     }
 
+
+
+    public List<ListingDto> filterMerchantsEquipment( String merchantUsername,
+                                                  String categoryName,
+                                                  BigDecimal maxDailyPrice,
+                                                  String currency
+                                                  ){
+        //List<ListingDto> lista = getListingsByMerchantUsername(merchantUsername);
+        Merchant merchant = merchantRepository.getMerchantsByUser(userRepository.findByUsername(merchantUsername));
+
+        Specification<EquipmentListing> spec = hasMerchant(merchant);
+
+
+        if(categoryName != null){
+            Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(categoryName);
+            if(category.isEmpty()){
+                return List.of();
+            }
+            spec = spec.and(hasCategory(category.get()));
+        }
+        if(maxDailyPrice != null){
+            spec = spec.and(dailyPriceIsLessThan(maxDailyPrice));
+        }
+        if(currency != null){
+            spec = spec.and(hasCurrency(currency));
+        }
+
+        List<ListingDto> lista = new java.util.ArrayList<>(List.of());
+        for(EquipmentListing listing : equipmentListingRepository.findAll(spec) ){
+            lista.add(equipmentListingToListingDTO(listing));
+        }
+
+        return lista;
+    }
+
+    public static Specification<EquipmentListing> hasMerchant(Merchant merchant) {
+        return (root, query, cb) -> {
+            if (merchant == null) {
+                return cb.conjunction(); // no-op
+            }
+            return cb.equal(root.get("merchant"), merchant);
+        };
+    }
+
+    public static Specification<EquipmentListing> hasCategory(EquipmentCategory category) {
+        return (root, query, cb) -> {
+            if (category == null) {
+                return cb.conjunction();
+            }
+            return cb.equal(root.get("category"), category);
+        };
+    }
+
+    public static Specification<EquipmentListing> dailyPriceIsLessThan(BigDecimal maxDailyPrice) {
+        return (root, query, cb) -> {
+            if (maxDailyPrice == null) {
+                return cb.conjunction();
+            }
+            return cb.lessThanOrEqualTo(root.get("dailyPrice"), maxDailyPrice);
+            //return cb.equal(root.get("listingId"), maxDailyPrice);
+        };
+    }
+    public static Specification<EquipmentListing> hasCurrency(String currency) {
+        return (root, query, cb) -> {
+            if (currency == null) {
+                return cb.conjunction();
+            }
+            return cb.equal(root.get("currency"), currency);
+        };
+    }
 
     /*
     public EquipmentListing createListing(ListingDto listingDto) {

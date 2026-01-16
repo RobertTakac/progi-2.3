@@ -7,6 +7,7 @@ import com.patuljci.gearshare.service.ListingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RequestMapping("/listing")
@@ -19,33 +20,48 @@ public class ListingController {
         this.listingService = listingService;
     }
 
+    /// DOHVATI SVE KATEGORIJE
     @GetMapping("/categories")
     public ResponseEntity<List<EquipmentCategory>> allCategories(){
 
-        System.out.println("trazim kategorije");
+        //System.out.println("trazim kategorije");
 
         return ResponseEntity.ok(listingService.allCategories());
 
     }
 
-
-    @GetMapping("/getListing")
+    /// DOHVATI SVE OGLASE
+    @GetMapping("/all")
     public ResponseEntity<List<ListingDto>> getListing(){
 
         return ResponseEntity.ok(listingService.allListings());
     }
 
-    @GetMapping(value = "/getListing", params = {"categoryName"})
-    public ResponseEntity<List<ListingDto>> getListing(@RequestParam String categoryName){
+    /// DOHVATI SVE OGLASE U NEKOJ KATEGORIJI
+    @GetMapping(value = "/categories/{category}")//, params = {"categoryName"})
+    public ResponseEntity<List<ListingDto>> getListing(@PathVariable String category){
 
-        return ResponseEntity.ok(listingService.allListingsByCategory(categoryName));
+        return ResponseEntity.ok(listingService.allListingsByCategory(category));
     }
 
-    @GetMapping(value="/getListing", params={"merchantUsername"})
-    public ResponseEntity<List<ListingDto>> getListingByMerchant(@RequestParam String merchant){
+    /*
+    /// DOHVATI SVE OGLASE NEKOG MERCHANTA
+    @GetMapping(value="/merchant/{merchantUsername}")
+    public ResponseEntity<List<ListingDto>> getListingByMerchant(@PathVariable String merchantUsername){
 
-        return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchant));
+        return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchantUsername));
+    }*/
+
+    /// DOHVATI SVE OGLASE NEKOG MERCHANTA I FILTRIRAJ IH
+    @GetMapping(value="/merchant/{merchantUsername}")
+    public ResponseEntity<List<ListingDto>> getListingByMerchantAndFilter(
+            @PathVariable String merchantUsername,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) BigDecimal maxDailyPrice,
+            @RequestParam(required = false) String currency
+            ){
+
+        return ResponseEntity.ok(listingService.filterMerchantsEquipment(merchantUsername,category, maxDailyPrice, currency));
     }
-
 
 }

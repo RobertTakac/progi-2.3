@@ -25,6 +25,13 @@ public class MerchantController {
     }
 
 
+    @DeleteMapping(value="/deleteListing/{listingID}")
+    public ResponseEntity<String> deleteListing(@RequestParam Long listingID) {
+
+        System.out.println(merchantService.deleteListing(listingID));
+
+        return ResponseEntity.ok("Listing is deleted");
+    }
 
     @PostMapping(value="updateListing")
     public ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) {
@@ -37,7 +44,7 @@ public class MerchantController {
         return ResponseEntity.ok(merchantService.updateListing(listingDto));
     }
 
-    @GetMapping(value="getListing")
+    @GetMapping(value="/get-all-listings")
     public ResponseEntity<List<ListingDto>> getListingsFromMerchant(){
 
         String merchant = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -45,7 +52,7 @@ public class MerchantController {
         return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchant));
     }
 
-    @PostMapping(value="createListing")
+    @PostMapping(value="create-listing")
     public ResponseEntity<ListingDto> createListing(@RequestBody NewListingDto dto){
 
 

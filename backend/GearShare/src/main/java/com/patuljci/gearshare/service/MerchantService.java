@@ -60,6 +60,24 @@ public class MerchantService {
         return false;
     }
 
+    public boolean deleteListing(Long listingID){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserEntity user = userRepository.findByUsername(authentication.getName());
+        Optional<Merchant> merchantOptional = merchantRepository.findMerchantByUserId(user.getId());
+
+        if(merchantOptional.isEmpty()){
+            return false;
+        }
+        Merchant merchant = merchantOptional.get();
+
+        EquipmentListing listing = equipmentListingRepository.findEquipmentListingBylistingId(listingID);
+        if(listing.getMerchant().getId() == merchant.getId()){
+            equipmentListingRepository.deleteById(listingID);
+            return true;
+        }
+        return false;
+    }
 
     public ListingDto updateListing(ListingDto listingDto) {
         //String merchant = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -73,14 +91,6 @@ public class MerchantService {
             return null;
         }
         Merchant merchant = merchantOptional.get();
-
-        //System.out.println(authentication.get
-
-        //UserEntity currentUser = (UserEntity) authentication.getPrincipal();
-        //Merchant merchant = (Merchant) authentication.getPrincipal();
-
-        //System.out.println("Merchant Id: " + currentUser.getId());
-        //System.out.println("Merchant name: " + currentUser.getUsername());
 
 
         EquipmentListing equipmentListing = equipmentListingRepository.findEquipmentListingBylistingId(listingDto.getId());
