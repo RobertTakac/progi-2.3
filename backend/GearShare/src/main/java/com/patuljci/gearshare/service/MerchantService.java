@@ -6,10 +6,7 @@ import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.model.UserEntity;
-import com.patuljci.gearshare.repository.EquipmentCategoryRepository;
-import com.patuljci.gearshare.repository.EquipmentListingRepository;
-import com.patuljci.gearshare.repository.MerchantRepository;
-import com.patuljci.gearshare.repository.UserRepository;
+import com.patuljci.gearshare.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,13 +21,15 @@ public class MerchantService {
     private final ListingService listingService;
     private final EquipmentCategoryRepository equipmentCategoryRepository;
     private final EquipmentListingRepository equipmentListingRepository;
+    private final ReviewRepository reviewRepository;
 
-    MerchantService (MerchantRepository merchantRepository, UserRepository userRepository, ListingService listingService, EquipmentCategoryRepository equipmentCategoryRepository, EquipmentListingRepository equipmentListingRepository) {
+    MerchantService (MerchantRepository merchantRepository, UserRepository userRepository, ListingService listingService, EquipmentCategoryRepository equipmentCategoryRepository, EquipmentListingRepository equipmentListingRepository, ReviewRepository reviewRepository) {
         this.merchantRepository = merchantRepository;
         this.userRepository = userRepository;
         this.listingService = listingService;
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.equipmentListingRepository = equipmentListingRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     Merchant getMerchant(Long id){ //ovo uzima userID, a ne id
@@ -188,6 +187,13 @@ public class MerchantService {
 
         //newListingDto.setEmail(merchant.getUser().getEmail());
         return listingDto;
+    }
+
+    public Merchant updateMerchantRating(Merchant merchant){
+
+
+
+        return merchant;
     }
 
 }

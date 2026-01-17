@@ -1,10 +1,9 @@
 package com.patuljci.gearshare.controller;
 
-import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.NewReservationDTO;
-import com.patuljci.gearshare.dto.ReservationDTO;
+import com.patuljci.gearshare.dto.*;
 import com.patuljci.gearshare.service.ClientService;
 import com.patuljci.gearshare.service.ListingService;
+import com.patuljci.gearshare.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +15,12 @@ public class ClientController {
 
     private final ListingService listingService;
     private final ClientService clientService;
+    private final ReviewService reviewService;
 
-    public ClientController(ListingService listingService, ClientService clientService) {
+    public ClientController(ListingService listingService, ClientService clientService, ReviewService reviewService) {
         this.listingService = listingService;
         this.clientService = clientService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping(value="/get-my-reservations")
@@ -34,5 +35,11 @@ public class ClientController {
 
 
         return ResponseEntity.ok(clientService.createReservation(newReservationDTO));
+    }
+
+
+    @PostMapping(value="/rate-merchant")
+    public ResponseEntity<ReviewDTO> rateTheMerchant(@RequestBody NewReviewDTO newReviewDTO) {
+        return ResponseEntity.ok(reviewService.addReview(newReviewDTO));
     }
 }

@@ -137,7 +137,7 @@ public class ListingService {
 
         Specification<EquipmentListing> spec = hasMerchant(merchant);
 
-        spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency));
+        spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency, null));
 
         if(spec==null){
             return List.of();
@@ -154,12 +154,13 @@ public class ListingService {
 
     public List<ListingDto> allEquipmentFilteredIfPossible(String categoryName,
                                                            BigDecimal maxDailyPrice,
-                                                           String currency){
+                                                           String currency,
+                                                           Long merchandID){
 
 
         Specification<EquipmentListing> spec = Specification.allOf();
 
-        spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency));
+        spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency, merchandID));
 
         if(spec==null){
             return List.of();
@@ -177,7 +178,8 @@ public class ListingService {
 
     public Specification<EquipmentListing> allFiltersPossible(String categoryName,
                                                               BigDecimal maxDailyPrice,
-                                                              String currency){
+                                                              String currency,
+                                                              Long merchandID){
 
         Specification<EquipmentListing> spec = Specification.allOf();
 
@@ -188,6 +190,12 @@ public class ListingService {
             }
             spec = spec.and(hasCategory(category.get()));
         }
+        if(merchandID != null){
+            Merchant merchant = merchantRepository.findMerchantByid(merchandID);
+
+            spec = spec.and(hasMerchant(merchant));
+        }
+
         if(maxDailyPrice != null){
             spec = spec.and(dailyPriceIsLessThan(maxDailyPrice));
         }

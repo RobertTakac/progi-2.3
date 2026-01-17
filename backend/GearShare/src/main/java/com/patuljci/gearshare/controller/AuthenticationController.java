@@ -29,7 +29,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(registeredUser);
     }
 
-    @PostMapping("/clientSignup")
+    @PostMapping("/client-signup")
     public ResponseEntity<Client> registerAsClient(@RequestBody ClientRegisterDTO clientRegisterDTO) {
         //System.out.println("Signup request received: " + registerUserDto.getEmail());
 
@@ -42,7 +42,7 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping("/merchantSignup")
+    @PostMapping("/merchant-signup")
     public ResponseEntity<Merchant> registerAsMerchant(@RequestBody MerchantRegisterDTO dto) {
 
 

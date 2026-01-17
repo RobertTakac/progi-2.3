@@ -2,9 +2,11 @@ package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
 import com.patuljci.gearshare.dto.NewListingDto;
+import com.patuljci.gearshare.dto.ReservationDTO;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.service.ListingService;
 import com.patuljci.gearshare.service.MerchantService;
+import com.patuljci.gearshare.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,12 @@ public class MerchantController {
 
     private final ListingService listingService;
     private final MerchantService  merchantService;
+    private final ReservationService reservationService;
 
-    MerchantController(ListingService listingService, MerchantService merchantService) {
+    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService) {
         this.listingService = listingService;
         this.merchantService = merchantService;
+        this.reservationService = reservationService;
     }
 
 
@@ -65,6 +69,13 @@ public class MerchantController {
         ListingDto newListingDto = merchantService.addListing(merchant.get(), dto);
 
         return ResponseEntity.ok(newListingDto);
+    }
+
+    @GetMapping(value="/reservations")
+    public ResponseEntity<List<ReservationDTO>> getMerchantsReservations(@RequestParam(required = false) String category,
+                                                                         @RequestParam(required = false) Long listingID){
+
+        return ResponseEntity.ok(reservationService.getReservationsOfMyListings(category, listingID));
     }
 
     /*

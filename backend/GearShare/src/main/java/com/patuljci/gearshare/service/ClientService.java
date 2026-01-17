@@ -24,14 +24,18 @@ public class ClientService {
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
     private final ListingService listingService;
+    //private final ReservationService reservationService;
 
 
-    public ClientService(EquipmentListingRepository equipmentListingRepository, ReservationRepository reservationRepository, UserRepository userRepository, ClientRepository clientRepository, ListingService listingService) {
+    public ClientService(EquipmentListingRepository equipmentListingRepository,
+                         ReservationRepository reservationRepository, UserRepository userRepository,
+                         ClientRepository clientRepository, ListingService listingService) {
         this.equipmentListingRepository = equipmentListingRepository;
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
         this.listingService = listingService;
+        //this.reservationService = reservationService;
     }
 
     public ReservationDTO createReservation(NewReservationDTO newReservationDTO) {

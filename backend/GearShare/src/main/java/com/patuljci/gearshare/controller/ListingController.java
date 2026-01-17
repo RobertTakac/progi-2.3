@@ -38,13 +38,14 @@ public class ListingController {
     }
 
     /// DOHVATI SVE OGLASE ALI IH FILTRIRAJ AKO SU FILTERI DODANI
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<List<ListingDto>> getListingAndFilterMaybe(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) BigDecimal maxDailyPrice,
-            @RequestParam(required = false) String currency){
+            @RequestParam(required = false) String currency,
+            @RequestParam(required = false) Long merchantID){
 
-        return ResponseEntity.ok(listingService.allEquipmentFilteredIfPossible(category, maxDailyPrice, currency));
+        return ResponseEntity.ok(listingService.allEquipmentFilteredIfPossible(category, maxDailyPrice, currency, merchantID));
     }
 
 

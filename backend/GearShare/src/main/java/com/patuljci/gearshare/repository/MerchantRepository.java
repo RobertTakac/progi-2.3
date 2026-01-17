@@ -13,4 +13,6 @@ public interface MerchantRepository extends JpaRepository<Merchant, Long> {
     Optional<Merchant> findMerchantByUserId(Long userId);
 
     Merchant getMerchantsByUser(UserEntity user);
+
+    Merchant findMerchantByid(Long merchantID);
 }
