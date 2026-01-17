@@ -37,6 +37,17 @@ public class ListingController {
         return ResponseEntity.ok(listingService.allListings());
     }
 
+    /// DOHVATI SVE OGLASE ALI IH FILTRIRAJ AKO SU FILTERI DODANI
+    @GetMapping("")
+    public ResponseEntity<List<ListingDto>> getListingAndFilterMaybe(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) BigDecimal maxDailyPrice,
+            @RequestParam(required = false) String currency){
+
+        return ResponseEntity.ok(listingService.allEquipmentFilteredIfPossible(category, maxDailyPrice, currency));
+    }
+
+
     /// DOHVATI SVE OGLASE U NEKOJ KATEGORIJI
     @GetMapping(value = "/categories/{category}")//, params = {"categoryName"})
     public ResponseEntity<List<ListingDto>> getListing(@PathVariable String category){
@@ -44,15 +55,9 @@ public class ListingController {
         return ResponseEntity.ok(listingService.allListingsByCategory(category));
     }
 
-    /*
-    /// DOHVATI SVE OGLASE NEKOG MERCHANTA
-    @GetMapping(value="/merchant/{merchantUsername}")
-    public ResponseEntity<List<ListingDto>> getListingByMerchant(@PathVariable String merchantUsername){
 
-        return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchantUsername));
-    }*/
 
-    /// DOHVATI SVE OGLASE NEKOG MERCHANTA I FILTRIRAJ IH
+    /// DOHVATI SVE OGLASE NEKOG MERCHANTA I FILTRIRAJ IH AKO MOZES
     @GetMapping(value="/merchant/{merchantUsername}")
     public ResponseEntity<List<ListingDto>> getListingByMerchantAndFilter(
             @PathVariable String merchantUsername,

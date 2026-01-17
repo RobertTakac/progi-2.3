@@ -33,7 +33,7 @@ public class MerchantController {
         return ResponseEntity.ok("Listing is deleted");
     }
 
-    @PostMapping(value="updateListing")
+    @PostMapping(value="/updateListing")
     public ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) {
 
         System.out.println(listingDto.getTitle());
@@ -52,7 +52,7 @@ public class MerchantController {
         return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchant));
     }
 
-    @PostMapping(value="create-listing")
+    @PostMapping(value="/create-listing")
     public ResponseEntity<ListingDto> createListing(@RequestBody NewListingDto dto){
 
 

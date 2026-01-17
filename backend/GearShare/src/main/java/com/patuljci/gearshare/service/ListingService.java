@@ -88,7 +88,7 @@ public class ListingService {
         Optional<List<EquipmentListing>> lista = equipmentListingRepository.findEquipmentListingByMerchant(merchant.get());
 
         if(!lista.isPresent()){
-            return null;
+            return List.of();
         }
 
         List<ListingDto> response = new java.util.ArrayList<>(List.of());
@@ -105,12 +105,13 @@ public class ListingService {
 
         EquipmentCategory equipmentCategory = equipmentCategoryRepository.findEquipmentCategoryByName(category)
                 .orElseGet(()-> {return null;});
-        if(equipmentCategory == null){return null;}
+
+        if(equipmentCategory == null){return  List.of();}
 
         Optional<List<EquipmentListing>> lista = equipmentListingRepository.findEquipmentListingByCategory(equipmentCategory);
 
         if (!lista.isPresent()) {
-            return null;
+            return  List.of();
         }
 
         List<ListingDto> response = new java.util.ArrayList<>(List.of());
@@ -136,11 +137,54 @@ public class ListingService {
 
         Specification<EquipmentListing> spec = hasMerchant(merchant);
 
+        spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency));
+
+        if(spec==null){
+            return List.of();
+        }
+
+
+        List<ListingDto> lista = new java.util.ArrayList<>(List.of());
+        for(EquipmentListing listing : equipmentListingRepository.findAll(spec) ){
+            lista.add(equipmentListingToListingDTO(listing));
+        }
+
+        return lista;
+    }
+
+    public List<ListingDto> allEquipmentFilteredIfPossible(String categoryName,
+                                                           BigDecimal maxDailyPrice,
+                                                           String currency){
+
+
+        Specification<EquipmentListing> spec = Specification.allOf();
+
+        spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency));
+
+        if(spec==null){
+            return List.of();
+        }
+
+
+        List<ListingDto> lista = new java.util.ArrayList<>(List.of());
+        for(EquipmentListing listing : equipmentListingRepository.findAll(spec) ){
+            lista.add(equipmentListingToListingDTO(listing));
+        }
+
+        return lista;
+
+    }
+
+    public Specification<EquipmentListing> allFiltersPossible(String categoryName,
+                                                              BigDecimal maxDailyPrice,
+                                                              String currency){
+
+        Specification<EquipmentListing> spec = Specification.allOf();
 
         if(categoryName != null){
             Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(categoryName);
             if(category.isEmpty()){
-                return List.of();
+                return null;
             }
             spec = spec.and(hasCategory(category.get()));
         }
@@ -150,14 +194,10 @@ public class ListingService {
         if(currency != null){
             spec = spec.and(hasCurrency(currency));
         }
-
-        List<ListingDto> lista = new java.util.ArrayList<>(List.of());
-        for(EquipmentListing listing : equipmentListingRepository.findAll(spec) ){
-            lista.add(equipmentListingToListingDTO(listing));
-        }
-
-        return lista;
+        return spec;
     }
+
+
 
     public static Specification<EquipmentListing> hasMerchant(Merchant merchant) {
         return (root, query, cb) -> {
