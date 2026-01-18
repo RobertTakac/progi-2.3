@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function OAuth2Redirect() {
+export default function OAuth2Redirect({ setCurrentUser }) {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -10,11 +10,14 @@ export default function OAuth2Redirect() {
 
         if (token) {
             localStorage.setItem("token", token);
+
+            setCurrentUser({ loggedIn: true });
+
             navigate("/");
         } else {
-            navigate("/login");
+            navigate("/login"); // fallback
         }
-    }, []);
+    }, [navigate, setCurrentUser]);
 
     return <div>Signing you in...</div>;
 }
