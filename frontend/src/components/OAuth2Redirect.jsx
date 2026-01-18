@@ -1,7 +1,7 @@
 // OAuth2Redirect.jsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import jwt_decode from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 export default function OAuth2Redirect({ setCurrentUser }) {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function OAuth2Redirect({ setCurrentUser }) {
             localStorage.setItem("token", token);
 
             try {
-                const decoded = jwt_decode(token);
+                const decoded = jwtDecode(token);
 
                 setCurrentUser({ username: decoded.sub });
             } catch (err) {
