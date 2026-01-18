@@ -206,13 +206,11 @@ public class AuthenticationService {
     @Transactional
     public UserEntity processGoogleUser(String googleId, String email, String name) {
 
-        // 1️⃣ Prvo tražimo po googleId (najbitnije)
         Optional<UserEntity> byGoogleId = userRepository.findByGoogleId(googleId);
         if (byGoogleId.isPresent()) {
             return byGoogleId.get();
         }
 
-        // 2️⃣ Ako nema googleId, ali postoji email → LINK ACCOUNT
         Optional<UserEntity> byEmail = userRepository.findByEmail(email);
         if (byEmail.isPresent()) {
             UserEntity user = byEmail.get();
@@ -226,7 +224,7 @@ public class AuthenticationService {
         user.setEmail(email);
         user.setUsername(name);
 
-        user.setPassword(null);   // 👈 KLJUČNO
+        user.setPassword(null);
         user.setEnabled(true);
 
         return userRepository.save(user);

@@ -69,7 +69,7 @@ const App = () => {
           <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
           <Route path="/moji-oglasi" element={<MojiOglasi />} />
           <Route path="/ponuda" element={<Ponuda />} />
-          <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
+            <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess} />} />
         </Routes>
       </main>
       <Modal isOpen={!!modalView} onClose={closeModal}>
