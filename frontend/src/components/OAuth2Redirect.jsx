@@ -13,7 +13,9 @@ export default function OAuth2Redirect({ setCurrentUser }) {
 
             setCurrentUser({ loggedIn: true });
 
-            navigate("/");
+            setTimeout(() => {
+                navigate("/");
+            }, 50);
         } else {
             navigate("/login"); // fallback
         }
