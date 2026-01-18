@@ -1,9 +1,11 @@
 package com.patuljci.gearshare.service;
 
 import com.patuljci.gearshare.dto.*;
+import com.patuljci.gearshare.model.Admin;
 import com.patuljci.gearshare.model.Client;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.model.UserEntity;
+import com.patuljci.gearshare.repository.AdminRepository;
 import com.patuljci.gearshare.repository.ClientRepository;
 import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
@@ -26,12 +28,13 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final @Lazy AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final AdminRepository adminRepository;
 
     public AuthenticationService(
             UserRepository userRepository, ClientRepository clientRepository, MerchantRepository merchantRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
-            EmailService emailService
+            EmailService emailService, AdminRepository adminRepository
     ) {
         this.clientRepository = clientRepository;
         this.merchantRepository = merchantRepository;
@@ -39,6 +42,7 @@ public class AuthenticationService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.adminRepository = adminRepository;
     }
 
     public UserEntity signup(RegisterUserDto input) {
@@ -65,6 +69,21 @@ public class AuthenticationService {
         client.setUser(userRepository.save(user));
 
         return clientRepository.save(client);
+    }
+
+    public Admin signupAdmin(RegisterUserDto adminRegisterDTO) {
+        Admin admin = new Admin();
+
+        UserEntity user = new UserEntity(adminRegisterDTO.getUsername(), adminRegisterDTO.getEmail(), passwordEncoder.encode(adminRegisterDTO.getPassword()));
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(String.valueOf(LocalDateTime.now().plusMinutes(15)));
+        user.setEnabled(false);
+        sendVerificationEmail(user);
+
+
+        admin.setUser(userRepository.save(user));
+
+        return adminRepository.save(admin);
     }
 
     public Merchant signupMerchant(MerchantRegisterDTO dto){

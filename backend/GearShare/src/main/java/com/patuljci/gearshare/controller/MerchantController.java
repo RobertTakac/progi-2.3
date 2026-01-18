@@ -2,10 +2,12 @@ package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
 import com.patuljci.gearshare.dto.NewListingDto;
+import com.patuljci.gearshare.dto.ReportDTO;
 import com.patuljci.gearshare.dto.ReservationDTO;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.service.ListingService;
 import com.patuljci.gearshare.service.MerchantService;
+import com.patuljci.gearshare.service.ReportService;
 import com.patuljci.gearshare.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,11 +23,13 @@ public class MerchantController {
     private final ListingService listingService;
     private final MerchantService  merchantService;
     private final ReservationService reservationService;
+    private final ReportService reportService;
 
-    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService) {
+    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService, ReportService reportService, ReportService reportService1) {
         this.listingService = listingService;
         this.merchantService = merchantService;
         this.reservationService = reservationService;
+        this.reportService = reportService1;
     }
 
 
@@ -76,6 +80,12 @@ public class MerchantController {
                                                                          @RequestParam(required = false) Long listingID){
 
         return ResponseEntity.ok(reservationService.getReservationsOfMyListings(category, listingID));
+    }
+
+
+    @PostMapping(value="/report-user")
+    public ResponseEntity<ReportDTO> reportUser(@RequestBody ReportDTO reportDTO){
+        return ResponseEntity.ok(reportService.createNewReport(reportDTO));
     }
 
     /*

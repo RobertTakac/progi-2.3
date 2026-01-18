@@ -1,5 +1,6 @@
 package com.patuljci.gearshare.controller;
 import com.patuljci.gearshare.dto.*;
+import com.patuljci.gearshare.model.Admin;
 import com.patuljci.gearshare.model.Client;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.model.UserEntity;
@@ -50,6 +51,16 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(merchant);
     }
+
+    @PostMapping("/admin-signup")
+    public ResponseEntity<Admin> registerAsAdmin(@RequestBody RegisterUserDto registerUserDto){
+
+        Admin admin = authenticationService.signupAdmin(registerUserDto);
+
+
+        return ResponseEntity.ok(admin);
+    }
+
 
 
     @PostMapping("/login")
