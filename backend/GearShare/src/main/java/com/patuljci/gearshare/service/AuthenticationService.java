@@ -110,9 +110,17 @@ public class AuthenticationService {
         UserEntity user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!user.isEnabled()) {
-            throw new RuntimeException("Account not verified. Please verify your account.");
+        // 👇 ovo sad ima smisla
+        if (user.getGoogleId() != null && user.getPassword() == null) {
+            throw new RuntimeException(
+                    "This account was created with Google. Please sign in with Google or set a password."
+            );
         }
+
+        if (!user.isEnabled()) {
+            throw new RuntimeException("Account not verified.");
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
@@ -122,6 +130,8 @@ public class AuthenticationService {
 
         return user;
     }
+
+
 
     public void verifyUser(VerifyUserDto input) {
         Optional<UserEntity> optionalUser = userRepository.findByEmail(input.getEmail());
@@ -194,25 +204,33 @@ public class AuthenticationService {
         return String.valueOf(code);
     }
     @Transactional
-    public UserEntity processGoogleUser(String email, String name) {
+    public UserEntity processGoogleUser(String googleId, String email, String name) {
 
-        Optional<UserEntity> existingUser = userRepository.findByEmail(email);
-
-        if (existingUser.isPresent()) {
-            return existingUser.get();
+        // 1️⃣ Prvo tražimo po googleId (najbitnije)
+        Optional<UserEntity> byGoogleId = userRepository.findByGoogleId(googleId);
+        if (byGoogleId.isPresent()) {
+            return byGoogleId.get();
         }
 
+        // 2️⃣ Ako nema googleId, ali postoji email → LINK ACCOUNT
+        Optional<UserEntity> byEmail = userRepository.findByEmail(email);
+        if (byEmail.isPresent()) {
+            UserEntity user = byEmail.get();
+            user.setGoogleId(googleId);
+            return userRepository.save(user);
+        }
+
+        // 3️⃣ Novi user (Google signup)
         UserEntity user = new UserEntity();
+        user.setGoogleId(googleId);
         user.setEmail(email);
         user.setUsername(name);
 
-        user.setPassword("googleoauthpassword");
-
+        user.setPassword(null);   // 👈 KLJUČNO
         user.setEnabled(true);
-
-        user.setVerificationCode(null);
-        user.setVerificationCodeExpiresAt(null);
 
         return userRepository.save(user);
     }
+
+
 }

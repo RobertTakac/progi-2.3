@@ -22,8 +22,10 @@ public class UserEntity implements UserDetails {
     private String username;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
+    @Column(nullable = true, unique = true)
+    private String googleId;
     private boolean enabled;
     @Column(name  = "verification_code")
     private String verificationCode;
