@@ -105,6 +105,11 @@
             <artifactId>sendgrid-java</artifactId>
             <version>4.6.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20251224</version>
+        </dependency>
     </dependencies>
 
     <build>

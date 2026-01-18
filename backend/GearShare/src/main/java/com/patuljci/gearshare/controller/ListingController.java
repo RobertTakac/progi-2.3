@@ -1,7 +1,6 @@
 package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.service.ListingService;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +67,11 @@ public class ListingController {
             ){
 
         return ResponseEntity.ok(listingService.filterMerchantsEquipment(merchantUsername,category, maxDailyPrice, currency));
+    }
+
+    @PostMapping
+    public ListingDto createListing(@RequestBody ListingDto newListing) {
+        return listingService.createListing(newListing);
     }
 
 }

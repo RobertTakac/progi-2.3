@@ -24,9 +24,6 @@ public class Client{
     private UserEntity user;
 
     @Column
-    private String location;
-
-    @Column
     private Boolean canRent=true;
 
     @Column

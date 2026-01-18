@@ -1,7 +1,6 @@
 package com.patuljci.gearshare.service;
 
 import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
@@ -37,14 +36,11 @@ public class ListingService {
         this.merchantRepository = merchantRepository;
     }
 
-    public ListingDto equipmentListingToListingDTO(EquipmentListing listing){
+    public ListingDto equipmentListingToListingDTO(EquipmentListing listing) {
         ListingDto dto = new ListingDto();
-
-        //dto.setEmail(listing.getMerchant().getUser().getEmail());
 
         dto.setId(listing.getListingId());
         dto.setMerchantID(listing.getMerchant().getId());
-
         dto.setCategoryName(listing.getCategory().getName());
         dto.setTitle(listing.getTitle());
         dto.setDescription(listing.getDescription());
@@ -55,6 +51,23 @@ public class ListingService {
         dto.setAvailableUntil(listing.getAvailableUntil());
         dto.setQuantityAvailable(listing.getQuantityAvailable());
         dto.setIsActive(listing.getIsActive());
+
+
+        dto.setPickupAddress(listing.getPickupAddress());
+        dto.setPickupArea(listing.getPickupArea());
+        dto.setPickupCity(listing.getPickupCity());
+        dto.setPickupPostalCode(listing.getPickupPostalCode());
+        dto.setPickupCountry(listing.getPickupCountry());
+        dto.setPickupLatitude(listing.getPickupLatitude());
+        dto.setPickupLongitude(listing.getPickupLongitude());
+
+        dto.setReturnAddress(listing.getReturnAddress());
+        dto.setReturnArea(listing.getReturnArea());
+        dto.setReturnCity(listing.getReturnCity());
+        dto.setReturnPostalCode(listing.getReturnPostalCode());
+        dto.setReturnCountry(listing.getReturnCountry());
+        dto.setReturnLatitude(listing.getReturnLatitude());
+        dto.setReturnLongitude(listing.getReturnLongitude());
 
         return dto;
     }
@@ -243,58 +256,50 @@ public class ListingService {
         };
     }
 
-    /*
-    public EquipmentListing createListing(ListingDto listingDto) {
+    public ListingDto createListing(ListingDto dto) {
 
-        EquipmentListing equipmentListing = new EquipmentListing();
-
-        //provjera postoji li email
-        UserEntity newUser = userRepository.findByEmail(listingDto.getEmail())
-                .orElseGet(() -> {
-                    //System.out.println("nepostojeci mail");
-                    return null;
-                });
-        if(newUser == null) { return null;}
-
-        //provjera jel to email od trgovca
-        Merchant merchant = merchantService.getMerchant(newUser.getId());
+        Merchant merchant = merchantRepository.findById(dto.getMerchantID())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Merchant s ID-om " + dto.getMerchantID() + " ne postoji"));
 
 
-        if(merchant == null) {
-            //System.out.println("nije trgovac");
-            return null;}
+        EquipmentCategory category = equipmentCategoryRepository.findEquipmentCategoryByName(dto.getCategoryName())
+                .orElseThrow(() -> new IllegalArgumentException("Nepostojeća kategorija"));
 
-        equipmentListing.setMerchant(merchant);
+        EquipmentListing listing = new EquipmentListing();
 
-
-
-        //provjera postoji li kategorija
-        EquipmentCategory equipmentCategory = equipmentCategoryRepository.findEquipmentCategoryByName(listingDto.getCategoryName())
-                .orElseGet(() -> {
-                    return null;
-                });
-        if (equipmentCategory == null) {
-            return null;
-        }
-
-        equipmentListing.setCategory(equipmentCategory);
-
-        //namjestanje ostalih vrijednosti
-        equipmentListing.setTitle(listingDto.getTitle());
-        equipmentListing.setDescription(listingDto.getDescription());
-        equipmentListing.setDailyPrice(listingDto.getDailyPrice());
-        equipmentListing.setDepositAmount(listingDto.getDepositAmount());
-        equipmentListing.setCurrency(listingDto.getCurrency());
-        equipmentListing.setAvailableFrom(listingDto.getAvailableFrom());
-        equipmentListing.setAvailableUntil(listingDto.getAvailableUntil());
-        equipmentListing.setPickupLocation(listingDto.getPickupLocation());
-        equipmentListing.setReturnLocation(listingDto.getReturnLocation());
-        equipmentListing.setQuantityAvailable(listingDto.getQuantityAvailable());
-        equipmentListing.setIsActive(listingDto.getIsActive());
+        listing.setMerchant(merchant);
+        listing.setCategory(category);
 
 
-        return equipmentListingRepository.save(equipmentListing);
+        listing.setTitle(dto.getTitle());
+        listing.setDescription(dto.getDescription());
+        listing.setDailyPrice(dto.getDailyPrice());
+        listing.setDepositAmount(dto.getDepositAmount() != null ? dto.getDepositAmount() : BigDecimal.ZERO);
+        listing.setCurrency(dto.getCurrency() != null ? dto.getCurrency() : "EUR");
+        listing.setAvailableFrom(dto.getAvailableFrom());
+        listing.setAvailableUntil(dto.getAvailableUntil());
+        listing.setQuantityAvailable(dto.getQuantityAvailable() != null ? dto.getQuantityAvailable() : 1);
+        listing.setIsActive(true);
+
+
+        listing.setPickupAddress(dto.getPickupAddress());
+        listing.setPickupArea(dto.getPickupArea());
+        listing.setPickupCity(dto.getPickupCity());
+        listing.setPickupPostalCode(dto.getPickupPostalCode());
+        listing.setPickupCountry(dto.getPickupCountry() != null ? dto.getPickupCountry() : "Croatia");
+
+
+        listing.setReturnAddress(dto.getReturnAddress());
+        listing.setReturnArea(dto.getReturnArea());
+        listing.setReturnCity(dto.getReturnCity());
+        listing.setReturnPostalCode(dto.getReturnPostalCode());
+        listing.setReturnCountry(dto.getReturnCountry() != null ? dto.getReturnCountry() : "Croatia");
+
+
+
+        EquipmentListing saved = equipmentListingRepository.save(listing);
+        return equipmentListingToListingDTO(saved);
     }
-    */
 
 }

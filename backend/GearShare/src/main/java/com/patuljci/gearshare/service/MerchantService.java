@@ -1,7 +1,6 @@
 package com.patuljci.gearshare.service;
 
 import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
@@ -79,71 +78,94 @@ public class MerchantService {
     }
 
     public ListingDto updateListing(ListingDto listingDto) {
-        //String merchant = SecurityContextHolder.getContext().getAuthentication().getName();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         UserEntity user = userRepository.findByUsername(authentication.getName());
-        Optional<Merchant> merchantOptional = merchantRepository.findMerchantByUserId(user.getId());
 
-        if(merchantOptional.isEmpty()){
-            System.out.println("User is not a merchant");
+        Optional<Merchant> merchantOptional = merchantRepository.findMerchantByUserId(user.getId());
+        if (merchantOptional.isEmpty()) {
+            System.out.println("User is not a merhant");
             return null;
         }
         Merchant merchant = merchantOptional.get();
 
-
         EquipmentListing equipmentListing = equipmentListingRepository.findEquipmentListingBylistingId(listingDto.getId());
-
-        //if (listingDto.getMerchantID() != merchant.getId()){
-        if (equipmentListing.getMerchant().getId() != merchant.getId()){
-            System.out.println("This merchant is not the owner of the listing");
+        if (equipmentListing == null) {
+            System.out.println("not found");
             return null;
         }
 
-        if(listingDto.getCategoryName() != null) {
-            Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(listingDto.getCategoryName());
-            if(category.isPresent()){
-                equipmentListing.setCategory(category.get());
-            }
+
+        if (!equipmentListing.getMerchant().getId().equals(merchant.getId())) {
+            System.out.println("not the owner of the listing");
+            return null;
         }
-        if(listingDto.getTitle()!= null) {
+
+
+        if (listingDto.getCategoryName() != null) {
+            Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(listingDto.getCategoryName());
+            category.ifPresent(equipmentListing::setCategory);
+        }
+
+        if (listingDto.getTitle() != null) {
             equipmentListing.setTitle(listingDto.getTitle());
         }
-        if(listingDto.getDescription()!= null) {
+        if (listingDto.getDescription() != null) {
             equipmentListing.setDescription(listingDto.getDescription());
         }
-        if(listingDto.getDailyPrice()!= null) {
+        if (listingDto.getDailyPrice() != null) {
             equipmentListing.setDailyPrice(listingDto.getDailyPrice());
         }
-        if(listingDto.getDepositAmount()!=null){
+        if (listingDto.getDepositAmount() != null) {
             equipmentListing.setDepositAmount(listingDto.getDepositAmount());
         }
-        if(listingDto.getCurrency()!=null){
+        if (listingDto.getCurrency() != null) {
             equipmentListing.setCurrency(listingDto.getCurrency());
         }
-        if(listingDto.getAvailableFrom()!=null) {
+        if (listingDto.getAvailableFrom() != null) {
             equipmentListing.setAvailableFrom(listingDto.getAvailableFrom());
         }
-        if(listingDto.getAvailableUntil()!=null) {
+        if (listingDto.getAvailableUntil() != null) {
             equipmentListing.setAvailableUntil(listingDto.getAvailableUntil());
         }
-        if(listingDto.getPickupLocation()!=null) {
-            equipmentListing.setPickupLocation(listingDto.getPickupLocation());
-        }
-        if(listingDto.getReturnLocation()!=null) {
-            equipmentListing.setReturnLocation(listingDto.getReturnLocation());
-        }
-        if(listingDto.getQuantityAvailable()!=null) {
+        if (listingDto.getQuantityAvailable() != null) {
             equipmentListing.setQuantityAvailable(listingDto.getQuantityAvailable());
         }
-        if(listingDto.getIsActive()!=null) {
+        if (listingDto.getIsActive() != null) {
             equipmentListing.setIsActive(listingDto.getIsActive());
         }
 
-        return listingService.equipmentListingToListingDTO(equipmentListingRepository.save(equipmentListing));
+
+        if (listingDto.getPickupAddress() != null)
+            equipmentListing.setPickupAddress(listingDto.getPickupAddress());
+        if (listingDto.getPickupArea() != null)
+            equipmentListing.setPickupArea(listingDto.getPickupArea());
+        if (listingDto.getPickupCity() != null)
+            equipmentListing.setPickupCity(listingDto.getPickupCity());
+        if (listingDto.getPickupPostalCode() != null)
+            equipmentListing.setPickupPostalCode(listingDto.getPickupPostalCode());
+        if (listingDto.getPickupCountry() != null)
+            equipmentListing.setPickupCountry(listingDto.getPickupCountry());
+
+
+        if (listingDto.getReturnAddress() != null)
+            equipmentListing.setReturnAddress(listingDto.getReturnAddress());
+        if (listingDto.getReturnArea() != null)
+            equipmentListing.setReturnArea(listingDto.getReturnArea());
+        if (listingDto.getReturnCity() != null)
+            equipmentListing.setReturnCity(listingDto.getReturnCity());
+        if (listingDto.getReturnPostalCode() != null)
+            equipmentListing.setReturnPostalCode(listingDto.getReturnPostalCode());
+        if (listingDto.getReturnCountry() != null)
+            equipmentListing.setReturnCountry(listingDto.getReturnCountry());
+
+
+        EquipmentListing updated = equipmentListingRepository.save(equipmentListing);
+
+
+        return listingService.equipmentListingToListingDTO(updated);
     }
 
-    public ListingDto addListing(Merchant merchant, NewListingDto newListingDto){
+    public ListingDto addListing(Merchant merchant, ListingDto newListingDto){
 
         EquipmentListing listing = new EquipmentListing();
         listing.setMerchant(merchant);
@@ -156,6 +178,8 @@ public class MerchantService {
         }
 
         listing.setCategory(category.get());
+
+        
         listing.setTitle(newListingDto.getTitle());
         listing.setDescription(newListingDto.getDescription());
         listing.setDailyPrice(newListingDto.getDailyPrice());
@@ -163,16 +187,30 @@ public class MerchantService {
         listing.setCurrency(newListingDto.getCurrency());
         listing.setAvailableFrom(newListingDto.getAvailableFrom());
         listing.setAvailableUntil(newListingDto.getAvailableUntil());
-        listing.setPickupLocation(newListingDto.getPickupLocation());
-        listing.setReturnLocation(newListingDto.getReturnLocation());
-        listing.setIsActive(newListingDto.getIsActive());
+        listing.setQuantityAvailable(newListingDto.getQuantityAvailable());
+        listing.setIsActive(newListingDto.getIsActive() != null ? newListingDto.getIsActive() : true);
 
 
-        equipmentListingRepository.save(listing);
+        listing.setPickupAddress(newListingDto.getPickupAddress());
+        listing.setPickupArea(newListingDto.getPickupArea());
+        listing.setPickupCity(newListingDto.getPickupCity());
+        listing.setPickupPostalCode(newListingDto.getPickupPostalCode());
+        listing.setPickupCountry(newListingDto.getPickupCountry() != null ? newListingDto.getPickupCountry() : "Croatia");
 
+        listing.setReturnAddress(newListingDto.getReturnAddress());
+        listing.setReturnArea(newListingDto.getReturnArea());
+        listing.setReturnCity(newListingDto.getReturnCity());
+        listing.setReturnPostalCode(newListingDto.getReturnPostalCode());
+        listing.setReturnCountry(newListingDto.getReturnCountry() != null ? newListingDto.getReturnCountry() : "Croatia");
+
+       
+        EquipmentListing saved = equipmentListingRepository.save(listing);
+
+       
         ListingDto listingDto = new ListingDto();
 
-        //listingDto.setCategory(category.get());
+        listingDto.setId(saved.getListingId());
+        listingDto.setMerchantID(merchant.getId());
         listingDto.setCategoryName(newListingDto.getCategoryName());
         listingDto.setTitle(newListingDto.getTitle());
         listingDto.setDescription(newListingDto.getDescription());
@@ -181,11 +219,25 @@ public class MerchantService {
         listingDto.setCurrency(newListingDto.getCurrency());
         listingDto.setAvailableFrom(newListingDto.getAvailableFrom());
         listingDto.setAvailableUntil(newListingDto.getAvailableUntil());
-        listingDto.setPickupLocation(newListingDto.getPickupLocation());
-        listingDto.setReturnLocation(newListingDto.getReturnLocation());
+        listingDto.setQuantityAvailable(newListingDto.getQuantityAvailable());
         listingDto.setIsActive(newListingDto.getIsActive());
 
-        //newListingDto.setEmail(merchant.getUser().getEmail());
+        listingDto.setPickupAddress(newListingDto.getPickupAddress());
+        listingDto.setPickupArea(newListingDto.getPickupArea());
+        listingDto.setPickupCity(newListingDto.getPickupCity());
+        listingDto.setPickupPostalCode(newListingDto.getPickupPostalCode());
+        listingDto.setPickupCountry(newListingDto.getPickupCountry());
+        listingDto.setPickupLatitude(saved.getPickupLatitude());
+        listingDto.setPickupLongitude(saved.getPickupLongitude());
+
+        listingDto.setReturnAddress(newListingDto.getReturnAddress());
+        listingDto.setReturnArea(newListingDto.getReturnArea());
+        listingDto.setReturnCity(newListingDto.getReturnCity());
+        listingDto.setReturnPostalCode(newListingDto.getReturnPostalCode());
+        listingDto.setReturnCountry(newListingDto.getReturnCountry());
+        listingDto.setReturnLatitude(saved.getReturnLatitude());
+        listingDto.setReturnLongitude(saved.getReturnLongitude());
+
         return listingDto;
     }
 

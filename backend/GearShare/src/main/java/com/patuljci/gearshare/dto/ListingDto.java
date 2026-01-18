@@ -19,8 +19,24 @@ public class ListingDto {
     private String currency;
     private LocalDateTime availableFrom;
     private LocalDateTime availableUntil;
-    private String pickupLocation;
-    private String returnLocation;
+
+    private String pickupAddress;
+    private String pickupArea;
+    private String pickupCity;
+    private String pickupPostalCode;
+    private String pickupCountry;
+    private Double pickupLatitude;
+    private Double pickupLongitude;
+
+
+    private String returnAddress;
+    private String returnArea;
+    private String returnCity;
+    private String returnPostalCode;
+    private String returnCountry;
+    private Double returnLatitude;
+    private Double returnLongitude;
+
     private Integer quantityAvailable;
     private Boolean isActive;
 }

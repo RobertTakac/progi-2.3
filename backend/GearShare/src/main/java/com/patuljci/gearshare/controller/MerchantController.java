@@ -1,7 +1,6 @@
 package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.NewListingDto;
 import com.patuljci.gearshare.dto.ReportDTO;
 import com.patuljci.gearshare.dto.ReservationDTO;
 import com.patuljci.gearshare.model.Merchant;
@@ -61,7 +60,7 @@ public class MerchantController {
     }
 
     @PostMapping(value="/create-listing")
-    public ResponseEntity<ListingDto> createListing(@RequestBody NewListingDto dto){
+    public ResponseEntity<ListingDto> createListing(@RequestBody ListingDto dto){
 
 
         Optional<Merchant> merchant = merchantService.optionalMerchant();

@@ -8,10 +8,12 @@ import org.hibernate.annotations.ColumnDefault;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@EntityListeners(MerchantGeocodingListener.class)
 @Entity
 @Table(name = "merchant")
 @Getter
 @Setter
+
 public class Merchant {
 
     @Id
@@ -37,6 +39,11 @@ public class Merchant {
     @Column(nullable = false)
     @ColumnDefault("'Croatia'")
     private String country = "Croatia";
+
+    @Column(nullable = true)
+    private Double latitude;
+    @Column(nullable = true)
+    private Double longitude;
 
     private String description;
 

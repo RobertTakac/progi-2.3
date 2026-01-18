@@ -50,11 +50,47 @@ public class EquipmentListing {
     @Column(name = "available_until", nullable = false)
     private LocalDateTime availableUntil;
 
-    @Column(name="pickup_location",length = 500, nullable = false)
-    private String pickupLocation;
+    @Column(name="pickup_address", length=500, nullable=false)
+    private String pickupAddress;
 
-    @Column(name="return_location",length = 500, nullable = false)
-    private String returnLocation;
+    @Column(name="pickup_area", length=250)
+    private String pickupArea;
+
+    @Column(name="pickup_city", length=250, nullable=false)
+    private String pickupCity;
+
+    @Column(name="pickup_postal_code", length=20, nullable=false)
+    private String pickupPostalCode;
+
+    @Column(name="pickup_country", length=100, nullable=false)
+    private String pickupCountry = "Croatia";
+
+    @Column(nullable = true)
+    private Double pickupLatitude;
+
+    @Column(nullable = true)
+    private Double pickupLongitude;
+
+    @Column(name="return_address", length=500, nullable=false)
+    private String returnAddress;
+
+    @Column(name="return_area", length=250)
+    private String returnArea;
+
+    @Column(name="return_city", length=250, nullable=false)
+    private String returnCity;
+
+    @Column(name="return_postal_code", length=20, nullable=false)
+    private String returnPostalCode;
+
+    @Column(name="return_country", length=100, nullable=false)
+    private String returnCountry = "Croatia";
+
+    @Column(nullable = true)
+    private Double returnLatitude;
+
+    @Column(nullable = true)
+    private Double returnLongitude;
 
     @Column(name = "quantity_available")
     private Integer quantityAvailable = 1;
