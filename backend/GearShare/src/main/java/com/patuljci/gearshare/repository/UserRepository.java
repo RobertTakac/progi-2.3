@@ -14,10 +14,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByGoogleId(String googleId);
 
-    Optional<UserEntity> findByVerificationCode(String verificationCode);
-
     UserEntity findByUsername(String username);
-
-    UserEntity findUserByUserId(Long id);
 
 }
