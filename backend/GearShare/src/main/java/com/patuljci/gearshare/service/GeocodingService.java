@@ -38,30 +38,36 @@ public class GeocodingService {
                 "&addressdetails=1";
 
         URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        HttpURLConnection conn = null;
 
+        try {
+            conn = (HttpURLConnection) url.openConnection();
 
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("User-Agent", USER_AGENT);
-        conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("User-Agent", USER_AGENT);
+            conn.setRequestProperty("Accept", "application/json");
 
-        conn.setConnectTimeout(8000);
-        conn.setReadTimeout(8000);
+            conn.setConnectTimeout(8000);
+            conn.setReadTimeout(8000);
 
+            String response = new String(conn.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
-        String response = new String(conn.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            JSONArray results = new JSONArray(response);
 
-        JSONArray results = new JSONArray(response);
+            if (results.length() == 0) {
+                throw new RuntimeException("Nominatim: No results found for: " + query);
+            }
 
-        if (results.length() == 0) {
-            throw new RuntimeException("Nominatim: No results found for: " + query);
+            JSONObject firstResult = results.getJSONObject(0);
+
+            double lat = firstResult.getDouble("lat");
+            double lon = firstResult.getDouble("lon");
+
+            return new double[]{lat, lon};
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
-
-        JSONObject firstResult = results.getJSONObject(0);
-
-        double lat = firstResult.getDouble("lat");
-        double lon = firstResult.getDouble("lon");
-
-        return new double[]{lat, lon};
     }
 }
