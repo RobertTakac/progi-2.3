@@ -10,6 +10,9 @@ import com.patuljci.gearshare.service.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
@@ -88,6 +91,20 @@ public class AuthenticationController {
             return ResponseEntity.ok("Verification code sent");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/test-nominatim")
+    public String testNominatim() {
+        try {
+            URL url = new URL("https://nominatim.openstreetmap.org/status");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", "GearShareDebug/1.0 (brankozastava@gmail.com)");
+            conn.setRequestProperty("Referer", "https://progi-2-3-ah5i.onrender.com/");
+            int code = conn.getResponseCode();
+            return "Status: " + code + " (200 = reachable)";
+        } catch (Exception e) {
+            return "Failed: " + e.getClass().getSimpleName() + " - " + e.getMessage();
         }
     }
 }
