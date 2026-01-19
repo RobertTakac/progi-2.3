@@ -6,7 +6,7 @@ import jakarta.persistence.PreUpdate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static java.lang.IO.print;
+
 
 @Component
 @RequiredArgsConstructor
