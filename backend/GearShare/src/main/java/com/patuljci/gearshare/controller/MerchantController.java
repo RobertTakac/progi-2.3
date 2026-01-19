@@ -33,7 +33,7 @@ public class MerchantController {
 
 
     @DeleteMapping(value="/deleteListing/{listingID}")
-    public ResponseEntity<String> deleteListing(@RequestParam Long listingID) {
+    public ResponseEntity<String> deleteListing(@PathVariable Long listingID) {
 
         System.out.println(merchantService.deleteListing(listingID));
 
