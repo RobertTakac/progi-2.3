@@ -7,6 +7,7 @@ import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.responses.LoginResponse;
 import com.patuljci.gearshare.service.AuthenticationService;
 import com.patuljci.gearshare.service.JwtService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,17 +95,28 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/test-nominatim")
-    public String testNominatim() {
+    @Value("${locationiq.token:}")
+    private String locationIqToken;
+    @GetMapping("/test-liq")
+    public String testLocationIq() {
         try {
-            URL url = new URL("https://nominatim.openstreetmap.org/status");
+            String urlString = "https://eu1.locationiq.com/v1/search?q=Zagreb,Croatia&key="
+                    + locationIqToken + "&format=json&limit=1";
+
+            URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("User-Agent", "GearShareDebug/1.0 (brankozastava@gmail.com)");
-            conn.setRequestProperty("Referer", "https://progi-2-3-ah5i.onrender.com/");
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(5000);
+
             int code = conn.getResponseCode();
-            return "Status: " + code + " (200 = reachable)";
+            conn.disconnect();
+
+            return code == 200
+                    ? "OK - LocationIQ works (code 200)"
+                    : "Failed - HTTP " + code;
+
         } catch (Exception e) {
-            return "Failed: " + e.getClass().getSimpleName() + " - " + e.getMessage();
+            return "Error: " + e.getClass().getSimpleName() + " - " + e.getMessage();
         }
     }
 }

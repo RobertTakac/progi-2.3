@@ -3,6 +3,7 @@ package com.patuljci.gearshare.service;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -12,11 +13,17 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class GeocodingService {
 
-    private static final String NOMINATIM_BASE = "https://nominatim.openstreetmap.org/search";
-    private static final String USER_AGENT = "GearShareStudentProject (contact: brankozastava@gmail.com)";
+    private static final String BASE_URL = "https://eu1.locationiq.com/v1/search";
 
-    public double[] getCoordinates(String address, String area, String city,
-                                   String postalCode, String country) throws Exception {
+
+    @Value("${locationiq.token:}")
+    private String LOCATIONIQ_TOKEN;
+
+    private static final String USER_AGENT =
+            "GearShareApp/1.0 (student project; https://progi-2-3-ah5i.onrender.com/; brankozastava@gmail.com)";
+
+    public double[] getCoordinates(String address, String area, String city, String postalCode, String country)
+            throws Exception {
 
 
         StringBuilder full = new StringBuilder(address.trim());
@@ -30,8 +37,9 @@ public class GeocodingService {
         String query = full.toString();
 
 
-        String urlString = NOMINATIM_BASE +
-                "?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8) +
+        String urlString = BASE_URL + "?" +
+                "q=" + URLEncoder.encode(query, StandardCharsets.UTF_8) +
+                "&key=" + LOCATIONIQ_TOKEN +
                 "&format=json" +
                 "&limit=1" +
                 "&countrycodes=hr" +
@@ -42,28 +50,27 @@ public class GeocodingService {
 
         try {
             conn = (HttpURLConnection) url.openConnection();
-
             conn.setRequestMethod("GET");
             conn.setRequestProperty("User-Agent", USER_AGENT);
             conn.setRequestProperty("Accept", "application/json");
-
+            conn.setRequestProperty("Referer", "https://progi-2-3-ah5i.onrender.com/");
             conn.setConnectTimeout(8000);
             conn.setReadTimeout(8000);
 
-            String response = new String(conn.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
+            String response = new String(conn.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             JSONArray results = new JSONArray(response);
 
             if (results.length() == 0) {
-                throw new RuntimeException("Nominatim: No results found for: " + query);
+                throw new RuntimeException("LocationIQ: No results found for: " + query);
             }
 
             JSONObject firstResult = results.getJSONObject(0);
-
             double lat = firstResult.getDouble("lat");
             double lon = firstResult.getDouble("lon");
 
             return new double[]{lat, lon};
+
         } finally {
             if (conn != null) {
                 conn.disconnect();
