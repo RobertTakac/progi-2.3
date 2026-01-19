@@ -24,11 +24,11 @@ public class MerchantController {
     private final ReservationService reservationService;
     private final ReportService reportService;
 
-    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService, ReportService reportService, ReportService reportService1) {
+    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService, ReportService reportService) {
         this.listingService = listingService;
         this.merchantService = merchantService;
         this.reservationService = reservationService;
-        this.reportService = reportService1;
+        this.reportService = reportService;
     }
 
 

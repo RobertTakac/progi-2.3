@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 public class ListingController {
 
-    private ListingService listingService;
+    private final ListingService listingService;
 
     ListingController(ListingService listingService) {
         this.listingService = listingService;
