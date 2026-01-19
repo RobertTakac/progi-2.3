@@ -95,28 +95,5 @@ public class AuthenticationController {
         }
     }
 
-    @Value("${locationiq.token:}")
-    private String locationIqToken;
-    @GetMapping("/test-liq")
-    public String testLocationIq() {
-        try {
-            String urlString = "https://eu1.locationiq.com/v1/search?q=Zagreb,Croatia&key="
-                    + locationIqToken + "&format=json&limit=1";
-
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setConnectTimeout(5000);
-
-            int code = conn.getResponseCode();
-            conn.disconnect();
-
-            return code == 200
-                    ? "OK - LocationIQ works (code 200)"
-                    : "Failed - HTTP " + code;
-
-        } catch (Exception e) {
-            return "Error: " + e.getClass().getSimpleName() + " - " + e.getMessage();
-        }
-    }
+    
 }
