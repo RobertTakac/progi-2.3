@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@EntityListeners(EquipmentListingGeocodingListener.class)
 @Entity
 @Table(name = "equipment_listings")
 @Getter
