@@ -2,13 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 import "./Navbar.css";
-import Modal from "./Modal";
-import ChooseRole from "./ChooseRole";
-import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
-import VerifyCodeForm from "./VerifyCodeForm";
-
-
 
 const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
 

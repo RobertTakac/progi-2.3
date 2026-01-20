@@ -19,24 +19,26 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
       });
       
       if (!res.ok) {
-        let errorMsg = 'Prijava nije uspjela. Status: ' + res.status;
-        
+        let errorMsg = 'Prijava nije uspjela.';
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorMsg;
         } catch (jsonError) {
-          console.warn('greska');
+          errorMsg = `Greška servera: ${res.status}`;
         }
-        
         throw new Error(errorMsg);
       }
 
       const data = await res.json();
       
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+
       onSuccess(data); 
 
     } catch (error) {
-      console.error('greska', error);
+      console.error('Login error:', error);
       setError(error.message); 
     }
   };
@@ -46,11 +48,12 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
       <h2>Prijava ({role === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
       
       <button
+        className="google-btn"
         onClick={() => {
-            window.location.href = "https://backend-9p6u.onrender.com/oauth2/authorization/google?prompt=select_account";
+          window.location.href = `${BASE_URL}/oauth2/authorization/google?prompt=select_account`;
         }}
       >
-        Sign up / Login with Google
+        Prijava putem Google-a
       </button>
 
       <div className="form-separator"><span>ILI</span></div>
@@ -79,7 +82,7 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
 
         {error && <p className="error-message">{error}</p>}
         <button type="submit" className="button-primary">
-          Prijavi se (Email i Lozinka)
+          Prijavi se
         </button>
       </form>
       

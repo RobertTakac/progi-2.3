@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
@@ -15,7 +15,13 @@ import OAuth2Redirect from "./components/OAuth2Redirect";
 
 const App = () => {
 
-  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
   const [modalView, setModalView] = useState(null); 
   const [selectedRole, setSelectedRole] = useState(null);
   const [emailToVerify, setEmailToVerify] = useState(null);
@@ -35,14 +41,21 @@ const App = () => {
   const switchForm = (newView) => setModalView(newView);
 
   const handleLoginSuccess = (userData) => {
+    console.log("Podaci pri prijavi:", userData); 
     setCurrentUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData)); 
     closeModal(); 
+    navigate('/');
   };
   const handleVerificationNeeded = (email) => {
     setEmailToVerify(email);
     setModalView('verify');
   };
-  const handleSignOut = () => setCurrentUser(null);
+  const handleSignOut = () => {
+    setCurrentUser(null);
+    localStorage.removeItem("user"); 
+    navigate('/');
+  };
 
   const renderModalContent = () => {
     if (!selectedRole && modalView !== 'verify') {
@@ -67,9 +80,13 @@ const App = () => {
       <main>
         <Routes>
           <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
-          <Route path="/moji-oglasi" element={<MojiOglasi />} />
-          <Route path="/ponuda" element={<Ponuda />} />
-            <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess} />} />
+          <Route path="/moji-oglasi" element={
+                currentUser?.type === 'merchant' 
+                ? <MojiOglasi currentUser={currentUser} /> 
+                : <HomePage currentUser={currentUser} openLoginModal={openModal} />
+          } />
+          <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
+          <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
         </Routes>
       </main>
       <Modal isOpen={!!modalView} onClose={closeModal}>
