@@ -70,11 +70,12 @@ public class MerchantService {
         Merchant merchant = merchantOptional.get();
 
         EquipmentListing listing = equipmentListingRepository.findEquipmentListingBylistingId(listingID);
-        if(listing.getMerchant().getId() == merchant.getId()){
-            equipmentListingRepository.deleteById(listingID);
-            return true;
+        if(listing == null || !listing.getMerchant().getId().equals(merchant.getId())) {
+            return false;
         }
-        return false;
+
+        equipmentListingRepository.deleteById(listingID);
+        return true;
     }
 
     public ListingDto updateListing(ListingDto listingDto) {
