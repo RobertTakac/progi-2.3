@@ -1,25 +1,25 @@
 package com.patuljci.gearshare.model;
 
-import com.patuljci.gearshare.config.SpringContext;
 import com.patuljci.gearshare.service.GeocodingService;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.RequiredArgsConstructor;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-
+@Component
+@RequiredArgsConstructor
 public class EquipmentListingGeocodingListener {
 
+    private static final Logger log = LoggerFactory.getLogger(EquipmentListingGeocodingListener.class);
 
-
-
+    private final GeocodingService geocodingService;
 
     @PrePersist
     @PreUpdate
     public void geocode(EquipmentListing listing) {
         try {
-            GeocodingService geocodingService = SpringContext.getBean(GeocodingService.class);
 
             if (needsGeocoding(listing.getPickupLatitude(), listing.getPickupLongitude())) {
                 double[] coords = geocodingService.getCoordinates(
@@ -46,8 +46,11 @@ public class EquipmentListingGeocodingListener {
                 listing.setReturnLongitude(coords[1]);
             }
         } catch (Exception e) {
-            System.out.println("Error geocoding");
-            System.out.println(e);
+            log.warn("Geocoding nije uspio za listing id={}, adresa: {} / {} ",
+                    listing.getListingId(),
+                    listing.getPickupAddress(),
+                    listing.getReturnAddress(),
+                    e);
 
         }
     }

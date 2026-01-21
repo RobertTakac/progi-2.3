@@ -1,6 +1,5 @@
 package com.patuljci.gearshare.model;
 
-import com.patuljci.gearshare.config.SpringContext;
 import com.patuljci.gearshare.service.GeocodingService;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -9,17 +8,17 @@ import org.springframework.stereotype.Component;
 
 
 
-
+@Component
+@RequiredArgsConstructor
 public class MerchantGeocodingListener {
 
 
-
+    private final GeocodingService geocodingService;
 
     @PrePersist
     @PreUpdate
     public void geocode(Merchant merchant) {
         try {
-            GeocodingService geocodingService = SpringContext.getBean(GeocodingService.class);
 
             if (merchant.getLatitude() != null && merchant.getLongitude() != null) {
                 return;

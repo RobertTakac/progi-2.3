@@ -7,12 +7,8 @@ import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.responses.LoginResponse;
 import com.patuljci.gearshare.service.AuthenticationService;
 import com.patuljci.gearshare.service.JwtService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 @RequestMapping("/auth")
 @RestController
@@ -94,6 +90,4 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-    
 }
