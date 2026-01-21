@@ -1,149 +1,165 @@
-import React, { useState, useEffect } from "react";
-import "./MojiOglasi.css";
-import { apiRequest } from '../api/apiService';
+import React, { useState } from "react";
+import "./MojiOglasi.css"; 
+import { newListing } from "../services/apiService";
+import { toast } from 'react-toastify';
 
-const MojiOglasi = ({ currentUser }) => {
+const MojiOglasi = () => {
+  const [productList, setProductList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   
-  const [allAds, setAllAds] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
+  const [productName, setProductName] = useState("");
+  const [productPrice, setProductPrice] = useState("");
+  const [productDate, setProductDate] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [productPhoto, setProductPhoto] = useState("");
+  const [productDeposit, setProductDeposit] = useState("");
+  const [productLocation, setProductLocation] = useState("");
+  const [productCategory, setProductCategory] = useState("");
 
-  const [newProduct, setNewProduct] = useState({
-    name: "", price: "", date: "", description: "", photo: "", deposit: "", location: ""
-  });
-
-  const fetchAds = async () => {
-    try {
-      const res = await apiRequest('/merchant/get-all-listings', 'GET'); 
-      if (res && res.ok) {
-        const data = await res.json();
-        setAllAds(data);
-      }
-    } catch (err) {
-      console.error("Greška pri dohvaćanju:", err);
+  const handleDelete = (itemid) => {
+    if (window.confirm("Jeste li sigurni da želite ukloniti ovaj proizvod?")) {
+      const filteredList = productList.filter((item) => item.id !== itemid);
+      setProductList(filteredList);
     }
   };
 
-  useEffect(() => {
-    fetchAds();
-  }, []);
+//   useEffect(() => {
+//     if (searchTerm) {
+//       const filteredList = products.filter((item) =>
+//         item.title.toLowerCase().includes(searchTerm.toLowerCase())
+//       );
+//       setProductList(filteredList);
+//     } else {
+//       setProductList(products);
+//     }
+//   }, [searchTerm]);
 
-  const startEdit = (product) => {
-    setIsEditing(true);
-    setEditId(product.id);
-    setNewProduct({
-      name: product.title,
-      price: product.dailyPrice,
-      date: product.availableUntil || "",
-      description: product.description || "",
-      photo:  "",
-      deposit: product.depositAmount || "",
-      location: product.pickupCity || ""
-    });
-    setShowAddForm(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-  };
-
-  const handleDelete = async (itemid) => {
-    if (window.confirm("Jeste li sigurni?")) {
-      const res = await apiRequest(`/merchant/deleteListing/${itemid}`, 'DELETE');
-      if (res && res.ok) {
-        setAllAds(allAds.filter((item) => item.id !== itemid));
-      }
+  const handleAdd = async () => {
+    if (!productName || !productPrice) {
+      return alert("Ime proizvoda i cijena su obavezni.");
     }
-  };
-
-  const handleSave = async () => {
-    if (!newProduct.name || !newProduct.price) return alert("Ime i cijena su obavezni.");
-
-    const adData = {
-      ...(isEditing && { id: editId }),
-      title: newProduct.name,
-      description: newProduct.description,
-      dailyPrice: parseFloat(newProduct.price),
-      depositAmount: parseFloat(newProduct.deposit) || 0, 
-      pickupCity: newProduct.location,
-      categoryName: "Sport",
-      currency: "EUR",
-      isActive: true,
-      availableFrom: new Date().toISOString(),
-      availableUntil: new Date(Date.now() + 7*24*60*60*1000).toISOString(), 
+    const newProduct = {
+      id: new Date().getTime(),
+      title: productName,
+      dailyPrice: parseFloat(productPrice),
+      availableFrom: productDate,
+      description: productDescription,
+      imageUrl: productPhoto, 
+      deposit: parseFloat(productDeposit) || 0,
+      location: productLocation,
+      categoryName: productCategory
     };
 
-  const endpoint = isEditing ? '/merchant/updateListing' : '/merchant/create-listing';
-
     try {
-      const res = await apiRequest(endpoint, 'POST', adData);
-      if (res && res.ok) {
-        fetchAds(); 
-        resetForm();
-      } else {
-        alert("Spremanje nije uspjelo.");
-      }
-    } catch (err) {
-      console.error("Greška pri slanju:", err);
-    }
-  };
+      const res = await newListing(newProduct);
+      console.log("Success creating a new listing: ", res);
 
-  const resetForm = () => {
-    setNewProduct({ name: "", price: "", date: "", description: "", photo: "", deposit: "", location: "" });
-    setShowAddForm(false);
-    setIsEditing(false);
-    setEditId(null);
+      setProductList([...productList, newProduct]);
+    
+      setProductName("");
+      setProductPrice("");
+      setProductDescription("");
+      setProductPhoto("");
+      setProductDeposit("");
+      setProductLocation("");
+      setProductCategory("");
+    } catch (err) {
+      const errMsg = err.response?.data?.message || err.message || "Pogreska prilikom stvaranja nove ponude";
+      toast.error(errMsg);
+    }
   };
 
   return (
     <div className="moja-oglasna-ploca">
-      <div className="ads-header">
-        <h2>Moji Oglasi ({currentUser?.name})</h2>
-        <button className="add-toggle-btn" onClick={isEditing ? resetForm : () => setShowAddForm(!showAddForm)}>
-          {showAddForm ? "Odustani" : "Dodaj novi oglas"}
-        </button>
+      <h2>Moji Oglasi</h2>
+      
+      <div className="addProduct">
+        <h3>Dodaj novi oglas</h3>
+        <input
+          type="text"
+          placeholder="Unesi naziv (obavezno)"
+          value={productName}
+          onChange={(e) => setProductName(e.target.value)}
+        />
+        <input
+          type="number" 
+          placeholder="Unesi cijenu (obavezno)"
+          value={productPrice}
+          onChange={(e) => setProductPrice(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Unesi razdoblje dostupnosti (npr. 01.06. - 01.09.)"
+          value={productDate}
+          onChange={(e) => setProductDate(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Opiši proizvod"
+          value={productDescription}
+          onChange={(e) => setProductDescription(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Stavi URL slike proizvoda"
+          value={productPhoto}
+          onChange={(e) => setProductPhoto(e.target.value)}
+        />
+        <input
+          type="number" 
+          placeholder="Unesi iznos pologa"
+          value={productDeposit}
+          onChange={(e) => setProductDeposit(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Unesi lokaciju preuzimanja i povrata"
+          value={productLocation}
+          onChange={(e) => setProductLocation(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Unesi kategoriju predmeta"
+          value={productCategory}
+          onChange={(e) => setProductCategory(e.target.value)}
+        />
+        <button onClick={handleAdd} className="add-btn">Dodaj oglas</button>
+      </div>
+
+      <div className="searchBar">
+        <input
+          type="text"
+          placeholder="Pretraži svoje oglase..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
       
-      {showAddForm && (
-        <div className="add-ad-container">
-          <h3>{isEditing ? "Uredi Oglas" : "Novi Oglas"}</h3>
-          
-          <div className="form-grid">
-            <div className="form-inputs">
-              <input type="text" placeholder="Naziv" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} />
-              <input type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} />
-              <input type="text" placeholder="Dostupnost" value={newProduct.date} onChange={(e) => setNewProduct({...newProduct, date: e.target.value})} />
-              <textarea placeholder="Opis" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} />
-              <input type="text" placeholder="Lokacija" value={newProduct.location} onChange={(e) => setNewProduct({...newProduct, location: e.target.value})} />
-            </div>
-            
-            <div className="form-image-preview">
-                <input type="text" placeholder="URL slike" value={newProduct.photo} onChange={(e) => setNewProduct({...newProduct, photo: e.target.value})} />
-                <div className="preview-box">
-                    {newProduct.photo && <img src={newProduct.photo} alt="Preview" />}
-                </div>
-            </div>
-          </div>
-
-          <button onClick={handleSave} className="publish-btn">
-            {isEditing ? "Spremi promjene" : "Objavi Oglas"}
-          </button>
-        </div>
-      )}
-
       <div className="grid-container">
-        {myAds.map((item) => (
-          <div className="card" key={item.id}>
-            <img src={item.imageUrl} alt={item.title} />
-            <div className="card-content">
-              <h1>{item.title}</h1>
-              <p className="price-tag">€{Number(item.dailyPrice || 0).toFixed(2)}</p>
-              <div className="card-actions">
-                <button className="edit-btn" onClick={() => startEdit(item)}>Uredi</button>
-                <button className="delete-btn" onClick={() => handleDelete(item.id)}>Ukloni</button>
-              </div>
-            </div>
+        {productList.map((item, index) => (
+          <div className="card" key={index}>
+            <img 
+              src={item.imageUrl || "https://placehold.co/600x400?text=SLIKA"} 
+              alt={item.title}
+            />
+            <h1>{item.title}</h1>
+            <p><strong>Cijena:</strong> €{item.price.toFixed(2)}</p>
+            {item.deposit ? (
+              <p><strong>Polog:</strong> €{item.deposit.toFixed(2)}</p>
+            ) : null}
+            {item.date && (<p><strong>Dostupnost:</strong> {item.date}</p>)}
+            {item.location && (<p><strong>Lokacija:</strong> {item.location}</p>)}
+            {item.description && <p>{item.description}</p>}
+
+            <button
+              className="delete-btn"
+              onClick={() => handleDelete(item.id)}
+            >
+              Ukloni
+            </button>
           </div>
         ))}
-        {myAds.length === 0 && <p className="no-ads-text">Još niste objavili niti jedan oglas.</p>}
+        {productList.length === 0 && <p>Nema pronađenih oglasa.</p>}
       </div>
     </div>
   );

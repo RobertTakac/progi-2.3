@@ -1,48 +1,41 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-import { apiRequest } from '../api/apiService';
 
 const SignupForm = ({ role, onSwitch, onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [username, setUsername] = useState('');
-  const [loading, setLoading] = useState(false);
+   const [username, setUsername] = useState('');
  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
-      setError('Lozinke se ne podudaraju');
+      setError('greska');
       return;
     }
-
     setError('');
-    setLoading(true);
     
     try {
-      const res = await apiRequest('/auth/signup', 'POST', { 
-        email, 
-        username, 
-        password, 
-        role 
+      const res = await fetch(`${BASE_URL}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email,username, password, role })
       });
 
-      if (!res || !res.ok) {
+      if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || `Greška: ${res.status}`);
+        throw new Error(errorData.message || 'Registracija nije uspjela. Status: ' + res.status);
       }
       
       onSuccess(email); 
 
     } catch (error) {
-      console.error('Greška pri registraciji:', error);
+      console.error('greska', error);
       setError(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -51,9 +44,8 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
       <h2>Registracija ({role === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
 
       <button
-        disabled={loading}
         onClick={() => {
-            window.location.href = `${BASE_URL}/oauth2/authorization/google?prompt=select_account`;
+          window.location.href ="https://backend-9p6u.onrender.com/oauth2/authorization/google";
         }}
       >
         Sign up / Login with Google
@@ -71,8 +63,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
             id="signup-email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
-            required
-            disabled={loading}
+            required 
           />
         </div>
         <div className="form-group">
@@ -82,8 +73,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
             id="signup-username" 
             value={username} 
             onChange={(e) => setUsername(e.target.value)} 
-            required
-            disabled={loading}
+            required 
           />
            </div>
         <div className="form-group">
@@ -93,8 +83,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
             id="signup-password" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
-            required
-            disabled={loading}
+            required 
           />
         </div>
         <div className="form-group">
@@ -105,14 +94,11 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
             value={confirmPassword} 
             onChange={(e) => setConfirmPassword(e.target.value)} 
             required 
-            disabled={loading}
           />
         </div>
         
         {error && <p className="error-message">{error}</p>}
-        <button type="submit" className="button-primary" disabled={loading}>
-          {loading ? 'Slanje...' : 'Registriraj se'}
-        </button>
+        <button type="submit" className="button-primary">Registriraj se</button>
       </form>
       
       <div className="form-switch">

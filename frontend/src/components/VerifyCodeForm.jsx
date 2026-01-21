@@ -1,36 +1,33 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
-import { apiRequest } from '../api/apiService';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
     try {
-      const res = await apiRequest('/auth/verify', 'POST', { 
-        email: email, 
-        verificationCode: code 
+      const res = await fetch(`${BASE_URL}/auth/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, verificationCode: code })
       });
 
-      if (!res || !res.ok) {
+      if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Neispravan verifikacijski kod.');
+        throw new Error(errorData.message || 'greska');
       }
 
       onSuccess(); 
-    } catch (error) {
-      console.error('Greska pri verifikaciji:', error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
 
+    } catch (error) {
+      console.error('greska', error);
+      setError(error.message);
+    }
   };
 
   return (
@@ -49,20 +46,13 @@ const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
             id="verify-code" 
             value={code} 
             onChange={(e) => setCode(e.target.value)} 
-            required
-            disabled={loading} 
+            required 
           />
         </div>
         
         {error && <p className="error-message">{error}</p>}
         
-        <button 
-          type="submit" 
-          className="button-primary" 
-          disabled={loading}
-        >
-          {loading ? 'Provjera...' : 'Potvrdi Kod'}
-        </button>
+        <button type="submit" className="button-primary">Potvrdi Kod</button>
       </form>
 
       <div className="form-switch">
