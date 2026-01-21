@@ -1,33 +1,36 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { apiRequest } from '../api/apiService';
 
 const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}/auth/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, verificationCode: code })
+      const res = await apiRequest('/auth/verify', 'POST', { 
+        email: email, 
+        verificationCode: code 
       });
 
-      if (!res.ok) {
+      if (!res || !res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'greska');
+        throw new Error(errorData.message || 'Neispravan verifikacijski kod.');
       }
 
       onSuccess(); 
-
     } catch (error) {
-      console.error('greska', error);
+      console.error('Greska pri verifikaciji:', error);
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
+
   };
 
   return (
@@ -46,13 +49,20 @@ const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
             id="verify-code" 
             value={code} 
             onChange={(e) => setCode(e.target.value)} 
-            required 
+            required
+            disabled={loading} 
           />
         </div>
         
         {error && <p className="error-message">{error}</p>}
         
-        <button type="submit" className="button-primary">Potvrdi Kod</button>
+        <button 
+          type="submit" 
+          className="button-primary" 
+          disabled={loading}
+        >
+          {loading ? 'Provjera...' : 'Potvrdi Kod'}
+        </button>
       </form>
 
       <div className="form-switch">
