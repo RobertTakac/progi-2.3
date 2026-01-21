@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './AuthForms.css';
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { apiLogin } from "../services/apiService";
 
 const LoginForm = ({ role, onSwitch, onSuccess }) => {
   const [email, setEmail] = useState('');
@@ -12,34 +12,10 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
     setError('');
 
     try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role })
-      });
-      
-      if (!res.ok) {
-        let errorMsg = 'Prijava nije uspjela.';
-        try {
-          const errorData = await res.json();
-          errorMsg = errorData.message || errorMsg;
-        } catch (jsonError) {
-          errorMsg = `Greška servera: ${res.status}`;
-        }
-        throw new Error(errorMsg);
-      }
-
-      const data = await res.json();
-      
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-      }
-
-      onSuccess(data); 
-
-    } catch (error) {
-      console.error('Login error:', error);
-      setError(error.message); 
+      const res = await apiLogin(email, password, role);
+      onSuccess(res);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -48,12 +24,11 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
       <h2>Prijava ({role === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
       
       <button
-        className="google-btn"
         onClick={() => {
-          window.location.href = `${BASE_URL}/oauth2/authorization/google?prompt=select_account`;
+          window.location.href ="https://progi-2-3-backend.onrender.com/oauth2/authorization/google";
         }}
       >
-        Prijava putem Google-a
+        Sign up / Login with Google
       </button>
 
       <div className="form-separator"><span>ILI</span></div>
@@ -81,8 +56,9 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
         </div>
 
         {error && <p className="error-message">{error}</p>}
+
         <button type="submit" className="button-primary">
-          Prijavi se
+          Prijavi se (Email i Lozinka)
         </button>
       </form>
       
