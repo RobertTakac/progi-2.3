@@ -23,6 +23,7 @@ const MojiOglasi = () => {
     }
   };
 
+
 //   useEffect(() => {
 //     if (searchTerm) {
 //       const filteredList = products.filter((item) =>
@@ -166,3 +167,5 @@ const MojiOglasi = () => {
 };
 
 export default MojiOglasi;
+
+//
