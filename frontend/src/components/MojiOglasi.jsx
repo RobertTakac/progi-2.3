@@ -130,7 +130,7 @@ const MojiOglasi = ({ currentUser }) => {
       )}
 
       <div className="grid-container">
-        {myAds.map((item) => (
+        {allAds.map((item) => (
           <div className="card" key={item.id}>
             <img src={item.imageUrl} alt={item.title} />
             <div className="card-content">
@@ -143,7 +143,7 @@ const MojiOglasi = ({ currentUser }) => {
             </div>
           </div>
         ))}
-        {myAds.length === 0 && <p className="no-ads-text">Još niste objavili niti jedan oglas.</p>}
+        {allAds.length === 0 && <p className="no-ads-text">Još niste objavili niti jedan oglas.</p>}
       </div>
     </div>
   );
