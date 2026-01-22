@@ -40,14 +40,18 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
                 const roleRes = await apiRequest('/users/me', 'GET');
 
                 if (roleRes && roleRes.ok) {
-                    const roleName = await roleRes.text(); 
+                    const userFullData = await roleRes.json();
+
+                    const finalUser = {
+                        token: data.token,
+                        ...userFullData 
+                    };
                     
-                    onSuccess({
-                        ...data,
-                        role: roleName
-                    });
+                    console.log("Konačni korisnik koji ide u state:", finalUser);
+                    onSuccess(finalUser);
+
                 } else {
-                    throw new Error("Prijava uspješna, ali uloga nije pronađena.");
+                    throw new Error("Neuspješno dohvaćanje podataka o korisniku.");
                 }
             }
 
