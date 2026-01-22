@@ -70,29 +70,32 @@ public class ReportService {
         return "Client has been banned";
     }
 
-    public String banUserByReservationID(Long reservationID){
+    public String banUserByReservationID(Long reservationID) {
+        if (reservationID == null) return "ReservationID cannot be null";
+
         Reservation reservation = reservationRepository.findReservationById(reservationID);
-        if(reservation==null){
+        if (reservation == null) {
             return "Reservation does not exist";
         }
 
         List<Report> reports = reportRepository.findReportByReservation(reservation);
-
-        for(int i=0; i<reports.size(); i++){
-            reportRepository.deleteById( reports.get(i).getId() );
+        for (Report report : reports) {
+            reportRepository.deleteById(report.getId());
         }
 
-
-
-
-
-        //reportRepository.deleteByReservation(reservation);
-
         Client client = reservation.getClient();
+        if (client == null) {
+            return "Reservation has no client";
+        }
 
+        Long clientId = client.getClient_id();
+        if (clientId == null) {
+            return "Client ID is null";
+        }
 
-        return banUser(client.getClient_id());
+        return banUser(clientId);
     }
+
 
     public String deleteReport(Long reportID){
 
