@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestMapping("/auth")
 @RestController
@@ -39,7 +41,7 @@ public class AuthenticationController {
         //System.out.println("Signup request received: " + registerUserDto.getEmail());
 
         //UserEntity registeredUser = authenticationService.signup(registerUserDto);
-
+        System.out.println("=== USAO U /client-signup ===");
         Client client = authenticationService.signupClient(clientRegisterDTO);
 
         //System.out.println("User registered: " + registeredUser.getEmail());

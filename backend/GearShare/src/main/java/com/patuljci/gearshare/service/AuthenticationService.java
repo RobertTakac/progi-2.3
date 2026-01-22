@@ -54,6 +54,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public Client signupClient(ClientRegisterDTO clientRegisterDTO) {
         Client client = new Client();
 
