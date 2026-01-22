@@ -14,7 +14,7 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
   let navigationLinks = [...baseLinks];
 
   if (currentUser) {
-    if (currentUser.type === "merchant") {
+    if (currentUser.role === "ROLE_MERCHANT") {
       navigationLinks.push({ name: "Moji Oglasi", path: "/moji-oglasi" });
     }
   }
