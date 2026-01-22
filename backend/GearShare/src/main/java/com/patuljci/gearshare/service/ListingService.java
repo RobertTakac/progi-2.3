@@ -168,12 +168,16 @@ public class ListingService {
     public List<ListingDto> allEquipmentFilteredIfPossible(String categoryName,
                                                            BigDecimal maxDailyPrice,
                                                            String currency,
-                                                           Long merchandID){
+                                                           Long merchandID,
+                                                           String keyword){
 
 
         Specification<EquipmentListing> spec = Specification.allOf();
 
         spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency, merchandID));
+
+        spec = spec.and(checkKeyword(keyword, "title"));
+        spec = spec.and(checkKeyword(keyword, "description"));
 
         if(spec==null){
             return List.of();
@@ -216,6 +220,15 @@ public class ListingService {
             spec = spec.and(hasCurrency(currency));
         }
         return spec;
+    }
+
+    public static Specification<EquipmentListing> checkKeyword(String keyword, String atribute){
+        return (root, query, cb) -> {
+            if (keyword == null) {
+                return cb.conjunction(); // no-op
+            }
+            return cb.like(root.get(atribute), "%" + keyword + "%");
+        };
     }
 
 

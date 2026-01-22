@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +84,10 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(user);
+    }
+
+    public BigDecimal getMerchantRating(Long merchantID){
+        return merchantRepository.findMerchantByid(merchantID).getAverageRating();
     }
 
 }
