@@ -94,6 +94,7 @@ const App = () => {
         openLoginModal={openModal}
         handleSignOut={handleSignOut}
       />
+      
       <main>
         <Routes>
           <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
@@ -109,7 +110,7 @@ const App = () => {
             </Route>
 
             <Route element={<RoleGuard user={currentUser} allowedRoles={["admin"]} />}>
-              <Route path="/controlboard" element={<ControlBoard currentUser={currentUser} />} />
+              <Route path="/controlboard" element={<ControlBoard currentUser={currentUser} anchor="left" />} />
             </Route>
           </Route>
 
