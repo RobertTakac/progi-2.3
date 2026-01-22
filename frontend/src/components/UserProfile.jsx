@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { apiRequest } from '../api/apiService';
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Stanja za izmjenu
     const [newUsername, setNewUsername] = useState("");
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -13,13 +13,13 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await fetch("/backend/ruta"); // tvoja backend ruta
+                const response = await apiRequest("/users/me");
                 if (!response.ok) {
                     throw new Error("Greška pri dohvaćanju podataka");
                 }
-                const data = await response.json(); // očekuje JSON s username i email
+                const data = await response.json();
                 setUser(data);
-                setNewUsername(data.username); // inicijalno stanje za username
+                setNewUsername(data.username);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -30,15 +30,19 @@ const ProfilePage = () => {
         fetchUser();
     }, []);
 
-    // Promjena usernamea
     const handleUsernameChange = async (e) => {
         e.preventDefault();
 
-        // Ovdje ide API poziv za promjenu usernamea
-        // fetch("/backend/change-username", { method: "POST", body: JSON.stringify({ newUsername }) })
-
-        setUser((prev) => ({ ...prev, username: newUsername }));
-        alert("Username uspješno promijenjen");
+        try {
+            const response = await apiRequest("/change-username", "PUT", { username: newUsername });
+            if (!response.ok) {
+                throw new Error("Greška pri promjeni usernamea");
+            }
+            setUser((prev) => ({ ...prev, username: newUsername }));
+            alert("Username uspješno promijenjen");
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
     // Promjena passworda
@@ -50,12 +54,17 @@ const ProfilePage = () => {
             return;
         }
 
-        // Ovdje ide API poziv za promjenu lozinke
-        // fetch("/backend/change-password", { method: "POST", body: JSON.stringify({ oldPassword, newPassword }) })
-
-        alert("Password uspješno promijenjen");
-        setOldPassword("");
-        setNewPassword("");
+        try {
+            const response = await apiRequest("/change-password", "PUT", { oldPassword, newPassword });
+            if (!response.ok) {
+                throw new Error("Greška pri promjeni lozinke");
+            }
+            alert("Password uspješno promijenjen");
+            setOldPassword("");
+            setNewPassword("");
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
     if (loading) return <p>Učitavanje...</p>;
