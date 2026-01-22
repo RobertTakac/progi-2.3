@@ -34,7 +34,7 @@ public class ReservationService {
     }
 
 
-    public List<ReservationDTO> getReservationsOfMyListings(String category, Long listingID){
+    public List<ReservationDTO> getReservationsOfMyListings(String category, Long listingID, String status){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         UserEntity user = userRepository.findByUsername(authentication.getName());
@@ -42,6 +42,10 @@ public class ReservationService {
 
         Specification spec = hasMerchant(merchant);
         spec = spec.and(allReservationFilters(category, listingID));
+        if(status!=null){
+            spec.and(hasStatus(status));
+        }
+
         if(spec==null){
             return List.of();
         }
@@ -77,7 +81,14 @@ public class ReservationService {
         return spec;
 
     }
-
+    public static Specification<Reservation> hasStatus(String status) {
+        return (root, query, cb) -> {
+            if (status == null) {
+                return cb.conjunction(); // no-op
+            }
+            return cb.equal(root.get("status"), status);
+        };
+    }
 
     public static Specification<Reservation> hasMerchant(Merchant merchant) {
         return (root, query, cb) -> {

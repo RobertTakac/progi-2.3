@@ -77,9 +77,10 @@ public class MerchantController {
 
     @GetMapping(value="/reservations")
     public ResponseEntity<List<ReservationDTO>> getMerchantsReservations(@RequestParam(required = false) String category,
-                                                                         @RequestParam(required = false) Long listingID){
+                                                                         @RequestParam(required = false) Long listingID,
+                                                                         @RequestParam(required=false) String status){
 
-        return ResponseEntity.ok(reservationService.getReservationsOfMyListings(category, listingID));
+        return ResponseEntity.ok(reservationService.getReservationsOfMyListings(category, listingID, status));
     }
 
 
