@@ -23,8 +23,6 @@ public class Client{
     @JoinColumn(name = "user_id", referencedColumnName="id", nullable = false)
     private UserEntity user;
 
-    @Column
-    private String location;
 
     @Column
     private Boolean canRent=true;

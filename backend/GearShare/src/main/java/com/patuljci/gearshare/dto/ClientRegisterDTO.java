@@ -9,5 +9,4 @@ public class ClientRegisterDTO {
     private String email;
     private String password;
     private String username;
-    private String location;
 }
