@@ -6,6 +6,7 @@ import com.patuljci.gearshare.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class ReportService {
 
         return reportToDTO(report);
     }
-
+    @Transactional
     public String banUser(Long clientID){
         if(clientID==null){
             return "ClientID cannot be null";
@@ -69,7 +70,7 @@ public class ReportService {
         clientRepository.save(client);
         return "Client has been banned";
     }
-
+    @Transactional
     public String banUserByReservationID(Long reservationID) {
         if (reservationID == null) return "ReservationID cannot be null";
 
@@ -96,7 +97,7 @@ public class ReportService {
         return banUser(clientId);
     }
 
-
+    @Transactional
     public String deleteReport(Long reportID){
 
         reportRepository.deleteById(reportID);
