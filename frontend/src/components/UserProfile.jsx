@@ -15,9 +15,8 @@ const ProfilePage = () => {
         const fetchUser = async () => {
             try {
                 const response = await apiRequest("/users/me", 'GET');
-                if (!response.ok) {
-                    throw new Error("Greška pri dohvaćanju podataka");
-                }
+                if (!response.ok) throw new Error("Greška pri dohvaćanju podataka");
+
                 const data = await response.json();
                 setUser(data);
                 setNewUsername(data.username);
@@ -36,17 +35,15 @@ const ProfilePage = () => {
 
         try {
             const response = await apiRequest("/change-username", "PUT", { username: newUsername });
-            if (!response.ok) {
-                throw new Error("Greška pri promjeni usernamea");
-            }
-            setUser((prev) => ({ ...prev, username: newUsername }));
+            if (!response.ok) throw new Error("Greška pri promjeni usernamea");
+
+            setUser(prev => ({ ...prev, username: newUsername }));
             alert("Username uspješno promijenjen");
         } catch (err) {
             alert(err.message);
         }
     };
 
-    // Promjena passworda
     const handlePasswordChange = async (e) => {
         e.preventDefault();
 
@@ -57,9 +54,8 @@ const ProfilePage = () => {
 
         try {
             const response = await apiRequest("/change-password", "PUT", { oldPassword, newPassword });
-            if (!response.ok) {
-                throw new Error("Greška pri promjeni lozinke");
-            }
+            if (!response.ok) throw new Error("Greška pri promjeni lozinke");
+
             alert("Password uspješno promijenjen");
             setOldPassword("");
             setNewPassword("");
@@ -71,14 +67,28 @@ const ProfilePage = () => {
     if (loading) return <p>Učitavanje...</p>;
     if (error) return <p>Greška: {error}</p>;
 
+    // Provjera je li korisnik merchant
+    const isMerchant = user.role === "ROLE_MERCHANT";
+
     return (
-        <div className={"user-div"}>
+        <div className="user-div">
             <h1>Moj profil</h1>
 
             <section>
                 <h2>Podaci o korisniku</h2>
                 <p><strong>Username:</strong> {user.username}</p>
                 <p><strong>Email:</strong> {user.email}</p>
+
+                {isMerchant && (
+                    <>
+                        <p><strong>Business Name:</strong> {user.businessName}</p>
+                        <p><strong>Address:</strong> {user.address}</p>
+                        <p><strong>City:</strong> {user.city}</p>
+                        <p><strong>Postal Code:</strong> {user.postalCode}</p>
+                        <p><strong>Country:</strong> {user.country}</p>
+                        <p><strong>Description:</strong> {user.description}</p>
+                    </>
+                )}
             </section>
 
             <hr />
