@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { apiRequest } from '../api/apiService';
+import { apiRequest } from "../api/apiService";
 import "./UserProfile.css";
 
 const ProfilePage = () => {
@@ -11,15 +11,35 @@ const ProfilePage = () => {
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
 
+    const [merchantData, setMerchantData] = useState({
+        businessName: "",
+        address: "",
+        city: "",
+        postalCode: "",
+        country: "",
+        description: ""
+    });
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await apiRequest("/users/me", 'GET');
+                const response = await apiRequest("/users/me", "GET");
                 if (!response.ok) throw new Error("Greška pri dohvaćanju podataka");
 
                 const data = await response.json();
                 setUser(data);
                 setNewUsername(data.username);
+
+                if (data.role === "ROLE_MERCHANT") {
+                    setMerchantData({
+                        businessName: data.businessName || "",
+                        address: data.address || "",
+                        city: data.city || "",
+                        postalCode: data.postalCode || "",
+                        country: data.country || "",
+                        description: data.description || ""
+                    });
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -30,19 +50,6 @@ const ProfilePage = () => {
         fetchUser();
     }, []);
 
-    const handleUsernameChange = async (e) => {
-        e.preventDefault();
-
-        try {
-            const response = await apiRequest("/users/change-username", "PUT", { username: newUsername });
-            if (!response.ok) throw new Error("Greška pri promjeni usernamea");
-
-            setUser(prev => ({ ...prev, username: newUsername }));
-            alert("Username uspješno promijenjen");
-        } catch (err) {
-            alert(err.message);
-        }
-    };
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
@@ -75,11 +82,42 @@ const ProfilePage = () => {
         }
     };
 
+    const handleMerchantChange = (e) => {
+        const { name, value } = e.target;
+        setMerchantData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleMerchantUpdate = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await apiRequest(
+                "/merchant/update-info",
+                "POST",
+                merchantData
+            );
+
+            if (!response.ok) {
+                throw new Error("Greška pri spremanju podataka");
+            }
+
+            alert("Podaci uspješno ažurirani");
+
+            setUser(prev => ({
+                ...prev,
+                ...merchantData
+            }));
+        } catch (err) {
+            alert(err.message);
+        }
+    };
 
     if (loading) return <p>Učitavanje...</p>;
     if (error) return <p>Greška: {error}</p>;
 
-    // Provjera je li korisnik merchant
     const isMerchant = user.role === "ROLE_MERCHANT";
 
     return (
@@ -90,33 +128,58 @@ const ProfilePage = () => {
                 <h2>Podaci o korisniku</h2>
                 <p><strong>Username:</strong> {user.username}</p>
                 <p><strong>Email:</strong> {user.email}</p>
-
-                {isMerchant && (
-                    <>
-                        <p><strong>Business Name:</strong> {user.businessName}</p>
-                        <p><strong>Address:</strong> {user.address}</p>
-                        <p><strong>City:</strong> {user.city}</p>
-                        <p><strong>Postal Code:</strong> {user.postalCode}</p>
-                        <p><strong>Country:</strong> {user.country}</p>
-                        <p><strong>Description:</strong> {user.description}</p>
-                    </>
-                )}
             </section>
 
-            <hr />
+            {isMerchant && (
+                <section>
+                    <h2>Podaci o poslovanju</h2>
+                    <form onSubmit={handleMerchantUpdate}>
+                        <input
+                            type="text"
+                            name="businessName"
+                            placeholder="Business name"
+                            value={merchantData.businessName}
+                            onChange={handleMerchantChange}
+                        />
+                        <input
+                            type="text"
+                            name="address"
+                            placeholder="Address"
+                            value={merchantData.address}
+                            onChange={handleMerchantChange}
+                        />
+                        <input
+                            type="text"
+                            name="city"
+                            placeholder="City"
+                            value={merchantData.city}
+                            onChange={handleMerchantChange}
+                        />
+                        <input
+                            type="text"
+                            name="postalCode"
+                            placeholder="Postal code"
+                            value={merchantData.postalCode}
+                            onChange={handleMerchantChange}
+                        />
+                        <input
+                            type="text"
+                            name="country"
+                            placeholder="Country"
+                            value={merchantData.country}
+                            onChange={handleMerchantChange}
+                        />
+                        <textarea
+                            name="description"
+                            placeholder="Description"
+                            value={merchantData.description}
+                            onChange={handleMerchantChange}
+                        />
+                        <button type="submit">Spremi podatke</button>
+                    </form>
+                </section>
+            )}
 
-            <section>
-                <h2>Promjena usernamea</h2>
-                <form onSubmit={handleUsernameChange}>
-                    <input
-                        type="text"
-                        value={newUsername}
-                        onChange={(e) => setNewUsername(e.target.value)}
-                        placeholder="Novi username"
-                    />
-                    <button type="submit">Spremi username</button>
-                </form>
-            </section>
 
             <hr />
 
