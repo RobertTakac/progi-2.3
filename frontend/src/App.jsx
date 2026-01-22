@@ -81,18 +81,23 @@ const App = () => {
         handleSignOut={handleSignOut} 
       />
       <main>
-        <Routes>
-            <Route
-                path="/"
-                element={<HomeRouter currentUser={currentUser} openLoginModal={openModal} />}
-            />
-          
-          <Route path="/moji-oglasi" element={
-                currentUser?.role === 'ROLE_MERCHANT' 
-                ? <MojiOglasi currentUser={currentUser} /> 
-                : <HomePage currentUser={currentUser} openLoginModal={openModal} />
-          } />
-          <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
+          <Routes>
+              <Route
+                  path="/"
+                  element={<HomeRouter currentUser={currentUser} openLoginModal={openModal} />}
+              />
+
+              <Route
+                  path="/moji-oglasi"
+                  element={
+                      currentUser?.role === 'ROLE_MERCHANT' ? (
+                          <MojiOglasi currentUser={currentUser} />
+                      ) : (
+                          <Navigate to="/" replace />
+                      )
+                  }
+              />
+              <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
             <Route path="/profil" element={<UserProfile currentUser={currentUser} />} />
             <Route path="/mapa" element={<ListingsMap />} />
