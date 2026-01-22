@@ -1,18 +1,16 @@
 package com.patuljci.gearshare.controller;
 
-import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.ReportDTO;
-import com.patuljci.gearshare.dto.ReservationDTO;
+import com.patuljci.gearshare.dto.*;
+import com.patuljci.gearshare.model.ListingImage;
 import com.patuljci.gearshare.model.Merchant;
-import com.patuljci.gearshare.service.ListingService;
-import com.patuljci.gearshare.service.MerchantService;
-import com.patuljci.gearshare.service.ReportService;
-import com.patuljci.gearshare.service.ReservationService;
+import com.patuljci.gearshare.service.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +22,14 @@ public class MerchantController {
     private final MerchantService  merchantService;
     private final ReservationService reservationService;
     private final ReportService reportService;
+    private final ImageService imageService;
 
-    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService, ReportService reportService) {
+    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService, ReportService reportService, ImageService imageService) {
         this.listingService = listingService;
         this.merchantService = merchantService;
         this.reservationService = reservationService;
         this.reportService = reportService;
+        this.imageService = imageService;
     }
 
 
@@ -88,11 +88,28 @@ public class MerchantController {
         return ResponseEntity.ok(reportService.createNewReport(reportDTO));
     }
 
-    /*
-    @PostMapping(value="/upload-image")
-    public ResponseEntity<?> uploadListingImage(@RequestParam("file")MultipartFile file){
 
-    } */
+    @PostMapping(value="/upload-image")
+    public ResponseEntity<ListingImage> uploadListingImage(@RequestParam("file")MultipartFile file, @RequestParam Long  listingID) throws IOException {
+        if(file == null || listingID==null) {
+            System.out.println("file or listing id is null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        ListingImage image = imageService.addListingImage(file, listingID);
+        if(image == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok(image);
+    }
+
+
+    @PostMapping(value="/update-info")
+    public ResponseEntity<UserDTO> updateInfo(@RequestBody MerchantRegisterDTO dto){
+        merchantService.updateMerchantInfo(dto);
+        return  ResponseEntity.ok().build();
+    }
+
+
 
     /*
     @PostMapping("/add")

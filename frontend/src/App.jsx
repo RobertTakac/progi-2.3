@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate , Navigate} from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
@@ -13,6 +13,8 @@ import VerifyCodeForm from './components/VerifyCodeForm';
 import OAuth2Redirect from "./components/OAuth2Redirect";
 import UserProfile from "./components/UserProfile.jsx";
 import ListingsMap from "./components/ListingsMap.jsx";
+import HomeRouter from './components/HomeRouter';
+import {apiRequest} from "./api/apiService.js";
 
 
 const App = () => {
@@ -42,13 +44,51 @@ const App = () => {
   const handleRoleSelect = (role) => setSelectedRole(role);
   const switchForm = (newView) => setModalView(newView);
 
-  const handleLoginSuccess = (userData) => {
-    console.log("Podaci pri prijavi:", userData); 
-    setCurrentUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); 
-    closeModal(); 
-    navigate('/');
-  };
+    const handleLoginSuccess = async (loginData) => {
+        console.log("Login response:", loginData);
+
+
+        const token = loginData.token || loginData.accessToken;
+
+        if (!token) {
+            console.error("No token received from login");
+            return;
+        }
+
+
+        localStorage.setItem("token", token);
+
+
+        try {
+            const response = await apiRequest('/users/me');
+
+            if (!response) {
+                console.error("Failed to fetch user (401 or network error)");
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`Status ${response.status}`);
+            }
+
+            const user = await response.json();
+            console.log("Fetched user from /users/me:", user);
+
+
+            setCurrentUser(user);
+            localStorage.setItem("user", JSON.stringify(user));
+
+        } catch (err) {
+            console.error("Error fetching user after login:", err);
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setCurrentUser(null);
+        }
+
+        closeModal();
+        navigate('/', { replace: true });
+    };
   const handleVerificationNeeded = (email) => {
     setEmailToVerify(email);
     setModalView('verify');
@@ -80,14 +120,23 @@ const App = () => {
         handleSignOut={handleSignOut} 
       />
       <main>
-        <Routes>
-          <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
-          <Route path="/moji-oglasi" element={
-                currentUser?.role === 'ROLE_MERCHANT' 
-                ? <MojiOglasi currentUser={currentUser} /> 
-                : <HomePage currentUser={currentUser} openLoginModal={openModal} />
-          } />
-          <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
+          <Routes>
+              <Route
+                  path="/"
+                  element={<HomeRouter currentUser={currentUser} openLoginModal={openModal} />}
+              />
+
+              <Route
+                  path="/moji-oglasi"
+                  element={
+                      currentUser?.role === 'ROLE_MERCHANT' ? (
+                          <MojiOglasi currentUser={currentUser} />
+                      ) : (
+                          <Navigate to="/" replace />
+                      )
+                  }
+              />
+              <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
             <Route path="/profil" element={<UserProfile currentUser={currentUser} />} />
             <Route path="/mapa" element={<ListingsMap />} />
