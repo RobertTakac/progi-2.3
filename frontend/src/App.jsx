@@ -13,6 +13,7 @@ import VerifyCodeForm from './components/VerifyCodeForm';
 import OAuth2Redirect from "./components/OAuth2Redirect";
 import UserProfile from "./components/UserProfile.jsx";
 import ListingsMap from "./components/ListingsMap.jsx";
+import HomeRouter from './components/HomeRouter';
 
 
 const App = () => {
@@ -81,6 +82,10 @@ const App = () => {
       />
       <main>
         <Routes>
+            <Route
+                path="/"
+                element={<HomeRouter currentUser={currentUser} openLoginModal={openModal} />}
+            />
           <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
           <Route path="/moji-oglasi" element={
                 currentUser?.role === 'ROLE_MERCHANT' 
