@@ -28,17 +28,20 @@ public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService userDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
 
     @Autowired
     public SecurityConfiguration(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            AuthenticationProvider authenticationProvider,
-            CustomUserDetailsService userDetailsService,
+            AuthenticationProvider authenticationProvider
+            ,CustomUserDetailsService userDetailsService,
             OAuth2SuccessHandler oAuth2SuccessHandler
     ) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userDetailsService = userDetailsService;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     }
 
@@ -66,6 +69,8 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
 
+
+
                 .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler))
 
                 .logout(logout -> logout
@@ -75,7 +80,6 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID")
                 )
 
-                .authenticationProvider(authenticationProvider)
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
