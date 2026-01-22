@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from '../api/apiService';
-import './AdminPanel.css.css';
+import './AdminPanel.css';
 
 const MojeRezervacijeClient = () => {
     const [reservations, setReservations] = useState([]);
