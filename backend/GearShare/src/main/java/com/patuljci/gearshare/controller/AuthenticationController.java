@@ -67,8 +67,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(admin);
     }
 
-
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto){
         System.out.println("ENDPOINT L");
@@ -76,6 +74,7 @@ public class AuthenticationController {
         String jwtToken = jwtService.generateToken(authenticatedUser);
         String role = authenticatedUser.getUserType();
         LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime(), role);
+        System.out.println("login for role: " + role);
         return ResponseEntity.ok(loginResponse);
     }
 
