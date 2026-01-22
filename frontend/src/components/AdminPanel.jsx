@@ -7,7 +7,6 @@ const AdminPanel = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-
     useEffect(() => {
         const fetchReports = async () => {
             try {
@@ -33,15 +32,19 @@ const AdminPanel = () => {
         if (!window.confirm("Jeste li sigurni da želite banati korisnika ove rezervacije?")) return;
 
         try {
-            const response = await apiRequest(`/admin/ban-user-by-reservation?reservationID=${reservationID}`, "POST");
+            const response = await apiRequest(
+                "/admin/ban-user-by-reservation",
+                "POST",
+                { reservationID } // ovdje šaljemo JSON tijelo
+            );
 
             if (!response.ok) {
                 const text = await response.text();
                 throw new Error(text || `Greška: ${response.status}`);
             }
 
-            alert("Korisnik je bannan.");
-
+            alert("Korisnik je banan.");
+            // ukloni sve reportove povezane s ovom rezervacijom s frontend-a
             setReports(prev => prev.filter(report => report.reservationID !== reservationID));
         } catch (err) {
             alert(err.message || "Greška pri bananju korisnika");
