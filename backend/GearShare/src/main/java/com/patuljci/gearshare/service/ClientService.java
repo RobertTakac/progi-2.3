@@ -87,6 +87,7 @@ public class ClientService {
         dto.setStartDate(reservation.getStartDate());
         dto.setEndDate(reservation.getEndDate());
         dto.setQuantity(reservation.getQuantity());
+        dto.setStatus(reservation.getStatus());
 
         return dto;
     }
