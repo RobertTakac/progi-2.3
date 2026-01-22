@@ -10,7 +10,9 @@ export const ENDPOINTS = {
     MERCHANT_UPDATE_LISTING: "/merchant/updateListing",
     MERCHANT_CREATE_LISTING: "/merchant/create-listing",
     MERCHANT_DELETE_LISTING: "/merchant/deleteListing",
-    LISTING: "/listing",
+    ALL_CATEGORIES: "/listing/categories",
+    NEW_CATEGORY: "/admin/categories",
+    DELETE_CATEGORY: "/admin/categories"
 };
 
 export const ERROR_MSGS = {
