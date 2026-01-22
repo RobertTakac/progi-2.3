@@ -1,7 +1,9 @@
 package com.patuljci.gearshare.service;
 
 import com.patuljci.gearshare.dto.UserDTO;
+import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.model.UserEntity;
+import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,8 +15,10 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository, EmailService emailService) {
+    private final MerchantRepository merchantRepository;
+    public UserService(UserRepository userRepository, EmailService emailService, MerchantRepository merchantRepository) {
         this.userRepository = userRepository;
+        this.merchantRepository = merchantRepository;
     }
 
 
@@ -22,12 +26,22 @@ public class UserService {
 
         String clientUser = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity user = userRepository.findByUsername(clientUser);
-
+        Merchant merchant = merchantRepository.getMerchantsByUser(user);
 
 
         UserDTO userDTO = new UserDTO();
+
         userDTO.setUsername(user.getUsername());
         userDTO.setEmail(user.getEmail());
+
+        if(merchant != null){
+            userDTO.setAddress(merchant.getAddress());
+            userDTO.setCity(merchant.getCity());
+            userDTO.setCountry(merchant.getCountry());
+            userDTO.setBusinessName(merchant.getBusinessName());
+            userDTO.setDescription(merchant.getDescription());
+            userDTO.setPostalCode(merchant.getPostalCode());
+        }
 
         return userDTO;
     }
