@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { apiRequest } from '../api/apiService';
+import "./UserProfile.css";
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
@@ -71,7 +72,7 @@ const ProfilePage = () => {
     if (error) return <p>Greška: {error}</p>;
 
     return (
-        <div>
+        <div className={"user-div"}>
             <h1>Moj profil</h1>
 
             <section>
