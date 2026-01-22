@@ -13,7 +13,7 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await apiRequest("/users/me");
+                const response = await apiRequest("/users/me", 'GET');
                 if (!response.ok) {
                     throw new Error("Greška pri dohvaćanju podataka");
                 }
