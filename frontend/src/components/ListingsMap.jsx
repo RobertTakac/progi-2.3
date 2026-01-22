@@ -57,7 +57,7 @@ function ListingsMap() {
     }
 
     return (
-        <div style={{ height: '500px', width: '100%', margin: '20px 0' }}>
+        <div style={{ height: '100%', width: '100%', margin: '20px 0' }}>
             <MapContainer
 
                 center={[45.815, 15.98]}
