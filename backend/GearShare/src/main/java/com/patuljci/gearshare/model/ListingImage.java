@@ -7,7 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "equipment_listings")
+@Table(name = "listing_image")
 @Getter
 @Setter
 public class ListingImage {
@@ -22,7 +22,8 @@ public class ListingImage {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "listing_id", unique = true, referencedColumnName="listingId", nullable = false)
+    @JoinColumn(name = "listing_id", nullable = false)
     private EquipmentListing equipmentListing;
+
 
 }

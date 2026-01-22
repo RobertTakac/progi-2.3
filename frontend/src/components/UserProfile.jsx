@@ -1,23 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { apiRequest } from '../api/apiService';
 
-const UserProfile = ({ currentUser }) => {
-    const [username, setUsername] = useState(currentUser.username);
-    const [email] = useState(currentUser.email);
+const ProfilePage = () => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const [newUsername, setNewUsername] = useState(username);
-
+    const [newUsername, setNewUsername] = useState("");
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
 
-    const handleUsernameChange = (e) => {
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await apiRequest("/users/me", 'GET');
+                if (!response.ok) {
+                    throw new Error("Greška pri dohvaćanju podataka");
+                }
+                const data = await response.json();
+                setUser(data);
+                setNewUsername(data.username);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, []);
+
+    const handleUsernameChange = async (e) => {
         e.preventDefault();
 
-        // Ovdje bi išao API poziv
-        setUsername(newUsername);
-        alert("Username uspješno promijenjen");
+        try {
+            const response = await apiRequest("/change-username", "PUT", { username: newUsername });
+            if (!response.ok) {
+                throw new Error("Greška pri promjeni usernamea");
+            }
+            setUser((prev) => ({ ...prev, username: newUsername }));
+            alert("Username uspješno promijenjen");
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
-    const handlePasswordChange = (e) => {
+    // Promjena passworda
+    const handlePasswordChange = async (e) => {
         e.preventDefault();
 
         if (!oldPassword || !newPassword) {
@@ -25,12 +54,21 @@ const UserProfile = ({ currentUser }) => {
             return;
         }
 
-        // Ovdje bi išao API poziv koji provjerava staru lozinku
-        alert("Password uspješno promijenjen");
-
-        setOldPassword("");
-        setNewPassword("");
+        try {
+            const response = await apiRequest("/change-password", "PUT", { oldPassword, newPassword });
+            if (!response.ok) {
+                throw new Error("Greška pri promjeni lozinke");
+            }
+            alert("Password uspješno promijenjen");
+            setOldPassword("");
+            setNewPassword("");
+        } catch (err) {
+            alert(err.message);
+        }
     };
+
+    if (loading) return <p>Učitavanje...</p>;
+    if (error) return <p>Greška: {error}</p>;
 
     return (
         <div>
@@ -38,8 +76,8 @@ const UserProfile = ({ currentUser }) => {
 
             <section>
                 <h2>Podaci o korisniku</h2>
-                <p><strong>Username:</strong> {username}</p>
-                <p><strong>Email:</strong> {email}</p>
+                <p><strong>Username:</strong> {user.username}</p>
+                <p><strong>Email:</strong> {user.email}</p>
             </section>
 
             <hr />
@@ -81,4 +119,4 @@ const UserProfile = ({ currentUser }) => {
     );
 };
 
-export default UserProfile;
+export default ProfilePage;
