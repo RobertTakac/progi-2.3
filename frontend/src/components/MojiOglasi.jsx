@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const MojiOglasi = ({ currentUser }) => {
   
-  const [allAds, setAllAds] = useState([]);
+  const [myAds, setMyAds] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -17,7 +17,7 @@ const MojiOglasi = ({ currentUser }) => {
   const fetchAds = async () => {
     try {
       const data = await getMerchantAllListings();
-      setAllAds(data);
+      setMyAds(data);
     } catch (err) {
       console.error("Greška pri dohvaćanju:", err);
       toast.error(err);
@@ -48,7 +48,7 @@ const MojiOglasi = ({ currentUser }) => {
     if (window.confirm("Jeste li sigurni?")) {
       try {
         await merchantDeleteListing(itemid);
-        setAllAds(allAds.filter((item) => item.id !== itemid));
+        setMyAds(myAds.filter((item) => item.id !== itemid));
       } catch(err) {
         toast.err(err);
       }
@@ -132,7 +132,7 @@ const MojiOglasi = ({ currentUser }) => {
       )}
 
       <div className="grid-container">
-        {myAds.map((item) => (
+        {myAds?.map((item) => (
           <div className="card" key={item.id}>
             <img src={item.imageUrl} alt={item.title} />
             <div className="card-content">
@@ -145,7 +145,7 @@ const MojiOglasi = ({ currentUser }) => {
             </div>
           </div>
         ))}
-        {myAds.length === 0 && <p className="no-ads-text">Još niste objavili niti jedan oglas.</p>}
+        {myAds?.length === 0 && <p className="no-ads-text">Još niste objavili niti jedan oglas.</p>}
       </div>
     </div>
   );
