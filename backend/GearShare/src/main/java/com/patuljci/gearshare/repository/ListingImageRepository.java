@@ -1,4 +1,11 @@
 package com.patuljci.gearshare.repository;
 
-public class ListingImageRepository {
+import com.patuljci.gearshare.model.ListingImage;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ListingImageRepository extends JpaRepository<ListingImage,Long> {
+
+
 }

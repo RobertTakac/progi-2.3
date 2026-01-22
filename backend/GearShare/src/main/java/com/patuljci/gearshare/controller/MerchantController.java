@@ -11,6 +11,7 @@ import com.patuljci.gearshare.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +87,12 @@ public class MerchantController {
     public ResponseEntity<ReportDTO> reportUser(@RequestBody ReportDTO reportDTO){
         return ResponseEntity.ok(reportService.createNewReport(reportDTO));
     }
+
+    /*
+    @PostMapping(value="/upload-image")
+    public ResponseEntity<?> uploadListingImage(@RequestParam("file")MultipartFile file){
+
+    } */
 
     /*
     @PostMapping("/add")

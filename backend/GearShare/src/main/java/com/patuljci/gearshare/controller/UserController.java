@@ -1,6 +1,9 @@
 package com.patuljci.gearshare.controller;
 
+import com.patuljci.gearshare.dto.UserDTO;
+import com.patuljci.gearshare.model.Client;
 import com.patuljci.gearshare.model.UserEntity;
+import com.patuljci.gearshare.repository.UserRepository;
 import com.patuljci.gearshare.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,6 +17,7 @@ import java.util.List;
 @RestController
 public class UserController {
     private final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -35,12 +39,19 @@ public class UserController {
     } */
 
     @GetMapping("/me")
-    public String getMyRole(Authentication authentication) {
+    public UserDTO getMyRole(Authentication authentication) {
 
-        return authentication.getAuthorities().stream()
+
+        String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
-                .orElse("ROLE_NOROLE"); //ne bi se smjelo dogodit
+                .orElse("ROLE_NOROLE");
+
+
+        UserDTO userDTO = userService.myInfo();
+        userDTO.setRole(role);
+
+        return userDTO;
     }
 
     @GetMapping("/test")
