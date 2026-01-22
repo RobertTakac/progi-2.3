@@ -95,6 +95,10 @@ const MojiOglasi = ({ currentUser }) => {
     setEditId(null);
   };
 
+  const updateProductField = (field) => (e) => {
+    setNewProduct({...newProduct, [field]: e.target.value});
+  }
+
   return (
     <div className="moja-oglasna-ploca">
       <div className="ads-header">
@@ -110,15 +114,15 @@ const MojiOglasi = ({ currentUser }) => {
           
           <div className="form-grid">
             <div className="form-inputs">
-              <input type="text" placeholder="Naziv" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} />
-              <input type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} />
-              <input type="text" placeholder="Dostupnost" value={newProduct.date} onChange={(e) => setNewProduct({...newProduct, date: e.target.value})} />
-              <textarea placeholder="Opis" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} />
-              <input type="text" placeholder="Lokacija" value={newProduct.location} onChange={(e) => setNewProduct({...newProduct, location: e.target.value})} />
+              <input type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
+              <input type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={updateProductField("price")} />
+              <input type="text" placeholder="Dostupnost" value={newProduct.date} onChange={updateProductField("date")} />
+              <textarea placeholder="Opis" value={newProduct.description} onChange={updateProductField("description")} />
+              <input type="text" placeholder="Lokacija" value={newProduct.location} onChange={updateProductField("location")} />
             </div>
             
             <div className="form-image-preview">
-                <input type="text" placeholder="URL slike" value={newProduct.photo} onChange={(e) => setNewProduct({...newProduct, photo: e.target.value})} />
+                <input type="text" placeholder="URL slike" value={newProduct.photo} onChange={updateProductField("photo")} />
                 <div className="preview-box">
                     {newProduct.photo && <img src={newProduct.photo} alt="Preview" />}
                 </div>
