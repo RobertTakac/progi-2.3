@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MojiOglasi.css";
-import { apiRequest } from '../api/apiService';
+import { getMerchantAllListings, merchantUpdateListing, merchantCreateListing, merchantDeleteListing } from '../services/apiService';
+import { toast } from 'react-toastify';
 
 const MojiOglasi = ({ currentUser }) => {
   
@@ -15,13 +16,11 @@ const MojiOglasi = ({ currentUser }) => {
 
   const fetchAds = async () => {
     try {
-      const res = await apiRequest('/merchant/get-all-listings', 'GET'); 
-      if (res && res.ok) {
-        const data = await res.json();
-        setAllAds(data);
-      }
+      const data = await getMerchantAllListings();
+      setAllAds(data);
     } catch (err) {
       console.error("Greška pri dohvaćanju:", err);
+      toast.error(err);
     }
   };
 
@@ -47,9 +46,11 @@ const MojiOglasi = ({ currentUser }) => {
 
   const handleDelete = async (itemid) => {
     if (window.confirm("Jeste li sigurni?")) {
-      const res = await apiRequest(`/merchant/deleteListing/${itemid}`, 'DELETE');
-      if (res && res.ok) {
+      try {
+        await merchantDeleteListing(itemid);
         setAllAds(allAds.filter((item) => item.id !== itemid));
+      } catch(err) {
+        toast.err(err);
       }
     }
   };
@@ -71,18 +72,19 @@ const MojiOglasi = ({ currentUser }) => {
       availableUntil: new Date(Date.now() + 7*24*60*60*1000).toISOString(), 
     };
 
-  const endpoint = isEditing ? '/merchant/updateListing' : '/merchant/create-listing';
-
     try {
-      const res = await apiRequest(endpoint, 'POST', adData);
-      if (res && res.ok) {
-        fetchAds(); 
-        resetForm();
+      let res = null;
+      if (isEditing) {
+        res = await merchantUpdateListing(adData);
       } else {
-        alert("Spremanje nije uspjelo.");
+        res = await merchantCreateListing(adData);
       }
+
+      fetchAds(); 
+      resetForm();
     } catch (err) {
       console.error("Greška pri slanju:", err);
+      toast.err("Spremanje nije uspjelo. Greska: ", err);
     }
   };
 

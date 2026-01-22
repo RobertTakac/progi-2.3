@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
-import { apiRequest } from '../api/apiService';
+import { apiLogin } from '../services/apiService';
 
 const LoginForm = ({ role, onSwitch, onSuccess }) => {
     const [email, setEmail] = useState('');
@@ -14,35 +14,10 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
         setLoading(true);
 
         try {
-            const res = await apiRequest('/auth/login', 'POST', {
-                email,
-                password,
-            });
-
-            if (!res || !res.ok) {
-
-                let errorMessage = `Greška: ${res.status}`;
-                try {
-                    const errorData = await res.json();
-                    errorMessage = errorData.message || errorMessage;
-                } catch (e) {
-
-                }
-                throw new Error(errorMessage);
-            }
-
-
-            const data = await res.json();
-
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-            }
-
-            onSuccess(data);
-
+            const res = await apiLogin(email, password, role);
+            onSuccess(res);
         } catch (err) {
-            console.error('Greška pri prijavi:', err);
-            setError(err.message || 'Prijava nije uspjela. Provjerite podatke.');
+            setError(err.message);
         } finally {
             setLoading(false);
         }
