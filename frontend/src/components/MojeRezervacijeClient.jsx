@@ -82,7 +82,8 @@ const MojeRezervacijeClient = () => {
                         <th>Početak</th>
                         <th>Završetak</th>
                         <th>Količina</th>
-                        <th>Akcija</th>
+                        <th>Status</th>
+                        <th>Ocijeni</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -94,6 +95,7 @@ const MojeRezervacijeClient = () => {
                             <td>{new Date(reservation.startDate).toLocaleDateString('hr-HR')}</td>
                             <td>{new Date(reservation.endDate).toLocaleDateString('hr-HR')}</td>
                             <td>{reservation.quantity}</td>
+                            <td>{reservation.status}</td>
                             <td>
                                 <button
                                     onClick={() => handleRateClick(reservation)}
