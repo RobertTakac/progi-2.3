@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MojiOglasi.css';
 import { apiRequest } from '../api/apiService';
+import './Ponuda.css';
 
 const Ponuda = ({ currentUser }) => {
   const [availableAds, setAvailableAds] = useState([]);
@@ -29,6 +30,16 @@ const Ponuda = ({ currentUser }) => {
       setLoading(false);
     }
   };
+
+    const handleReserveClick = (listing) => {
+        setSelectedListing(listing);
+        setShowReservationModal(true);
+        setReservationData({
+            startDate: '',
+            endDate: '',
+            quantity: 1
+        });
+    };
 
     const handleReservationSubmit = async (e) => {
         e.preventDefault();
