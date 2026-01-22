@@ -109,7 +109,15 @@ public class MerchantController {
         return  ResponseEntity.ok().build();
     }
 
+    @PostMapping(value="/approve")
+    public ResponseEntity<String> approveReservation(@RequestParam Long reservationID){
+        return ResponseEntity.ok(reservationService.approveReservation(reservationID));
+    }
 
+    @PostMapping(value="/disapprove")
+    public ResponseEntity<String> disapproveReservation(@RequestParam Long reservationID){
+        return ResponseEntity.ok(reservationService.disapproveReservation(reservationID));
+    }
 
     /*
     @PostMapping("/add")

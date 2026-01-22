@@ -106,5 +106,38 @@ public class ReservationService {
         };
     }
 
+    public String approveReservation(Long reservationID){
+        Reservation reservation = reservationRepository.findReservationById(reservationID);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = userRepository.findByUsername(authentication.getName());
+        Merchant merchant = merchantRepository.findMerchantByUserId(user.getId()).orElse(null);
+        if(merchant.getId() != reservation.getEquipmentListing().getMerchant().getId()){
+            return "This reservations equipment doesnt belong to this merchant";
+        }
+
+        reservation.setStatus("ACTIVE");
+
+        reservationRepository.save(reservation);
+
+
+        return "Reservation approved";
+    }
+
+    public String disapproveReservation(Long reservationID){
+        Reservation reservation = reservationRepository.findReservationById(reservationID);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = userRepository.findByUsername(authentication.getName());
+        Merchant merchant = merchantRepository.findMerchantByUserId(user.getId()).orElse(null);
+        if(merchant.getId() != reservation.getEquipmentListing().getMerchant().getId()){
+            return "This reservations equipment doesnt belong to this merchant";
+        }
+        
+        reservationRepository.delete(reservation);
+
+        return "Reservation deleted";
+    }
+
 
 }

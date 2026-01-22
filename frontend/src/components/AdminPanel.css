@@ -1,0 +1,29 @@
+.admin-panel {
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.admin-panel h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reports-table th,
+.reports-table td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.reports-table th {
+    background-color: #f0f0f0;
+}
+
+.reports-table tr:nth-child(even) {
+    background-color: #fafafa;
+}

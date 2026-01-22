@@ -36,6 +36,11 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
           <div className="navbar-auth">
               {currentUser ? (
                   <>
+
+                      <Link to="/admin" className="nav-item button-secondary">
+                          Admin
+                      </Link>
+
                       <Link to="/profil" className="nav-item button-secondary">
                           Moj profil
                       </Link>

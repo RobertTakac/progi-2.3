@@ -37,4 +37,7 @@ public class Reservation {
 
     @Column(name="quantity", nullable=false)
     private Integer quantity = 1;
+
+    @Column(name="status")
+    private String status="WAITING";
 }
