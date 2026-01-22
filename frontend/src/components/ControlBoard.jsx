@@ -20,6 +20,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
+import Backdrop from '@mui/material/Backdrop';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { getAllCategories, newCategory, deleteCategory } from "../services/apiService";
@@ -31,7 +32,7 @@ const drawerWidth = 240;
 function NewCatModal(props) {
     const { handleClose, open, loading, handleSubmit, newCat, setNewCat } = props;
 
-    const updateField = (field) => (e) => {
+    const updateCatField = (field) => (e) => {
         setNewCat({...newCat, [field]: e.target.value});
     }
 
@@ -45,7 +46,7 @@ function NewCatModal(props) {
                             name="name"
                             label="Ime"
                             value={newCat.name}
-                            onChange={updateField("name")}
+                            onChange={updateCatField("name")}
                             fullWidth
                             margin="normal"
                             required
@@ -54,7 +55,7 @@ function NewCatModal(props) {
                             name="description"
                             label="Opis"
                             value={newCat.description}
-                            onChange={updateField("description")}
+                            onChange={updateCatField("description")}
                             fullWidth
                             multiline
                             rows={3}
@@ -90,8 +91,14 @@ const ControlBoard = ({ currentUser }) => {
 
     const fetchCats = async () => {
         setLoading(true);
-        const data = await getAllCategories();
-        setAllCats(data);
+
+        try {
+            const data = await getAllCategories();
+            setAllCats(data);
+        } catch (err) {
+            toast.error(err);
+        }
+        
         setLoading(false);
     }
 
@@ -186,7 +193,14 @@ const ControlBoard = ({ currentUser }) => {
                 </List>
                 { (!allCats || allCats.length === 0) && <p className="no-ads-text">Nema kategorija.</p>}
 
-                { loading && <CircularProgress />}
+
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={loading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                
 
                 <Button variant="outlined" onClick={handleNewCat}>Stvori novu kategoriju</Button>
                 <NewCatModal open={open} handleClose={handleClose} loading={loading} handleSubmit={handleSubmit}
