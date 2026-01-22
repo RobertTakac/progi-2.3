@@ -144,7 +144,7 @@ const MojiOglasi = ({ currentUser }) => {
           </div>
         ))}
         {allAds.length === 0 && <p className="no-ads-text">Još niste objavili niti jedan oglas.</p>}
-      </div>
+      </div><p>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</p>
     </div>
   );
 };

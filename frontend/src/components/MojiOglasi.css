@@ -116,8 +116,9 @@
 }
 
 .moja-oglasna-ploca {
-  padding: 40px 20px;
+  padding: 120px 20px 40px; 
   background-color: #fff;
+  min-height: 100vh;
 }
 
 .ads-header {
@@ -126,6 +127,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border: 2px solid red; /* OVO DODAJ PRIVREMENO - ako ne vidiš crveni okvir, header je skriven */
 }
 
 .add-toggle-btn {
