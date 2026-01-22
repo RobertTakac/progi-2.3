@@ -33,28 +33,35 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
           ))}
         </div>
 
-        <div className="navbar-auth">
-          {currentUser ? (
-            <button onClick={handleSignOut} className="nav-item button-primary">
-              Sign Out
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={() => openLoginModal("login")}
-                className="nav-item button-secondary"
-              >
-                Prijavi se
-              </button>
-              <button
-                onClick={() => openLoginModal("signup")}
-                className="nav-item button-primary"
-              >
-                Registriraj se
-              </button>
-            </>
-          )}
-        </div>
+          <div className="navbar-auth">
+              {currentUser ? (
+                  <>
+                      <Link to="/profil" className="nav-item button-secondary">
+                          Moj profil
+                      </Link>
+
+                      <button onClick={handleSignOut} className="nav-item button-primary">
+                          Sign Out
+                      </button>
+                  </>
+              ) : (
+                  <>
+                      <button
+                          onClick={() => openLoginModal("login")}
+                          className="nav-item button-secondary"
+                      >
+                          Prijavi se
+                      </button>
+                      <button
+                          onClick={() => openLoginModal("signup")}
+                          className="nav-item button-primary"
+                      >
+                          Registriraj se
+                      </button>
+                  </>
+              )}
+          </div>
+
       </nav>
     </>
   );

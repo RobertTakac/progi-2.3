@@ -11,6 +11,7 @@ import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import VerifyCodeForm from './components/VerifyCodeForm';
 import OAuth2Redirect from "./components/OAuth2Redirect";
+import UserProfile from "./components/UserProfile.jsx";
 
 
 const App = () => {
@@ -87,6 +88,7 @@ const App = () => {
           } />
           <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
+            <Route path="/profil" element={<UserProfile currentUser={currentUser} />} />
         </Routes>
       </main>
       <Modal isOpen={!!modalView} onClose={closeModal}>
