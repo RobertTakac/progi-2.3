@@ -3,7 +3,7 @@ import React from 'react';
 import HomePageGuest from './HomePageGuest';
 import HomePageUser from './HomePageUser';
 import HomePageMerchant from './HomePageMerchant';
-import HomePageAdmin from './HomePageAdmin';
+import AdminPanel from "./AdminPanel.jsx";
 
 const HomeRouter = ({ currentUser, openLoginModal }) => {
 
@@ -18,7 +18,7 @@ const HomeRouter = ({ currentUser, openLoginModal }) => {
     switch (role) {
         case 'ROLE_ADMIN':
             console.log("Admin");
-            return <HomePageAdmin currentUser={currentUser} />;
+            return <AdminPanel/>;
         case 'ROLE_MERCHANT':
             console.log("Merchant");
             return <HomePageMerchant currentUser={currentUser} />;

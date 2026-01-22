@@ -16,6 +16,8 @@ import ListingsMap from "./components/ListingsMap.jsx";
 import HomeRouter from './components/HomeRouter';
 import {apiRequest} from "./api/apiService.js";
 import AdminPanel from "./components/AdminPanel.jsx";
+import MojeRezervacijeClient from './components/MojeRezervacijeClient.jsx';
+import MojeRezervacijeMerchant from './components/MojeRezervacijeMerchant.jsx';
 
 
 const App = () => {
@@ -137,6 +139,29 @@ const App = () => {
                       )
                   }
               />
+
+              <Route
+                  path="/moje-rezervacije-client"
+                  element={
+                      currentUser ? (
+                          <MojeRezervacijeClient currentUser={currentUser} />
+                      ) : (
+                          <Navigate to="/" replace />
+                      )
+                  }
+              />
+
+              <Route
+                  path="/moje-rezervacije-merchant"
+                  element={
+                      currentUser ? (
+                          <MojeRezervacijeMerchant currentUser={currentUser} />
+                      ) : (
+                          <Navigate to="/" replace />
+                      )
+                  }
+              />
+
               <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
             <Route path="/profil" element={<UserProfile currentUser={currentUser} />} />

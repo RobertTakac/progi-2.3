@@ -29,13 +29,12 @@ const AdminPanel = () => {
     }, []);
 
     const handleBanUser = async (reservationID) => {
-        if (!window.confirm("Jeste li sigurni da želite banati korisnika ove rezervacije?")) return;
+        if (!window.confirm("Jeste li sigurni da želite banati korisnika?")) return;
 
         try {
             const response = await apiRequest(
-                "/admin/ban-user-by-reservation",
-                "POST",
-                { reservationID } // ovdje šaljemo JSON tijelo
+                `/admin/ban-user-by-reservation?reservationID=${reservationID}`,
+                "POST"
             );
 
             if (!response.ok) {
@@ -44,12 +43,12 @@ const AdminPanel = () => {
             }
 
             alert("Korisnik je banan.");
-            // ukloni sve reportove povezane s ovom rezervacijom s frontend-a
             setReports(prev => prev.filter(report => report.reservationID !== reservationID));
         } catch (err) {
             alert(err.message || "Greška pri bananju korisnika");
         }
     };
+
 
     if (loading) return <p>Učitavanje reportova...</p>;
     if (error) return <p style={{ color: "red" }}>Greška: {error}</p>;
