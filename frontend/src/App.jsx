@@ -140,6 +140,7 @@ const App = () => {
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
             <Route path="/profil" element={<UserProfile currentUser={currentUser} />} />
             <Route path="/mapa" element={<ListingsMap />} />
+              <Route path="/admin" element={<ListingsMap />} />
         </Routes>
       </main>
       <Modal isOpen={!!modalView} onClose={closeModal}>
