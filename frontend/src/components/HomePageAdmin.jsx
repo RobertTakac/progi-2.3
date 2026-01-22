@@ -11,7 +11,7 @@ const HomePageAdmin = ({ currentUser }) => {
                     <p className="primary-text">
                         Pregled korisnika, oglasa, statistike i moderacije platforme.
                     </p>
-                    {/* Add admin quick links later if needed */}
+
                 </div>
                 <div className="home-image-section">
                     <img src={assets.CyclingImage} alt="" />
