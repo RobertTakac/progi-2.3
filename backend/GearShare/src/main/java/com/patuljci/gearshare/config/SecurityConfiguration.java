@@ -69,7 +69,7 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
 
-                
+
 
                 .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler))
 
@@ -80,7 +80,6 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID")
                 )
 
-                .authenticationProvider(authenticationProvider)
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
