@@ -9,12 +9,15 @@ import com.patuljci.gearshare.repository.EquipmentCategoryRepository;
 import com.patuljci.gearshare.repository.EquipmentListingRepository;
 import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import com.patuljci.gearshare.dto.EquipmentCategoryDTO;
 
 @Service
 public class ListingService {
@@ -70,6 +73,38 @@ public class ListingService {
         dto.setReturnLongitude(listing.getReturnLongitude());
 
         return dto;
+    }
+
+    private EquipmentCategoryDTO eqCatToEqCatDto(EquipmentCategory cat) {
+        EquipmentCategoryDTO dto = new EquipmentCategoryDTO();
+
+        dto.setId(cat.getId());
+        dto.setName(cat.getName());
+        dto.setDescription(cat.getDescription());
+
+        return dto;
+    }
+
+    public EquipmentCategoryDTO createCategory (EquipmentCategoryDTO newCategoryDto) {
+        newCategoryDto.setId(0L);
+
+        Optional<EquipmentCategory> cat = equipmentCategoryRepository.findEquipmentCategoryByName(newCategoryDto.getName());
+        if (cat.isPresent()) {
+            throw new IllegalArgumentException("Kategorija s imenom " + newCategoryDto.getName() + " vec postoji!");
+        }
+
+        EquipmentCategory newCat = new EquipmentCategory();
+        newCat.setName(newCategoryDto.getName());
+        newCat.setDescription(newCategoryDto.getDescription());
+
+        equipmentCategoryRepository.save(newCat);
+        return eqCatToEqCatDto(newCat);
+    }
+    
+    public void deleteCategory(Long id) {
+        EquipmentCategory cat = equipmentCategoryRepository.findEquipmentCategoryById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Kategorija s id " + id + " ne postoji."));
+        equipmentCategoryRepository.delete(cat);
     }
 
     public List<ListingDto> allListings(){

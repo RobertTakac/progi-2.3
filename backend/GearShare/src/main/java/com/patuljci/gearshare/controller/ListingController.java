@@ -1,6 +1,7 @@
 package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
+import com.patuljci.gearshare.dto.EquipmentCategoryDTO;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.service.ListingService;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,6 @@ public class ListingController {
         //System.out.println("trazim kategorije");
 
         return ResponseEntity.ok(listingService.allCategories());
-
     }
 
     /// DOHVATI SVE OGLASE
