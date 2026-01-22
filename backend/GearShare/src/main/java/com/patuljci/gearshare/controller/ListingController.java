@@ -2,6 +2,7 @@ package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ListingDto;
 import com.patuljci.gearshare.model.EquipmentCategory;
+import com.patuljci.gearshare.service.ImageService;
 import com.patuljci.gearshare.service.ListingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,11 @@ import java.util.List;
 public class ListingController {
 
     private final ListingService listingService;
+    private final ImageService imageService;
 
-    ListingController(ListingService listingService) {
+    ListingController(ListingService listingService, ImageService imageService) {
         this.listingService = listingService;
+        this.imageService = imageService;
     }
 
     /// DOHVATI SVE KATEGORIJE
@@ -73,5 +76,13 @@ public class ListingController {
     public ListingDto createListing(@RequestBody ListingDto newListing) {
         return listingService.createListing(newListing);
     }
+
+
+    @GetMapping(value="/get-image")
+    public ResponseEntity<byte[]> getImage(@RequestParam Long  listingID){
+        return ResponseEntity.ok(imageService.getImage(listingID));
+    }
+
+
 
 }
