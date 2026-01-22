@@ -15,6 +15,7 @@ import VerifyCodeForm from './components/VerifyCodeForm';
 import OAuth2Redirect from "./components/OAuth2Redirect";
 import AuthorisationGuard from './components/AuthorisationGuard';
 import RoleGuard from './components/RoleGuard';
+import ControlBoard from './components/ControlBoard';
 
 
 const App = () => {
@@ -105,6 +106,10 @@ const App = () => {
 
             <Route element={<RoleGuard user={currentUser} allowedRoles={["admin", "merchant", "client"]} />}>
               <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
+            </Route>
+
+            <Route element={<RoleGuard user={currentUser} allowedRoles={["admin"]} />}>
+              <Route path="/controlboard" element={<ControlBoard currentUser={currentUser} />} />
             </Route>
           </Route>
 

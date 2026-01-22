@@ -11,14 +11,17 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
     ...(currentUser ? [{ name: 'Ponuda', path: '/ponuda' }] : [])
   ];
 
-  let navigationLinks = [...baseLinks];
-
-  if (currentUser) {
-    if (currentUser.type === "merchant") {
-      navigationLinks.push({ name: "Moji Oglasi", path: "/moji-oglasi" });
-    }
+  
+  let currUsrType = currentUser?.type;
+  if (currUsrType === "merchant" || currUsrType == "admin") {
+    baseLinks.push({ name: "Moji Oglasi", path: "/moji-oglasi" });
   }
 
+  if (currUsrType == "admin") {
+    baseLinks.push({ name: "Kontrolna ploca", path: "/controlboard" });
+  }
+  
+  let navigationLinks = [...baseLinks];
   return (
     <>
       <nav className="navbar">
