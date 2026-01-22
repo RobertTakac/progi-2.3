@@ -53,7 +53,6 @@ public class SecurityConfiguration {
 
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-
                         .requestMatchers("/auth/**", "/error", "/listing/**", "/oauth2/**").permitAll()
 
                         .requestMatchers("/merchant/**").hasRole("MERCHANT")
