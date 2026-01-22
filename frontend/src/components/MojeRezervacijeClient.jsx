@@ -13,7 +13,7 @@ const MojeRezervacijeClient = () => {
     const fetchReservations = async () => {
         setLoading(true);
         try {
-            const res = await apiRequest('/client/reservations', 'GET');
+            const res = await apiRequest('/client/get-my-reservations', 'GET');
             if (res && res.ok) {
                 const data = await res.json();
 
@@ -107,7 +107,7 @@ const MojeRezervacijeClient = () => {
                     </tbody>
                 </table>
             ) : (
-                <p>Nemate završenih rezervacija.</p>
+                <p>Nemate rezervacija.</p>
             )}
 
 
