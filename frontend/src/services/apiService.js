@@ -31,16 +31,16 @@ apiClient.interceptors.request.use(
     }
 );
 
-apiClient.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            tokenExpired();
-        }
+// apiClient.interceptors.response.use(
+//     (response) => response,
+//     (error) => {
+//         if (error.response && error.response.status === 401) {
+//             tokenExpired();
+//         }
 
-        return Promise.reject(error);
-    }
-);
+//         return Promise.reject(error);
+//     }
+// );
 
 /*
  *  API Calls

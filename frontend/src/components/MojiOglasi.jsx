@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./MojiOglasi.css";
-import { getMerchantAllListings, merchantUpdateListing, merchantCreateListing, merchantDeleteListing } from '../services/apiService';
+import { getMerchantAllListings, merchantUpdateListing, merchantCreateListing, merchantDeleteListing, getAllCategories } from '../services/apiService';
 import { toast } from 'react-toastify';
+
+const emptyProduct = { name: "", price: "", date: "", description: "", photo: "", deposit: "", location: "", categoryName: "" };
 
 const MojiOglasi = ({ currentUser }) => {
   
@@ -9,10 +11,9 @@ const MojiOglasi = ({ currentUser }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [categories, setCats] = useState([]);
 
-  const [newProduct, setNewProduct] = useState({
-    name: "", price: "", date: "", description: "", photo: "", deposit: "", location: ""
-  });
+  const [newProduct, setNewProduct] = useState(emptyProduct);
 
   const fetchAds = async () => {
     try {
@@ -24,22 +25,25 @@ const MojiOglasi = ({ currentUser }) => {
     }
   };
 
+  const fetchCats = async () => {
+    try {
+      const data = await getAllCategories();
+      setCats(data);
+    } catch (err) {
+      console.error("Greška pri dohvaćanju:", err);
+      toast.error(err);
+    }
+  }
+
   useEffect(() => {
     fetchAds();
+    fetchCats();
   }, []);
 
   const startEdit = (product) => {
     setIsEditing(true);
     setEditId(product.id);
-    setNewProduct({
-      name: product.title,
-      price: product.dailyPrice,
-      date: product.availableUntil || "",
-      description: product.description || "",
-      photo:  "",
-      deposit: product.depositAmount || "",
-      location: product.pickupCity || ""
-    });
+    setNewProduct(structuredClone(product));
     setShowAddForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
   };
@@ -55,17 +59,19 @@ const MojiOglasi = ({ currentUser }) => {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
+    
     if (!newProduct.name || !newProduct.price) return alert("Ime i cijena su obavezni.");
 
     const adData = {
       ...(isEditing && { id: editId }),
       title: newProduct.name,
       description: newProduct.description,
+      categoryName: newProduct.categoryName,
       dailyPrice: parseFloat(newProduct.price),
       depositAmount: parseFloat(newProduct.deposit) || 0, 
       pickupCity: newProduct.location,
-      categoryName: "Sport",
       currency: "EUR",
       isActive: true,
       availableFrom: new Date().toISOString(),
@@ -74,14 +80,21 @@ const MojiOglasi = ({ currentUser }) => {
 
     try {
       let res = null;
-      if (isEditing) {
-        res = await merchantUpdateListing(adData);
-      } else {
-        res = await merchantCreateListing(adData);
+
+      try {
+        if (isEditing) {
+          res = await merchantUpdateListing(adData);
+        } else {
+          res = await merchantCreateListing(adData);
+        }
+
+        console.log("res:", res);
+        resetForm();
+      } catch(err) {
+        toast.error(err);
       }
 
-      fetchAds(); 
-      resetForm();
+      await fetchAds(); 
     } catch (err) {
       console.error("Greška pri slanju:", err);
       toast.error("Spremanje nije uspjelo. Greska: ", err);
@@ -89,7 +102,7 @@ const MojiOglasi = ({ currentUser }) => {
   };
 
   const resetForm = () => {
-    setNewProduct({ name: "", price: "", date: "", description: "", photo: "", deposit: "", location: "" });
+    setNewProduct(emptyProduct);
     setShowAddForm(false);
     setIsEditing(false);
     setEditId(null);
@@ -102,7 +115,7 @@ const MojiOglasi = ({ currentUser }) => {
   return (
     <div className="moja-oglasna-ploca">
       <div className="ads-header">
-        <h2>Moji Oglasi ({currentUser?.name})</h2>
+        <h2>Moji Oglasi</h2>
         <button className="add-toggle-btn" onClick={isEditing ? resetForm : () => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Odustani" : "Dodaj novi oglas"}
         </button>
@@ -112,26 +125,40 @@ const MojiOglasi = ({ currentUser }) => {
         <div className="add-ad-container">
           <h3>{isEditing ? "Uredi Oglas" : "Novi Oglas"}</h3>
           
-          <div className="form-grid">
-            <div className="form-inputs">
-              <input type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
-              <input type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={updateProductField("price")} />
-              <input type="text" placeholder="Dostupnost" value={newProduct.date} onChange={updateProductField("date")} />
-              <textarea placeholder="Opis" value={newProduct.description} onChange={updateProductField("description")} />
-              <input type="text" placeholder="Lokacija" value={newProduct.location} onChange={updateProductField("location")} />
+          <form onSubmit={async (e) => await handleSave(e)}>
+            <div className="form-grid">
+              <div className="form-inputs">
+                <input required name="name" type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
+                <input required name="price" type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={updateProductField("price")} />
+                <input required name="date" type="text" placeholder="Dostupnost" value={newProduct.date} onChange={updateProductField("date")} />
+                <textarea required placeholder="Opis" value={newProduct.description} onChange={updateProductField("description")} />
+                <input required name="location" type="text" placeholder="Lokacija" value={newProduct.location} onChange={updateProductField("location")} />
+                <select required name="categories" id="category-select">
+                  <option value="">Izaberite kategoriju</option>
+                  {
+                    categories?.map(currCat => {
+                      return(
+                        <option value={newProduct.categoryName} key={currCat.id} onChange={updateProductField("categoryName")}>
+                          {currCat.name}
+                        </option>
+                      );
+                    })
+                  }
+                </select>
+              </div>
+              
+              <div className="form-image-preview">
+                  <input required name="photo" type="text" placeholder="URL slike" value={newProduct.photo} onChange={updateProductField("photo")} />
+                  <div className="preview-box">
+                      {newProduct.photo && <img src={newProduct.photo} alt="Preview" style={{ objectFit: "contain" }} />}
+                  </div>
+              </div>
             </div>
-            
-            <div className="form-image-preview">
-                <input type="text" placeholder="URL slike" value={newProduct.photo} onChange={updateProductField("photo")} />
-                <div className="preview-box">
-                    {newProduct.photo && <img src={newProduct.photo} alt="Preview" />}
-                </div>
-            </div>
-          </div>
 
-          <button onClick={handleSave} className="publish-btn">
-            {isEditing ? "Spremi promjene" : "Objavi Oglas"}
-          </button>
+            <button type="submit" className="publish-btn">
+              {isEditing ? "Spremi promjene" : "Objavi Oglas"}
+            </button>
+          </form>
         </div>
       )}
 
