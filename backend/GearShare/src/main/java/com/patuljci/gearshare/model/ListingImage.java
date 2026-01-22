@@ -18,7 +18,7 @@ public class ListingImage {
 
     @Basic
     @Lob
-    @Column(name = "image",nullable = false)
+    @Column(name = "image",nullable = false, columnDefinition = "BYTEA")
     private byte[] image;
 
     @ManyToOne
