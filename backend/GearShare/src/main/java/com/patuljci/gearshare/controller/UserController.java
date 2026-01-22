@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RequestMapping("/users")
@@ -78,6 +79,11 @@ public class UserController {
 
         userService.newPassword(newPasswordDTO.getNewPassword());
         return ResponseEntity.ok("Password changed");
+    }
+
+    @GetMapping(value="/merchant-rating")
+    public ResponseEntity<BigDecimal> getRating(@RequestParam Long merchantID){
+        return ResponseEntity.ok(userService.getMerchantRating(merchantID));
     }
 
 
