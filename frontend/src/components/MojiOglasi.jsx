@@ -81,19 +81,14 @@ const MojiOglasi = ({ currentUser }) => {
     try {
       let res = null;
 
-      try {
-        if (isEditing) {
-          res = await merchantUpdateListing(adData);
-        } else {
-          res = await merchantCreateListing(adData);
-        }
-
-        console.log("res:", res);
-        resetForm();
-      } catch(err) {
-        toast.error(err);
+      if (isEditing) {
+        res = await merchantUpdateListing(adData);
+      } else {
+        res = await merchantCreateListing(adData);
       }
 
+      console.log("res:", res);
+      resetForm();
       await fetchAds(); 
     } catch (err) {
       console.error("Greška pri slanju:", err);
@@ -125,7 +120,7 @@ const MojiOglasi = ({ currentUser }) => {
         <div className="add-ad-container">
           <h3>{isEditing ? "Uredi Oglas" : "Novi Oglas"}</h3>
           
-          <form onSubmit={async (e) => await handleSave(e)}>
+          <form onSubmit={handleSave}>
             <div className="form-grid">
               <div className="form-inputs">
                 <input required name="name" type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
@@ -133,12 +128,12 @@ const MojiOglasi = ({ currentUser }) => {
                 <input required name="date" type="text" placeholder="Dostupnost" value={newProduct.date} onChange={updateProductField("date")} />
                 <textarea required placeholder="Opis" value={newProduct.description} onChange={updateProductField("description")} />
                 <input required name="location" type="text" placeholder="Lokacija" value={newProduct.location} onChange={updateProductField("location")} />
-                <select required name="categories" id="category-select">
+                <select required name="categories" id="category-select" value={newProduct.categoryName} onChange={updateProductField("categoryName")}>
                   <option value="">Izaberite kategoriju</option>
                   {
                     categories?.map(currCat => {
                       return(
-                        <option value={newProduct.categoryName} key={currCat.id} onChange={updateProductField("categoryName")}>
+                        <option value={currCat.name} key={currCat.id}>
                           {currCat.name}
                         </option>
                       );
