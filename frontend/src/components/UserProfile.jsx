@@ -54,7 +54,7 @@ const ProfilePage = () => {
 
         try {
             const response = await apiRequest(
-                "/change-password",
+                "/users/change-password",
                 "POST",
                 {
                     password: oldPassword,
