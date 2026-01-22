@@ -18,7 +18,7 @@ const HomeRouter = ({ currentUser, openLoginModal }) => {
         return <HomePageAdmin currentUser={currentUser} />;
     }
 
-    if (role === 'ROLE_MERCHANT') {
+    if (role === 'merchant') {
         return <HomePageMerchant currentUser={currentUser} />;
     }
 
