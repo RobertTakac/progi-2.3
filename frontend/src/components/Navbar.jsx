@@ -7,7 +7,7 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
 
   const baseLinks = [
     { name: "Home", path: "/" },
-    { name: "Lokacije", path: "/lokacije" },
+    { name: "Lokacije", path: "/mapa" },
     ...(currentUser ? [{ name: 'Ponuda', path: '/ponuda' }] : [])
   ];
 
