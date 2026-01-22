@@ -25,6 +25,8 @@ const MojiOglasi = ({ currentUser }) => {
   currency: "EUR",
   quantityAvailable: 1,
   photo: "", 
+  availableFrom: "", 
+  availableUntil: "",
   pickupAddress: "", pickupArea: "", pickupCity: "", pickupPostalCode: "", pickupCountry: "Hrvatska",
   returnAddress: "", returnArea: "", returnCity: "", returnPostalCode: "", returnCountry: "Hrvatska",
 });
@@ -48,6 +50,9 @@ const MojiOglasi = ({ currentUser }) => {
   const startEdit = (product) => {
     setIsEditing(true);
     setEditId(product.id);
+
+    const formatForInput = (dateStr) => dateStr ? dateStr.slice(0, 16) : "";
+
     setNewProduct({
       categoryName: product.categoryName || CATEGORIES[0],
       title: product.title || "",
@@ -57,6 +62,8 @@ const MojiOglasi = ({ currentUser }) => {
       depositAmount: product.depositAmount || "",
       currency: product.currency || "EUR",
       quantityAvailable: product.quantityAvailable || 1,
+      availableFrom: formatForInput(product.availableFrom),
+      availableUntil: formatForInput(product.availableUntil),
       pickupAddress: product.pickupAddress || "",
       pickupCity: product.pickupCity || "",
       pickupPostalCode: product.pickupPostalCode || "",
@@ -79,28 +86,28 @@ const MojiOglasi = ({ currentUser }) => {
     if (!newProduct.title || !newProduct.dailyPrice) return alert("Ime i cijena su obavezni.");
 
     const adData = {
-    ...(isEditing && { id: editId }),
-    categoryName: newProduct.categoryName,
-    title: newProduct.title,
-    description: newProduct.description,
-    dailyPrice: parseFloat(newProduct.dailyPrice),
-    depositAmount: parseFloat(newProduct.depositAmount) || 0,
-    currency: newProduct.currency,
-    quantityAvailable: parseInt(newProduct.quantityAvailable),
-    isActive: true,
-    imageUrl: newProduct.photo,
-    availableFrom: new Date().toISOString(),
-    availableUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    pickupAddress: newProduct.pickupAddress,
-    pickupArea: newProduct.pickupArea,
-    pickupCity: newProduct.pickupCity,
-    pickupPostalCode: newProduct.pickupPostalCode,
-    pickupCountry: newProduct.pickupCountry,
-    returnAddress: newProduct.returnAddress,
-    returnArea: newProduct.returnArea,
-    returnCity: newProduct.returnCity,
-    returnPostalCode: newProduct.returnPostalCode,
-    returnCountry: newProduct.returnCountry,
+      ...(isEditing && { id: editId }),
+      categoryName: newProduct.categoryName,
+      title: newProduct.title,
+      description: newProduct.description,
+      dailyPrice: parseFloat(newProduct.dailyPrice),
+      depositAmount: parseFloat(newProduct.depositAmount) || 0,
+      currency: newProduct.currency,
+      quantityAvailable: parseInt(newProduct.quantityAvailable),
+      isActive: true,
+      imageUrl: newProduct.photo,
+      availableFrom: new Date().toISOString(),
+      availableUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      pickupAddress: newProduct.pickupAddress,
+      pickupArea: newProduct.pickupArea,
+      pickupCity: newProduct.pickupCity,
+      pickupPostalCode: newProduct.pickupPostalCode,
+      pickupCountry: newProduct.pickupCountry,
+      returnAddress: newProduct.returnAddress,
+      returnArea: newProduct.returnArea,
+      returnCity: newProduct.returnCity,
+      returnPostalCode: newProduct.returnPostalCode,
+      returnCountry: newProduct.returnCountry,
   };
 
   const endpoint = isEditing ? '/merchant/updateListing' : '/merchant/create-listing';
@@ -108,7 +115,8 @@ const MojiOglasi = ({ currentUser }) => {
     try {
       const res = await apiRequest(endpoint, 'POST', adData);
       if (res && res.ok) {
-        fetchAds(); 
+        alert("Oglas uspješno objavljen!");
+        await fetchAds(); 
         resetForm();
       } else {
         alert("Spremanje nije uspjelo.");
@@ -127,6 +135,8 @@ const MojiOglasi = ({ currentUser }) => {
     depositAmount: "",
     currency: "EUR",
     quantityAvailable: 1,
+    availableFrom: "",
+    availableUntil: "",
     photo: "", 
     pickupAddress: "", pickupArea: "", pickupCity: "", pickupPostalCode: "", pickupCountry: "Hrvatska",
     returnAddress: "", returnArea: "", returnCity: "", returnPostalCode: "", returnCountry: "Hrvatska",
@@ -161,6 +171,26 @@ const MojiOglasi = ({ currentUser }) => {
                 <input type="number" placeholder="Cijena po danu (€)" value={newProduct.dailyPrice} onChange={(e) => setNewProduct({...newProduct, dailyPrice: e.target.value})} />
                 <input type="number" placeholder="Polog (€)" value={newProduct.depositAmount} onChange={(e) => setNewProduct({...newProduct, depositAmount: e.target.value})} />
                 <input type="number" placeholder="Količina" value={newProduct.quantityAvailable} onChange={(e) => setNewProduct({...newProduct, quantityAvailable: e.target.value})} />
+
+                <div className="date-inputs" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '15px' }}>
+                  <div className="form-group">
+                    <label style={{ fontSize: '0.8rem', color: '#666' }}>Dostupno od:</label>
+                    <input 
+                      type="datetime-local" 
+                      value={newProduct.availableFrom} 
+                      onChange={(e) => setNewProduct({...newProduct, availableFrom: e.target.value})} 
+                    />
+                  </div>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.8rem', color: '#666' }}>Dostupno do:</label>
+                  <input 
+                    type="datetime-local" 
+                    value={newProduct.availableUntil} 
+                    onChange={(e) => setNewProduct({...newProduct, availableUntil: e.target.value})} 
+                  />
+                </div>
+              </div>
+
               </div>
             </div>
           </div>
