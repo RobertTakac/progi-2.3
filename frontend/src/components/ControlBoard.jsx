@@ -13,9 +13,12 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import CircularProgress from '@mui/material/CircularProgress';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
@@ -28,6 +31,10 @@ const drawerWidth = 240;
 function NewCatModal(props) {
     const { handleClose, open, loading, handleSubmit, newCat, setNewCat } = props;
 
+    const updateField = (field) => (e) => {
+        setNewCat({...newCat, [field]: e.target.value});
+    }
+
     return (
         <Dialog onClose={handleClose} open={open} fullWidth>
             <form onSubmit={handleSubmit}>
@@ -38,7 +45,7 @@ function NewCatModal(props) {
                             name="name"
                             label="Ime"
                             value={newCat.name}
-                            onChange={(e) => { setNewCat({...newCat, name: e.target.value}) }}
+                            onChange={updateField("name")}
                             fullWidth
                             margin="normal"
                             required
@@ -47,7 +54,7 @@ function NewCatModal(props) {
                             name="description"
                             label="Opis"
                             value={newCat.description}
-                            onChange={(e) => { setNewCat({...newCat, description: e.target.value}) }}
+                            onChange={updateField("description")}
                             fullWidth
                             multiline
                             rows={3}
@@ -61,7 +68,7 @@ function NewCatModal(props) {
                     </Button>
 
                     <Button type="submit" color="primary" variant="contained" disabled={loading}>
-                        {loading ? "Spremanje..." : "Spremi"}
+                        {loading ? <CircularProgress /> : "Spremi"}
                     </Button>
                 </DialogActions>
             </form>
@@ -82,8 +89,10 @@ const ControlBoard = ({ currentUser }) => {
     const [open, setOpen] = useState(false);
 
     const fetchCats = async () => {
+        setLoading(true);
         const data = await getAllCategories();
         setAllCats(data);
+        setLoading(false);
     }
 
     const handleNewCat = () => {
@@ -101,17 +110,27 @@ const ControlBoard = ({ currentUser }) => {
         setLoading(true);
 
         try {
-            const newCatData = await newCategory(newCat);
-            if (newCatData) {
-                setAllCats([...allCats, newCatData]);
-            }
+            await newCategory(newCat);
         } catch (err) {
             toast.error(err);
-        } finally {
-            setLoading(false);
         }
 
         handleClose();
+        await fetchCats();
+        setLoading(false);
+    }
+
+    const handleDelete = async (id) => {
+        setLoading(true);
+
+        try {
+            await deleteCategory(id);
+        } catch (err) {
+            toast.error(err);
+        }
+
+        await fetchCats();
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -158,11 +177,16 @@ const ControlBoard = ({ currentUser }) => {
                         return(
                             <ListItem key={currCat.id} disablePadding>
                                 <ListItemText primary={currCat.name} secondary={currCat.description} />
+                                <IconButton aria-label="delete" color="primary" onClick={() => handleDelete(currCat.id)}>
+                                    <DeleteIcon />
+                                </IconButton>
                             </ListItem>
                         );
                     }) }
                 </List>
                 { (!allCats || allCats.length === 0) && <p className="no-ads-text">Nema kategorija.</p>}
+
+                { loading && <CircularProgress />}
 
                 <Button variant="outlined" onClick={handleNewCat}>Stvori novu kategoriju</Button>
                 <NewCatModal open={open} handleClose={handleClose} loading={loading} handleSubmit={handleSubmit}
