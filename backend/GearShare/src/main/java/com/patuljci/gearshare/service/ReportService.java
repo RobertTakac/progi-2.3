@@ -70,6 +70,7 @@ public class ReportService {
         clientRepository.save(client);
         return "Client has been banned";
     }
+
     @Transactional
     public String banUserByReservationID(Long reservationID) {
         if (reservationID == null) return "ReservationID cannot be null";
@@ -94,7 +95,11 @@ public class ReportService {
             return "Client ID is null";
         }
 
-        return banUser(clientId);
+        client.setCanRent(false);
+        clientRepository.save(client);
+
+        return "Client has been banned!";
+        //return banUser(clientId);
     }
 
     @Transactional

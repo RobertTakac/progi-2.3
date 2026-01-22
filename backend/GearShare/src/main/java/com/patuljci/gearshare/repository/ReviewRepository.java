@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findReviewsByMerchant(Merchant merchant);
+    List<Review> findReviewsByReservation_EquipmentListing_Merchant(Merchant merchant);
 
 }
