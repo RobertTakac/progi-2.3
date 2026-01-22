@@ -30,6 +30,7 @@ public class ApplicationConfiguration {
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
     @Bean
     @Lazy
     AuthenticationManager authenticationManager( AuthenticationConfiguration config) throws Exception{

@@ -47,14 +47,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             if(client.get().getCanRent()==true){
                 role="ROLE_CLIENT";
-            }
-            else{
+            } else {
                 role="ROLE_BANNED";
             }
 
         } else {
             role="ROLE_NOROLE";
-            //throw new UsernameNotFoundException("User not found: " + username);
         }
 
         System.out.println("User is " + role);
