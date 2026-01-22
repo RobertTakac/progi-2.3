@@ -34,7 +34,7 @@ const ProfilePage = () => {
         e.preventDefault();
 
         try {
-            const response = await apiRequest("/change-username", "PUT", { username: newUsername });
+            const response = await apiRequest("/users/change-username", "PUT", { username: newUsername });
             if (!response.ok) throw new Error("Greška pri promjeni usernamea");
 
             setUser(prev => ({ ...prev, username: newUsername }));
