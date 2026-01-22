@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './AuthForms.css';
 import { apiLogin } from '../services/apiService';
 
-const LoginForm = ({ role, onSwitch, onSuccess }) => {
+const LoginForm = ({ type, onSwitch, onSuccess }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -14,7 +14,7 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
         setLoading(true);
 
         try {
-            const res = await apiLogin(email, password, role);
+            const res = await apiLogin(email, password, type);
             onSuccess(res);
         } catch (err) {
             setError(err.message);
@@ -25,7 +25,7 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
 
     return (
         <div className="auth-container">
-            <h2>Prijava ({role === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
+            <h2>Prijava ({type === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
 
             <button
                 className="google-btn"

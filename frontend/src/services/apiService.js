@@ -159,3 +159,32 @@ export const merchantDeleteListing = async(listing) => {
         throw err;
     }
 }
+
+export const getAllCategories = async () => {
+    try {
+        const res = await apiClient.get(ENDPOINTS.ALL_CATEGORIES);
+        return res.data;
+    } catch(err) {
+        console.error("Get all categories error: ", err.response?.data || err.message);
+        throw err;
+    }
+}
+
+export const newCategory = async (data) => {
+    try {
+        const res = await apiClient.post(ENDPOINTS.NEW_CATEGORY, data);
+        return res.data;
+    } catch(err) {
+        console.error("Create new category error: ", err.response?.data || err.message);
+        throw err;
+    }
+}
+
+export const deleteCategory = async (delId) => {
+    try {
+        await apiClient.delete(`${ENDPOINTS.NEW_CATEGORY}/${delId}`);
+    } catch(err) {
+        console.error("Delete category error: ", err.response?.data || err.message);
+        throw err;
+    }
+}

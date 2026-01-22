@@ -94,7 +94,7 @@ const App = () => {
         openLoginModal={openModal}
         handleSignOut={handleSignOut}
       />
-      
+
       <main>
         <Routes>
           <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
