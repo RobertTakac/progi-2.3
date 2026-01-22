@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import { useEffect, useState } from 'react';
+import {apiRequest} from "../api/apiService.js";
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -12,18 +13,51 @@ L.Icon.Default.mergeOptions({
 
 function ListingsMap() {
     const [listings, setListings] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        const fetchListings = async () => {
+            try {
+                setLoading(true);
+                const response = await apiRequest('/listing/all');
 
-        fetch('/listing/all')
-            .then(res => res.json())
-            .then(data => setListings(data || []))
-            .catch(err => console.error("Cannot load listings for map", err));
+                if (!response) {
 
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with status ${response.status}`);
+                }
+
+                const data = await response.json();
+                setListings(data || []);
+            } catch (err) {
+                console.error("Cannot load listings for map:", err);
+                setError("Ne mogu učitati oglase. Pokušajte kasnije.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchListings();
     }, []);
 
+    if (loading) {
+        return <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            Učitavam oglase na karti...
+        </div>;
+    }
+
+    if (error) {
+        return <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'red' }}>
+            {error}
+        </div>;
+    }
+
     return (
-        <div style={{ height: '500px', width: '100%', margin: '20px 0' }}>
+        <div style={{ height: '70vh', width: '100%', margin: '20px 0' }}>
             <MapContainer
 
                 center={[45.815, 15.98]}
