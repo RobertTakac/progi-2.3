@@ -86,7 +86,7 @@ const App = () => {
                 path="/"
                 element={<HomeRouter currentUser={currentUser} openLoginModal={openModal} />}
             />
-          <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
+          
           <Route path="/moji-oglasi" element={
                 currentUser?.role === 'ROLE_MERCHANT' 
                 ? <MojiOglasi currentUser={currentUser} /> 

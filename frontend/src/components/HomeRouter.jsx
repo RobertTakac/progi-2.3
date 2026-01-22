@@ -22,7 +22,7 @@ const HomeRouter = ({ currentUser, openLoginModal }) => {
         return <HomePageMerchant currentUser={currentUser} />;
     }
 
-    // Default logged-in user
+
     return <HomePageUser currentUser={currentUser} openLoginModal={openLoginModal} />;
 };
 
