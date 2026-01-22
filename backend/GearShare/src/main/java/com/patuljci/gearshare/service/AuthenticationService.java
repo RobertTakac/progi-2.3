@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -109,7 +110,7 @@ public class AuthenticationService {
         UserEntity user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.getGoogleId() != null && user.getPassword() == null) {
+        if (user.getGoogleId() != null) {
             throw new RuntimeException(
                     "This account was created with Google. Please sign in with Google or set a password."
             );
@@ -222,7 +223,9 @@ public class AuthenticationService {
         user.setEmail(email);
         user.setUsername(name);
 
-        user.setPassword(null);
+        user.setPassword(
+                passwordEncoder.encode(UUID.randomUUID().toString())
+        );
         user.setEnabled(true);
 
         return userRepository.save(user);
