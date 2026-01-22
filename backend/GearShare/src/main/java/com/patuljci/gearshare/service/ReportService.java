@@ -78,7 +78,15 @@ public class ReportService {
 
         List<Report> reports = reportRepository.findReportByReservation(reservation);
 
-        reportRepository.deleteByReservation(reservation);
+        for(int i=0; i<reports.size(); i++){
+            reportRepository.deleteById( reports.get(i).getId() );
+        }
+
+
+
+
+
+        //reportRepository.deleteByReservation(reservation);
 
         Client client = reservation.getClient();
 
@@ -86,7 +94,12 @@ public class ReportService {
         return banUser(client.getClient_id());
     }
 
+    public String deleteReport(Long reportID){
 
+        reportRepository.deleteById(reportID);
+
+        return "Report deleted";
+    }
 
 
     public List<ReportDTO> getALlReports(){
