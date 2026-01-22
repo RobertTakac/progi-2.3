@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { apiRequest } from '../api/apiService';
+import "./UserProfile.css";
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
