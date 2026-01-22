@@ -15,6 +15,7 @@ import UserProfile from "./components/UserProfile.jsx";
 import ListingsMap from "./components/ListingsMap.jsx";
 import HomeRouter from './components/HomeRouter';
 import {apiRequest} from "./api/apiService.js";
+import AdminPanel from "./components/AdminPanel.jsx";
 
 
 const App = () => {
@@ -140,7 +141,7 @@ const App = () => {
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
             <Route path="/profil" element={<UserProfile currentUser={currentUser} />} />
             <Route path="/mapa" element={<ListingsMap />} />
-              <Route path="/admin" element={<ListingsMap />} />
+              <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </main>
       <Modal isOpen={!!modalView} onClose={closeModal}>
