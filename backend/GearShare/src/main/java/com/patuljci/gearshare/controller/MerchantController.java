@@ -1,8 +1,6 @@
 package com.patuljci.gearshare.controller;
 
-import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.ReportDTO;
-import com.patuljci.gearshare.dto.ReservationDTO;
+import com.patuljci.gearshare.dto.*;
 import com.patuljci.gearshare.model.ListingImage;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.service.*;
@@ -102,6 +100,13 @@ public class MerchantController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         return ResponseEntity.ok(image);
+    }
+
+
+    @PostMapping(value="/update-info")
+    public ResponseEntity<UserDTO> updateInfo(@RequestBody MerchantRegisterDTO dto){
+        merchantService.updateMerchantInfo(dto);
+        return  ResponseEntity.ok().build();
     }
 
 
