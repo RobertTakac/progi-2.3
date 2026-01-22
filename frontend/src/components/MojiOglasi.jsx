@@ -97,9 +97,14 @@ const MojiOglasi = ({ currentUser }) => {
     <div className="moja-oglasna-ploca">
       <div className="ads-header">
         <h2>Moji Oglasi ({currentUser?.name})</h2>
-        <button className="add-toggle-btn" onClick={isEditing ? resetForm : () => setShowAddForm(!showAddForm)}>
-          {showAddForm ? "Odustani" : "Dodaj novi oglas"}
-        </button>
+        <button 
+          className="add-toggle-btn" 
+          onClick={() => isEditing ? resetForm() : setShowAddForm(!showAddForm)}
+          style={{ display: 'block', visibility: 'visible', opacity: 1 }} // Force prikaz
+        >
+          
+  {showAddForm ? "Odustani" : "Dodaj novi oglas"}
+</button>
       </div>
       
       {showAddForm && (
