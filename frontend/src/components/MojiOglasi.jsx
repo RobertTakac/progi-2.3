@@ -49,16 +49,21 @@ const MojiOglasi = ({ currentUser }) => {
     setIsEditing(true);
     setEditId(product.id);
     setNewProduct({
-      name: product.title,
-      price: product.dailyPrice,
-      date: product.availableUntil || "",
+      categoryName: product.categoryName || CATEGORIES[0],
+      title: product.title || "",
+      dailyPrice: product.dailyPrice || "",
       description: product.description || "",
-      photo:  "",
-      deposit: product.depositAmount || "",
-      location: product.pickupCity || ""
-    });
-    setShowAddForm(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+      photo: product.imageUrl || "",
+      depositAmount: product.depositAmount || "",
+      currency: product.currency || "EUR",
+      quantityAvailable: product.quantityAvailable || 1,
+      pickupAddress: product.pickupAddress || "",
+      pickupCity: product.pickupCity || "",
+      pickupPostalCode: product.pickupPostalCode || "",
+      returnAddress: product.returnAddress || "",
+      returnCity: product.returnCity || "",
+      returnPostalCode: product.returnPostalCode || "",
+    }); 
   };
 
   const handleDelete = async (itemid) => {
@@ -71,7 +76,7 @@ const MojiOglasi = ({ currentUser }) => {
   };
 
   const handleSave = async () => {
-    if (!newProduct.name || !newProduct.price) return alert("Ime i cijena su obavezni.");
+    if (!newProduct.title || !newProduct.dailyPrice) return alert("Ime i cijena su obavezni.");
 
     const adData = {
     ...(isEditing && { id: editId }),
@@ -114,7 +119,18 @@ const MojiOglasi = ({ currentUser }) => {
   };
 
   const resetForm = () => {
-    setNewProduct({ name: "", price: "", date: "", description: "", photo: "", deposit: "", location: "" });
+    setNewProduct({
+    categoryName: CATEGORIES[0],
+    title: "",
+    description: "",
+    dailyPrice: "",
+    depositAmount: "",
+    currency: "EUR",
+    quantityAvailable: 1,
+    photo: "", 
+    pickupAddress: "", pickupArea: "", pickupCity: "", pickupPostalCode: "", pickupCountry: "Hrvatska",
+    returnAddress: "", returnArea: "", returnCity: "", returnPostalCode: "", returnCountry: "Hrvatska",
+  });
     setShowAddForm(false);
     setIsEditing(false);
     setEditId(null);
@@ -164,7 +180,7 @@ const MojiOglasi = ({ currentUser }) => {
               <input type="text" placeholder="Poštanski broj" value={newProduct.returnPostalCode} onChange={(e) => setNewProduct({...newProduct, returnPostalCode: e.target.value})} />
             </div>
           </div>
-          
+
           <div className="form-image-preview">
             <input type="text" placeholder="URL slike opreme" value={newProduct.photo} onChange={(e) => setNewProduct({...newProduct, photo: e.target.value})} />
           </div>
