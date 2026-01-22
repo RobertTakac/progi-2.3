@@ -9,9 +9,25 @@ const MojiOglasi = ({ currentUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
 
+  const CATEGORIES = [
+  "Kampiranje i boravak u prirodi", "Planinarenje i trekking", "Biciklizam",
+  "Vodeni sportovi", "Zimski sportovi", "Penjanje i alpinizam",
+  "Fitness i trening", "Timski sportovi", "Sportska odjeća i zaštitna oprema",
+  "Navigacija i sigurnosna oprema"
+  ];
+
   const [newProduct, setNewProduct] = useState({
-    name: "", price: "", date: "", description: "", photo: "", deposit: "", location: ""
-  });
+  categoryName: CATEGORIES[0],
+  title: "",
+  description: "",
+  dailyPrice: "",
+  depositAmount: "",
+  currency: "EUR",
+  quantityAvailable: 1,
+  photo: "", 
+  pickupAddress: "", pickupArea: "", pickupCity: "", pickupPostalCode: "", pickupCountry: "Hrvatska",
+  returnAddress: "", returnArea: "", returnCity: "", returnPostalCode: "", returnCountry: "Hrvatska",
+});
 
   const fetchAds = async () => {
     try {
@@ -58,18 +74,29 @@ const MojiOglasi = ({ currentUser }) => {
     if (!newProduct.name || !newProduct.price) return alert("Ime i cijena su obavezni.");
 
     const adData = {
-      ...(isEditing && { id: editId }),
-      title: newProduct.name,
-      description: newProduct.description,
-      dailyPrice: parseFloat(newProduct.price),
-      depositAmount: parseFloat(newProduct.deposit) || 0, 
-      pickupCity: newProduct.location,
-      categoryName: "Sport",
-      currency: "EUR",
-      isActive: true,
-      availableFrom: new Date().toISOString(),
-      availableUntil: new Date(Date.now() + 7*24*60*60*1000).toISOString(), 
-    };
+    ...(isEditing && { id: editId }),
+    categoryName: newProduct.categoryName,
+    title: newProduct.title,
+    description: newProduct.description,
+    dailyPrice: parseFloat(newProduct.dailyPrice),
+    depositAmount: parseFloat(newProduct.depositAmount) || 0,
+    currency: newProduct.currency,
+    quantityAvailable: parseInt(newProduct.quantityAvailable),
+    isActive: true,
+    imageUrl: newProduct.photo,
+    availableFrom: new Date().toISOString(),
+    availableUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    pickupAddress: newProduct.pickupAddress,
+    pickupArea: newProduct.pickupArea,
+    pickupCity: newProduct.pickupCity,
+    pickupPostalCode: newProduct.pickupPostalCode,
+    pickupCountry: newProduct.pickupCountry,
+    returnAddress: newProduct.returnAddress,
+    returnArea: newProduct.returnArea,
+    returnCity: newProduct.returnCity,
+    returnPostalCode: newProduct.returnPostalCode,
+    returnCountry: newProduct.returnCountry,
+  };
 
   const endpoint = isEditing ? '/merchant/updateListing' : '/merchant/create-listing';
 
@@ -106,21 +133,40 @@ const MojiOglasi = ({ currentUser }) => {
         <div className="add-ad-container">
           <h3>{isEditing ? "Uredi Oglas" : "Novi Oglas"}</h3>
           
-          <div className="form-grid">
-            <div className="form-inputs">
-              <input type="text" placeholder="Naziv" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} />
-              <input type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} />
-              <input type="text" placeholder="Dostupnost" value={newProduct.date} onChange={(e) => setNewProduct({...newProduct, date: e.target.value})} />
-              <textarea placeholder="Opis" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} />
-              <input type="text" placeholder="Lokacija" value={newProduct.location} onChange={(e) => setNewProduct({...newProduct, location: e.target.value})} />
+          <div className="form-section">
+            <h4>Osnovne informacije</h4>
+            <div className="form-grid-main">
+              <select value={newProduct.categoryName} onChange={(e) => setNewProduct({...newProduct, categoryName: e.target.value})}>
+                {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
+              <input type="text" placeholder="Naslov oglasa" value={newProduct.title} onChange={(e) => setNewProduct({...newProduct, title: e.target.value})} />
+              <textarea placeholder="Opis opreme" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} />
+              <div className="inline-inputs">
+                <input type="number" placeholder="Cijena po danu (€)" value={newProduct.dailyPrice} onChange={(e) => setNewProduct({...newProduct, dailyPrice: e.target.value})} />
+                <input type="number" placeholder="Polog (€)" value={newProduct.depositAmount} onChange={(e) => setNewProduct({...newProduct, depositAmount: e.target.value})} />
+                <input type="number" placeholder="Količina" value={newProduct.quantityAvailable} onChange={(e) => setNewProduct({...newProduct, quantityAvailable: e.target.value})} />
+              </div>
             </div>
-            
-            <div className="form-image-preview">
-                <input type="text" placeholder="URL slike" value={newProduct.photo} onChange={(e) => setNewProduct({...newProduct, photo: e.target.value})} />
-                <div className="preview-box">
-                    {newProduct.photo && <img src={newProduct.photo} alt="Preview" />}
-                </div>
+          </div>
+
+          <div className="form-location-wrapper">
+            <div className="location-section">
+              <h4>Lokacija preuzimanja (Pickup)</h4>
+              <input type="text" placeholder="Adresa" value={newProduct.pickupAddress} onChange={(e) => setNewProduct({...newProduct, pickupAddress: e.target.value})} />
+              <input type="text" placeholder="Grad" value={newProduct.pickupCity} onChange={(e) => setNewProduct({...newProduct, pickupCity: e.target.value})} />
+              <input type="text" placeholder="Poštanski broj" value={newProduct.pickupPostalCode} onChange={(e) => setNewProduct({...newProduct, pickupPostalCode: e.target.value})} />
             </div>
+
+            <div className="location-section">
+              <h4>Lokacija povrata (Return)</h4>
+              <input type="text" placeholder="Adresa" value={newProduct.returnAddress} onChange={(e) => setNewProduct({...newProduct, returnAddress: e.target.value})} />
+              <input type="text" placeholder="Grad" value={newProduct.returnCity} onChange={(e) => setNewProduct({...newProduct, returnCity: e.target.value})} />
+              <input type="text" placeholder="Poštanski broj" value={newProduct.returnPostalCode} onChange={(e) => setNewProduct({...newProduct, returnPostalCode: e.target.value})} />
+            </div>
+          </div>
+          
+          <div className="form-image-preview">
+            <input type="text" placeholder="URL slike opreme" value={newProduct.photo} onChange={(e) => setNewProduct({...newProduct, photo: e.target.value})} />
           </div>
 
           <button onClick={handleSave} className="publish-btn">

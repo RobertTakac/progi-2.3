@@ -1,8 +1,110 @@
+.moja-oglasna-ploca {
+  padding: 120px 20px 40px;
+  background-color: #fcfcfc;
+  min-height: 100vh;
+}
+
+.ads-header {
+  max-width: 1250px;
+  margin: 0 auto 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.add-toggle-btn {
+  padding: 12px 28px;
+  background-color: #2c3e50;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-toggle-btn:hover {
+  background-color: #34495e;
+  transform: translateY(-2px);
+}
+
+.add-ad-container.expanded-form {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  margin-bottom: 50px;
+  max-width: 1250px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #eee;
+}
+
+.form-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.form-section h4 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  border-left: 4px solid #fe9e0d;
+  padding-left: 10px;
+}
+
+.form-grid-main {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-grid-main select,
+.form-grid-main input,
+.location-section input,
+.form-image-preview input,
+.form-grid-main textarea {
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.form-grid-main select:focus,
+.form-grid-main input:focus {
+  outline: none;
+  border-color: #fe9e0d;
+}
+
+.inline-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.form-location-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.location-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 30px;
-  padding: 20px;
+  padding: 20px 0;
   max-width: 1250px;
   margin: 0 auto;
 }
@@ -12,9 +114,7 @@
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 .card:hover {
@@ -30,129 +130,19 @@
 
 .card-content {
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.add-ad-container {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  margin-bottom: 40px;
-  max-width: 1250px;
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px solid #e0e0e0;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr; 
-  gap: 30px;
-  margin-top: 20px;
-}
-
-.form-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form-inputs input, .form-inputs textarea {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-.form-inputs textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.form-image-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.preview-box {
-  width: 100%;
-  height: 250px;
-  border: 2px dashed #ccc;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f9f9f9;
-  overflow: hidden;
-}
-
-.preview-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.publish-btn {
-  margin-top: 25px;
-  width: 100%;
-  padding: 15px;
-  background-color: #fe9e0d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.publish-btn:hover {
-  background-color: #e48f0f;
-}
-
-.moja-oglasna-ploca {
-  padding: 120px 20px 40px; 
-  background-color: #fff;
-  min-height: 100vh;
-}
-
-.ads-header {
-  max-width: 1250px;
-  margin: 0 auto 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.add-toggle-btn {
-  padding: 10px 25px;
-  background-color: #2c3e50;
-  color: white;
-  border-radius: 5px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-
-  position: relative;
-  z-index: 10;
 }
 
 .card-actions {
   display: flex;
   gap: 10px;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .edit-btn, .delete-btn {
   flex: 1;
-  padding: 8px;
+  padding: 10px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -160,49 +150,50 @@
 .edit-btn { background-color: #ebf5ff; color: #007bff; }
 .delete-btn { background-color: #fff5f5; color: #dc3545; }
 
-.ponuda-page {
-  background-color: #f8f9fa;
-  min-height: 100vh;
-  padding: 40px 0;
+.publish-btn {
+  margin-top: 30px;
+  width: 100%;
+  padding: 18px;
+  background-color: #fe9e0d;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(254, 158, 13, 0.3);
 }
 
-.public-card .card-header-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
+.publish-btn:hover {
+  background-color: #e48f0f;
 }
 
-.public-card h1 {
-  font-size: 1.4rem;
-  color: #2c3e50;
-  margin: 0;
-  flex: 1;
-}
-
-.public-card .price-tag {
-  font-size: 1.3rem !important;
-  font-weight: 800 !important;
-  color: #fe9e0d !important; 
-  margin: 0 !important;
+@media (max-width: 900px) {
+  .form-location-wrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .inline-inputs {
+    grid-template-columns: 1fr;
+  }
+  
+  .add-ad-container.expanded-form {
+    padding: 20px;
+  }
 }
 
 .price-tag {
-  font-weight: bold;
-  color: #2e7d32;
+  font-weight: 800;
+  color: #fe9e0d;
+  font-size: 1.3rem;
+  margin: 10px 0;
+}
+
+.no-ads-text {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 100px;
+  color: #7f8c8d;
   font-size: 1.2rem;
-}
-
-.description-text {
-  font-size: 0.95rem;
-  color: #5d6d7e;
-  line-height: 1.5;
-  margin: 15px 0;
-  min-height: 45px;
-}
-
-@media (max-width: 850px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
 }
