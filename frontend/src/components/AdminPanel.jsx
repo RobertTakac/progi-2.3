@@ -7,7 +7,7 @@ const AdminPanel = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Dohvati reportove s backend-a
+
     useEffect(() => {
         const fetchReports = async () => {
             try {
@@ -29,6 +29,25 @@ const AdminPanel = () => {
         fetchReports();
     }, []);
 
+    const handleBanUser = async (reservationID) => {
+        if (!window.confirm("Jeste li sigurni da želite banati korisnika ove rezervacije?")) return;
+
+        try {
+            const response = await apiRequest(`/admin/ban-user-by-reservation?reservationID=${reservationID}`, "POST");
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text || `Greška: ${response.status}`);
+            }
+
+            alert("Korisnik je bannan.");
+
+            setReports(prev => prev.filter(report => report.reservationID !== reservationID));
+        } catch (err) {
+            alert(err.message || "Greška pri bananju korisnika");
+        }
+    };
+
     if (loading) return <p>Učitavanje reportova...</p>;
     if (error) return <p style={{ color: "red" }}>Greška: {error}</p>;
 
@@ -44,6 +63,7 @@ const AdminPanel = () => {
                     <tr>
                         <th>Reservation ID</th>
                         <th>Opis</th>
+                        <th>Akcija</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -51,6 +71,14 @@ const AdminPanel = () => {
                         <tr key={index}>
                             <td>{report.reservationID}</td>
                             <td>{report.description}</td>
+                            <td>
+                                <button
+                                    className="ban-button"
+                                    onClick={() => handleBanUser(report.reservationID)}
+                                >
+                                    Ban User
+                                </button>
+                            </td>
                         </tr>
                     ))}
                     </tbody>
