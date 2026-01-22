@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MojiOglasi.css";
-import { getMerchantAllListings, merchantUpdateListing, merchantCreateListing, merchantDeleteListing } from '../services/apiService';
-import { toast } from 'react-toastify';
+import { apiRequest } from '../api/apiService';
 
 const MojiOglasi = ({ currentUser }) => {
   
@@ -16,11 +15,13 @@ const MojiOglasi = ({ currentUser }) => {
 
   const fetchAds = async () => {
     try {
-      const data = await getMerchantAllListings();
-      setAllAds(data);
+      const res = await apiRequest('/merchant/get-all-listings', 'GET'); 
+      if (res && res.ok) {
+        const data = await res.json();
+        setAllAds(data);
+      }
     } catch (err) {
       console.error("Greška pri dohvaćanju:", err);
-      toast.error(err);
     }
   };
 
@@ -46,11 +47,9 @@ const MojiOglasi = ({ currentUser }) => {
 
   const handleDelete = async (itemid) => {
     if (window.confirm("Jeste li sigurni?")) {
-      try {
-        await merchantDeleteListing(itemid);
+      const res = await apiRequest(`/merchant/deleteListing/${itemid}`, 'DELETE');
+      if (res && res.ok) {
         setAllAds(allAds.filter((item) => item.id !== itemid));
-      } catch(err) {
-        toast.err(err);
       }
     }
   };
@@ -72,19 +71,18 @@ const MojiOglasi = ({ currentUser }) => {
       availableUntil: new Date(Date.now() + 7*24*60*60*1000).toISOString(), 
     };
 
-    try {
-      let res = null;
-      if (isEditing) {
-        res = await merchantUpdateListing(adData);
-      } else {
-        res = await merchantCreateListing(adData);
-      }
+  const endpoint = isEditing ? '/merchant/updateListing' : '/merchant/create-listing';
 
-      fetchAds(); 
-      resetForm();
+    try {
+      const res = await apiRequest(endpoint, 'POST', adData);
+      if (res && res.ok) {
+        fetchAds(); 
+        resetForm();
+      } else {
+        alert("Spremanje nije uspjelo.");
+      }
     } catch (err) {
       console.error("Greška pri slanju:", err);
-      toast.err("Spremanje nije uspjelo. Greska: ", err);
     }
   };
 

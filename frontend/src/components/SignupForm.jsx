@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-import { clientSignup, merchantSignup } from "../services/apiService";
+import { apiRequest } from '../api/apiService';
 
 const SignupForm = ({ role, onSwitch, onSuccess }) => {
     const [email, setEmail] = useState('');
@@ -40,6 +40,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
         setLoading(true);
 
         try {
+            let endpoint = '/auth/client-signup';
             let payload = {
                 email,
                 username,
@@ -47,6 +48,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
             };
 
             if (isMerchant) {
+                endpoint = '/auth/merchant-signup';
                 payload = {
                     ...payload,
                     businessName,
@@ -56,10 +58,13 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
                     country,
                     description,
                 };
+            }
 
-                const res = await merchantSignup(payload);
-            } else {
-                const res = await clientSignup(payload);
+            const res = await apiRequest(endpoint, 'POST', payload);
+
+            if (!res || !res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || `Greška: ${res.status}`);
             }
 
             onSuccess(email);

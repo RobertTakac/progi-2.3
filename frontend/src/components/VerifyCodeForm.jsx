@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
-import { verify } from "../services/apiService";
+import { apiRequest } from '../api/apiService';
 
 const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
   const [code, setCode] = useState('');
@@ -13,11 +13,16 @@ const VerifyCodeForm = ({ email, onSuccess, onCancel }) => {
     setLoading(true);
 
     try {
-      const payload = {
-        email: email,
-        verificationCode: code
-      };
-      const res = await verify(payload);
+      const res = await apiRequest('/auth/verify', 'POST', { 
+        email: email, 
+        verificationCode: code 
+      });
+
+      if (!res || !res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Neispravan verifikacijski kod.');
+      }
+
       onSuccess(); 
     } catch (error) {
       console.error('Greska pri verifikaciji:', error);

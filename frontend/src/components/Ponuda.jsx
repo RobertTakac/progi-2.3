@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './MojiOglasi.css';
-import { getAllListings } from '../services/apiService';
-import { toast } from 'react-toastify';
+import { apiRequest } from '../api/apiService';
 
 const Ponuda = ({ currentUser }) => {
   const [availableAds, setAvailableAds] = useState([]);
@@ -10,11 +9,14 @@ const Ponuda = ({ currentUser }) => {
   const fetchPublicAds = async () => {
     setLoading(true);
     try {
-      const data = await getAllListings();
-      setAvailableAds(data);
+      const res = await apiRequest('/listing/all', 'GET'); 
+      
+      if (res && res.ok) {
+        const data = await res.json();
+        setAvailableAds(data);
+      }
     } catch (error) {
       console.error("Greška pri dohvaćanju ponude:", error);
-      toast.error(error);
     } finally {
       setLoading(false);
     }
