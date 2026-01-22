@@ -69,7 +69,7 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
 
-                .formLogin(form -> form.permitAll())
+                
 
                 .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler))
 
