@@ -64,8 +64,6 @@ public class AuthenticationService {
         sendVerificationEmail(user);
 
         client.setCanRent(true);
-
-        client.setLocation(clientRegisterDTO.getLocation());
         client.setUser(userRepository.save(user));
 
         return clientRepository.save(client);
@@ -110,7 +108,6 @@ public class AuthenticationService {
         UserEntity user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 👇 ovo sad ima smisla
         if (user.getGoogleId() != null && user.getPassword() == null) {
             throw new RuntimeException(
                     "This account was created with Google. Please sign in with Google or set a password."
