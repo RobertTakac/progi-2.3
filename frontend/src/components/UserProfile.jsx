@@ -72,7 +72,7 @@ const ProfilePage = () => {
     if (error) return <p>Greška: {error}</p>;
 
     return (
-        <div>
+        <div className={"user-div"}>
             <h1>Moj profil</h1>
 
             <section>
