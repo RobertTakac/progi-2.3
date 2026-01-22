@@ -39,7 +39,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<Admin> admin = adminRepository.findAdminByUserId(user.getId());
 
         String role = "";
-        if(merchant.isPresent()) {
+        if (admin.isPresent()) {
+            role="ROLE_ADMIN";
+        } else if(merchant.isPresent()) {
             role="ROLE_MERCHANT";
         } else if (client.isPresent()) {
 
@@ -50,11 +52,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 role="ROLE_BANNED";
             }
 
-        }
-        else if(admin.isPresent()){
-            role="ROLE_ADMIN";
-        }
-        else{
+        } else {
             role="ROLE_NOROLE";
             //throw new UsernameNotFoundException("User not found: " + username);
         }

@@ -9,6 +9,7 @@ import com.patuljci.gearshare.repository.AdminRepository;
 import com.patuljci.gearshare.repository.ClientRepository;
 import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.repository.UserRepository;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+
+import org.springframework.security.core.Authentication;
 
 @Service
 public class AuthenticationService {
@@ -120,12 +123,14 @@ public class AuthenticationService {
             throw new RuntimeException("Account not verified.");
         }
 
-        authenticationManager.authenticate(
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
                         input.getPassword()
                 )
         );
+
+        user.setAuthorities(auth.getAuthorities());
 
         return user;
     }
