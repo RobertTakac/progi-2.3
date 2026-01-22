@@ -36,6 +36,19 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
 
             if (data.token) {
                 localStorage.setItem('token', data.token);
+
+                const roleRes = await apiRequest('/users/me', 'GET');
+
+                if (roleRes && roleRes.ok) {
+                    const roleName = await roleRes.text(); 
+                    
+                    onSuccess({
+                        ...data,
+                        role: roleName
+                    });
+                } else {
+                    throw new Error("Prijava uspješna, ali uloga nije pronađena.");
+                }
             }
 
             onSuccess(data);
