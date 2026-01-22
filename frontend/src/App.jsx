@@ -14,6 +14,7 @@ import SignupForm from './components/SignupForm';
 import VerifyCodeForm from './components/VerifyCodeForm';
 import OAuth2Redirect from "./components/OAuth2Redirect";
 import AuthorisationGuard from './components/AuthorisationGuard';
+import RoleGuard from './components/RoleGuard';
 
 
 const App = () => {
@@ -48,9 +49,7 @@ const App = () => {
   const handleLoginSuccess = (userData) => {
     console.log("Podaci pri prijavi:", userData);
     setCurrentUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
     closeModal();
-    navigate('/');
   };
   const handleVerificationNeeded = (email) => {
     setEmailToVerify(email);
@@ -58,7 +57,6 @@ const App = () => {
   };
   const handleSignOut = () => {
     setCurrentUser(null);
-    localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("tokenExpiration");
     navigate('/');
@@ -101,12 +99,13 @@ const App = () => {
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess} />} />
 
           <Route element={<AuthorisationGuard handleSignOut={handleSignOut} openLoginModal={openModal} />}>
-            <Route path="/moji-oglasi" element={
-              currentUser?.type === 'merchant'
-                ? <MojiOglasi currentUser={currentUser} />
-                : <Navigate to="/" replace />
-            } />
-            <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
+            <Route element={<RoleGuard user={currentUser} allowedRoles={["admin", "merchant"]} />}>
+              <Route path="/moji-oglasi" element={<MojiOglasi currentUser={currentUser} />} />
+            </Route>
+
+            <Route element={<RoleGuard user={currentUser} allowedRoles={["admin", "merchant", "client"]} />}>
+              <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<h1>404: stranica nije pronadena</h1>} />
