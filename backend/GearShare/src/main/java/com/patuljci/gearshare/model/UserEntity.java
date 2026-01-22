@@ -32,6 +32,8 @@ public class UserEntity implements UserDetails {
     @Column(name  = "verification_expiration")
     private String verificationCodeExpiresAt;
 
+    private Collection<? extends GrantedAuthority> authorities;
+
     public UserEntity(String username, String email, String password) {
         this.username = username;
         this.email = email;
@@ -43,8 +45,19 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return this.authorities;
     }
+
+    public String getUserType() {
+        return this.authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_NOROLE")  //ne bi se smjelo dogodit
+                .replace("ROLE_", "")
+                .toLowerCase();
+    }
+
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
