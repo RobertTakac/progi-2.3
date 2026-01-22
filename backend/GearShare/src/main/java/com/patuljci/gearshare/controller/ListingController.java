@@ -45,9 +45,10 @@ public class ListingController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) BigDecimal maxDailyPrice,
             @RequestParam(required = false) String currency,
-            @RequestParam(required = false) Long merchantID){
+            @RequestParam(required = false) Long merchantID,
+            @RequestParam(required = false) String keyword){
 
-        return ResponseEntity.ok(listingService.allEquipmentFilteredIfPossible(category, maxDailyPrice, currency, merchantID));
+        return ResponseEntity.ok(listingService.allEquipmentFilteredIfPossible(category, maxDailyPrice, currency, merchantID, keyword));
     }
 
 
@@ -66,8 +67,8 @@ public class ListingController {
             @PathVariable String merchantUsername,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) BigDecimal maxDailyPrice,
-            @RequestParam(required = false) String currency
-            ){
+            @RequestParam(required = false) String currency,
+            @RequestParam(required = false) String keyword){
 
         return ResponseEntity.ok(listingService.filterMerchantsEquipment(merchantUsername,category, maxDailyPrice, currency));
     }
