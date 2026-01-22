@@ -48,7 +48,7 @@ const App = () => {
     setCurrentUser(userData);
     localStorage.setItem("user", JSON.stringify(userData)); 
     closeModal(); 
-    navigate('/');
+    navigate('/', { replace: true });
   };
   const handleVerificationNeeded = (email) => {
     setEmailToVerify(email);
