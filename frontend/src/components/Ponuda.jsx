@@ -57,7 +57,7 @@ const Ponuda = ({ currentUser }) => {
                 quantity: reservationData.quantity
             };
 
-            const res = await apiRequest('/create-reservation', 'POST', payload);
+            const res = await apiRequest('/client/create-reservation', 'POST', payload);
 
             if (res && res.ok) {
                 alert(`Rezervacija za ${selectedListing.title} uspješno poslana!`);
