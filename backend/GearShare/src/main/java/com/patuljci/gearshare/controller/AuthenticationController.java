@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 
 @RequestMapping("/auth")
 @RestController
+@CrossOrigin(origins = {"http://localhost:5173", "https://progi-2-3-ah5i.onrender.com"},
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 public class AuthenticationController {
     private final JwtService jwtService;
 
@@ -71,6 +74,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto){
+        System.out.println("ENDPOINT L");
         UserEntity authenticatedUser = authenticationService.authenticate(loginUserDto);
         String jwtToken = jwtService.generateToken(authenticatedUser);
         LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
