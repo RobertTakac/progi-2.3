@@ -43,13 +43,51 @@ const App = () => {
   const handleRoleSelect = (role) => setSelectedRole(role);
   const switchForm = (newView) => setModalView(newView);
 
-  const handleLoginSuccess = (userData) => {
-    console.log("Podaci pri prijavi:", userData); 
-    setCurrentUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); 
-    closeModal(); 
-    navigate('/');
-  };
+    const handleLoginSuccess = async (loginData) => {
+        console.log("Login response:", loginData);
+
+
+        const token = loginData.token || loginData.accessToken;
+
+        if (!token) {
+            console.error("No token received from login");
+            return;
+        }
+
+
+        localStorage.setItem("token", token);
+
+
+        try {
+            const response = await apiRequest('/users/me');   
+
+            if (!response) {
+                console.error("Failed to fetch user (401 or network error)");
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`Status ${response.status}`);
+            }
+
+            const user = await response.json();
+            console.log("Fetched user from /users/me:", user);
+
+
+            setCurrentUser(user);
+            localStorage.setItem("user", JSON.stringify(user));
+
+        } catch (err) {
+            console.error("Error fetching user after login:", err);
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setCurrentUser(null);
+        }
+
+        closeModal();
+        navigate('/', { replace: true });
+    };
   const handleVerificationNeeded = (email) => {
     setEmailToVerify(email);
     setModalView('verify');
