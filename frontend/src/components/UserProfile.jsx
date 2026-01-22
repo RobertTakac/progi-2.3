@@ -53,16 +53,28 @@ const ProfilePage = () => {
         }
 
         try {
-            const response = await apiRequest("/change-password", "PUT", { oldPassword, newPassword });
-            if (!response.ok) throw new Error("Greška pri promjeni lozinke");
+            const response = await apiRequest(
+                "/change-password",
+                "POST",
+                {
+                    password: oldPassword,
+                    newPassword: newPassword
+                }
+            );
 
-            alert("Password uspješno promijenjen");
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(message || "Greška pri promjeni lozinke");
+            }
+
+            alert("Lozinka uspješno promijenjena");
             setOldPassword("");
             setNewPassword("");
         } catch (err) {
             alert(err.message);
         }
     };
+
 
     if (loading) return <p>Učitavanje...</p>;
     if (error) return <p>Greška: {error}</p>;
