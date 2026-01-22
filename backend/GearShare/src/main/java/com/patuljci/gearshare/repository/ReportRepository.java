@@ -13,4 +13,8 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
     List<Report> findReportByReservation(Reservation reservation);
 
     void deleteByReservation(Reservation reservation);
+
+
+
+    void deleteById(Long ID);
 }

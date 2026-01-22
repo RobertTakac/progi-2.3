@@ -33,4 +33,9 @@ public class AdminController {
         return ResponseEntity.ok(reportService.banUserByReservationID(reservationID));
     }
 
+    @PostMapping(value="/delete-report")
+    public ResponseEntity<String>  deleteReport(@RequestParam Long reportID){
+        return ResponseEntity.ok(reportService.deleteReport(reportID));
+    }
+
 }

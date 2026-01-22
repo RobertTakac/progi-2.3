@@ -91,7 +91,7 @@ public class MerchantController {
 
 
     @PostMapping(value="/upload-image")
-    public ResponseEntity<ListingImage> uploadListingImage(@RequestParam("file")MultipartFile file, @RequestParam Long  listingID) throws IOException {
+    public ResponseEntity<ListingImage> uploadListingImage(@RequestParam("file") MultipartFile file, @RequestParam Long  listingID) throws IOException {
         if(file == null || listingID==null) {
             System.out.println("file or listing id is null");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
