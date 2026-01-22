@@ -127,7 +127,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid red; /* OVO DODAJ PRIVREMENO - ako ne vidiš crveni okvir, header je skriven */
 }
 
 .add-toggle-btn {
@@ -138,6 +137,9 @@
   border: none;
   font-weight: 600;
   cursor: pointer;
+
+  position: relative;
+  z-index: 10;
 }
 
 .card-actions {
