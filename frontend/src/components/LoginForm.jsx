@@ -17,19 +17,25 @@ const LoginForm = ({ role, onSwitch, onSuccess }) => {
             const res = await apiRequest('/auth/login', 'POST', {
                 email,
                 password,
-
             });
 
             if (!res || !res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.message || `Greška: ${res.status}`);
+
+                let errorMessage = `Greška: ${res.status}`;
+                try {
+                    const errorData = await res.json();
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+
+                }
+                throw new Error(errorMessage);
             }
+
 
             const data = await res.json();
 
             if (data.token) {
                 localStorage.setItem('token', data.token);
-
             }
 
             onSuccess(data);

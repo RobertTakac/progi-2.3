@@ -80,7 +80,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
-            handlerExceptionResolver.resolveException(request, response, null, exception);
+            System.err.println("JWT validation failed: " + exception.getMessage());
+            filterChain.doFilter(request, response);
         }
     }
 }
