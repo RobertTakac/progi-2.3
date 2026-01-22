@@ -14,6 +14,7 @@ import OAuth2Redirect from "./components/OAuth2Redirect";
 import UserProfile from "./components/UserProfile.jsx";
 import ListingsMap from "./components/ListingsMap.jsx";
 import HomeRouter from './components/HomeRouter';
+import {apiRequest} from "./api/apiService.js";
 
 
 const App = () => {
@@ -59,7 +60,7 @@ const App = () => {
 
 
         try {
-            const response = await apiRequest('/users/me');   
+            const response = await apiRequest('/users/me');
 
             if (!response) {
                 console.error("Failed to fetch user (401 or network error)");
