@@ -50,7 +50,7 @@ const MojiOglasi = ({ currentUser }) => {
         await merchantDeleteListing(itemid);
         setMyAds(myAds.filter((item) => item.id !== itemid));
       } catch(err) {
-        toast.err(err);
+        toast.error(err);
       }
     }
   };
@@ -84,7 +84,7 @@ const MojiOglasi = ({ currentUser }) => {
       resetForm();
     } catch (err) {
       console.error("Greška pri slanju:", err);
-      toast.err("Spremanje nije uspjelo. Greska: ", err);
+      toast.error("Spremanje nije uspjelo. Greska: ", err);
     }
   };
 
