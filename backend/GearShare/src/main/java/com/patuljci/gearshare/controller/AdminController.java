@@ -3,10 +3,7 @@ package com.patuljci.gearshare.controller;
 import com.patuljci.gearshare.dto.ReportDTO;
 import com.patuljci.gearshare.service.ReportService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +26,11 @@ public class AdminController {
     @GetMapping(value="/ban-user")
     public ResponseEntity<String> banUser(@RequestParam Long clientID){
         return ResponseEntity.ok(reportService.banUser(clientID));
+    }
+
+    @PostMapping(value="/ban-user-by-reservation")
+    public ResponseEntity<String> banUserByReservation(@RequestParam Long reservationID){
+        return ResponseEntity.ok(reportService.banUserByReservationID(reservationID));
     }
 
 }

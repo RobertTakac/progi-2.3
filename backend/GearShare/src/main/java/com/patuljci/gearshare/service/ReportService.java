@@ -70,6 +70,24 @@ public class ReportService {
         return "Client has been banned";
     }
 
+    public String banUserByReservationID(Long reservationID){
+        Reservation reservation = reservationRepository.findReservationById(reservationID);
+        if(reservation==null){
+            return "Reservation does not exist";
+        }
+
+        List<Report> reports = reportRepository.findReportByReservation(reservation);
+
+        reportRepository.deleteByReservation(reservation);
+
+        Client client = reservation.getClient();
+
+
+        return banUser(client.getClient_id());
+    }
+
+
+
 
     public List<ReportDTO> getALlReports(){
         List<Report> reports =  reportRepository.findAll();
