@@ -71,7 +71,9 @@ public class SecurityConfiguration {
 
 
 
-                .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler))
+                .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler)
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/"))
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
