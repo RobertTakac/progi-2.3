@@ -176,9 +176,8 @@ public class MerchantService {
         listing.setMerchant(merchant);
 
         Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(newListingDto.getCategoryName());
-        if(category.isEmpty()){
-            System.out.println("Category not found");
-            return null;
+        if(category.isEmpty()) {
+            throw new IllegalArgumentException("Category not found " + newListingDto.getCategoryName());
         }
 
         listing.setCategory(category.get());
