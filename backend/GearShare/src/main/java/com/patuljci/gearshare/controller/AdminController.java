@@ -1,7 +1,11 @@
 package com.patuljci.gearshare.controller;
 
+import com.patuljci.gearshare.dto.MerchantAdminDTO;
+import com.patuljci.gearshare.dto.MerchantRegisterDTO;
 import com.patuljci.gearshare.dto.ReportDTO;
 import com.patuljci.gearshare.dto.ReviewDTO;
+import com.patuljci.gearshare.model.Merchant;
+import com.patuljci.gearshare.repository.MerchantRepository;
 import com.patuljci.gearshare.service.ReportService;
 import com.patuljci.gearshare.service.ReviewService;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +19,29 @@ public class AdminController {
 
     private final ReportService reportService;
     private final ReviewService reviewService;
-
-    public AdminController(ReportService reportService, ReviewService reviewService) {
+    private final MerchantRepository merchantRepository;
+    public AdminController(ReportService reportService, ReviewService reviewService, MerchantRepository merchantRepository) {
         this.reportService = reportService;
         this.reviewService = reviewService;
+        this.merchantRepository = merchantRepository;
+    }
+    @GetMapping("/get-merchants")
+    public ResponseEntity<List<MerchantAdminDTO>> getAllMerchants() {
+
+        List<MerchantAdminDTO> list = merchantRepository.findAll()
+                .stream()
+                .map(m -> {
+                    MerchantAdminDTO dto = new MerchantAdminDTO();
+                    dto.setId(m.getId());
+                    dto.setBusinessName(m.getBusinessName());
+                    dto.setCity(m.getCity());
+                    dto.setCountry(m.getCountry());
+                    dto.setAverageRating(m.getAverageRating());
+                    return dto;
+                })
+                .toList();
+
+        return ResponseEntity.ok(list);
     }
 
 

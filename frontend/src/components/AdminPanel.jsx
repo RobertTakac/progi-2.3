@@ -26,27 +26,16 @@ const AdminPanel = () => {
         fetchReports();
     }, []);
 
-    // --- Fetch merchants ---
+    // --- Fetch merchants (ADMIN DTO) ---
     useEffect(() => {
         const fetchMerchants = async () => {
             try {
-                const response = await apiRequest("/users/all", "GET"); // ako postoji ruta za sve korisnike
+                const response = await apiRequest("/admin/get-merchants", "GET");
                 if (!response.ok) throw new Error(`Greška: ${response.status}`);
-                const allUsers = await response.json();
-
-                const merchantsOnly = allUsers.filter(u => u.role === "ROLE_MERCHANT");
-
-                const merchantsWithRating = await Promise.all(
-                    merchantsOnly.map(async (merchant) => {
-                        const res = await apiRequest(`/users/merchant-rating?merchantID=${merchant.merchantID}`, "GET");
-                        const rating = res.ok ? await res.json() : "N/A";
-                        return { ...merchant, rating };
-                    })
-                );
-
-                setMerchants(merchantsWithRating);
+                const data = await response.json();
+                setMerchants(data);
             } catch (err) {
-                console.error(err);
+                console.error("Greška pri dohvaćanju merchanta:", err);
             }
         };
 
@@ -61,13 +50,16 @@ const AdminPanel = () => {
                 `/admin/ban-user-by-reservation?reservationID=${reservationID}`,
                 "POST"
             );
+
             if (!response.ok) {
                 const text = await response.text();
                 throw new Error(text || `Greška: ${response.status}`);
             }
 
             alert("Korisnik je banan.");
-            setReports(prev => prev.filter(report => report.reservationID !== reservationID));
+            setReports(prev =>
+                prev.filter(report => report.reservationID !== reservationID)
+            );
         } catch (err) {
             alert(err.message || "Greška pri bananju korisnika");
         }
@@ -78,7 +70,7 @@ const AdminPanel = () => {
 
     return (
         <div className="admin-panel">
-            <h1>Admin Panel - Reportovi</h1>
+            <h1>Admin Panel – Reportovi</h1>
 
             {reports.length === 0 ? (
                 <p>Nema reportova.</p>
@@ -99,7 +91,9 @@ const AdminPanel = () => {
                             <td>
                                 <button
                                     className="ban-button"
-                                    onClick={() => handleBanUser(report.reservationID)}
+                                    onClick={() =>
+                                        handleBanUser(report.reservationID)
+                                    }
                                 >
                                     Ban User
                                 </button>
@@ -110,13 +104,15 @@ const AdminPanel = () => {
                 </table>
             )}
 
-            <h2>Merchanti i ocjene</h2>
+            <h2 style={{ marginTop: "40px" }}>Trgovci i ocjene</h2>
+
             {merchants.length === 0 ? (
-                <p>Nema merchanta.</p>
+                <p>Nema trgovaca.</p>
             ) : (
                 <table className="merchants-table">
                     <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Business Name</th>
                         <th>City</th>
                         <th>Country</th>
@@ -124,12 +120,17 @@ const AdminPanel = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {merchants.map((m, index) => (
-                        <tr key={index}>
+                    {merchants.map(m => (
+                        <tr key={m.id}>
+                            <td>{m.id}</td>
                             <td>{m.businessName}</td>
                             <td>{m.city}</td>
                             <td>{m.country}</td>
-                            <td>{m.rating}</td>
+                            <td>
+                                {m.averageRating !== null
+                                    ? m.averageRating
+                                    : "N/A"}
+                            </td>
                         </tr>
                     ))}
                     </tbody>
