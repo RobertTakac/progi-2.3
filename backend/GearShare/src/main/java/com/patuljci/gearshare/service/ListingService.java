@@ -176,8 +176,14 @@ public class ListingService {
 
         spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency, merchandID));
 
-        spec = spec.or(checkKeyword(keyword, "title"));
-        spec = spec.or(checkKeyword(keyword, "description"));
+        if(keyword != null){
+            Specification<EquipmentListing> spec2 = Specification.allOf();
+            spec2 = spec2.or(checkKeyword(keyword, "title"));
+            spec2 = spec2.or(checkKeyword(keyword, "description"));
+
+            spec = spec.and(spec2);
+        }
+
 
         if(spec==null){
             return List.of();

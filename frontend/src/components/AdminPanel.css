@@ -8,26 +8,38 @@
     color: #333;
 }
 
-.reports-table {
+/* ========================= */
+/* TABLICE (reports + merchants) */
+/* ========================= */
+
+.reports-table,
+.merchants-table {
     width: 100%;
     border-collapse: collapse;
 }
 
 .reports-table th,
-.reports-table td {
+.reports-table td,
+.merchants-table th,
+.merchants-table td {
     border: 1px solid #ccc;
     padding: 8px 12px;
     text-align: left;
 }
 
-.reports-table th {
+.reports-table th,
+.merchants-table th {
     background-color: #f0f0f0;
 }
 
-.reports-table tr:nth-child(even) {
+.reports-table tr:nth-child(even),
+.merchants-table tr:nth-child(even) {
     background-color: #fafafa;
 }
 
+/* ========================= */
+/* BUTTONI */
+/* ========================= */
 
 .rate-btn {
     padding: 6px 12px;
@@ -43,7 +55,7 @@
     background-color: #45a049;
 }
 
-.rate-btn {
+.approve-btn {
     padding: 6px 12px;
     background-color: #4CAF50;
     color: white;
@@ -53,9 +65,27 @@
     transition: background-color 0.3s;
 }
 
-.rate-btn:hover {
+.approve-btn:hover {
     background-color: #45a049;
 }
+
+.decline-btn {
+    padding: 6px 12px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.decline-btn:hover {
+    background-color: #da190b;
+}
+
+/* ========================= */
+/* MODAL */
+/* ========================= */
 
 .modal-overlay {
     position: fixed;
@@ -112,7 +142,8 @@
     margin-top: 25px;
 }
 
-.submit-btn, .cancel-btn {
+.submit-btn,
+.cancel-btn {
     flex: 1;
     padding: 12px;
     border: none;
@@ -138,32 +169,4 @@
 
 .cancel-btn:hover {
     background: #da190b;
-}
-
-.approve-btn {
-    padding: 6px 12px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.approve-btn:hover {
-    background-color: #45a049;
-}
-
-.decline-btn {
-    padding: 6px 12px;
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.decline-btn:hover {
-    background-color: #da190b;
 }
