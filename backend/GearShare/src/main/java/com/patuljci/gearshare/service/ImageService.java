@@ -11,6 +11,7 @@ import com.patuljci.gearshare.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -79,18 +80,26 @@ public class ImageService {
         }
     }
 
-    public byte[] getImage(Long listingID){
-        EquipmentListing equipmentListing = equipmentListingRepository.findEquipmentListingBylistingId(listingID);
+
+
+    @Transactional(readOnly = true)
+    public byte[] getImage(Long listingID) {
+        EquipmentListing equipmentListing =
+                equipmentListingRepository.findEquipmentListingBylistingId(listingID);
+
         if (equipmentListing == null) {
             return null;
         }
 
-        ListingImage listingImage = listingImageRepository.findByEquipmentListing(equipmentListing);
+        ListingImage listingImage =
+                listingImageRepository.findByEquipmentListing(equipmentListing);
+
         if (listingImage == null) {
             return null;
         }
 
         return listingImage.getImage();
     }
+
 
 }
