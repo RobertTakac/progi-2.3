@@ -195,7 +195,6 @@ const Ponuda = ({ currentUser }) => {
           availableAds.map((item) => (
             <div className="card public-card" key={item.id}>
               <div className="card-image-wrapper">
-                  jsx<div className="card-image-wrapper">
                   <img
                       src={
                           item.imageUrl ||
@@ -213,10 +212,6 @@ const Ponuda = ({ currentUser }) => {
                   {item.pickupCity && (
                       <span className="location-badge">{item.pickupCity}</span>
                   )}
-              </div>
-                {item.pickupCity && (
-                  <span className="location-badge"> {item.pickupCity}</span>
-                )}
               </div>
               
               <div className="card-content">

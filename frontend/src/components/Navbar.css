@@ -66,9 +66,9 @@
   cursor: pointer;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 750px) {
   .navbar {
-    padding: 10px 20px;
+    padding: 10px 15px;
   }
 
   .menu-icon {
@@ -77,20 +77,20 @@
 
   .nav-menu {
     position: fixed;
-    top: 60px;
-    left: -100%;
+    left: 0;
     flex-direction: column;
     background-color: #1a237e;
     width: 100%;
-    height: calc(100vh - 60px);
+    height: 100vh;
     text-align: center;
-    transition: all 0.4s ease;
+    transition: all 0.4s ease-in-out;
     gap: 0;
-    padding-top: 2rem;
+    padding-top: 80px;
+    overflow-y: auto;
   }
 
   .nav-menu.active {
-    left: 0;
+    transform: translateX(0);
   }
 
   .navbar-links {
