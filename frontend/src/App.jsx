@@ -16,7 +16,7 @@ import OAuth2Redirect from "./components/OAuth2Redirect";
 import AuthorisationGuard from './components/AuthorisationGuard';
 import RoleGuard from './components/RoleGuard';
 import ControlBoard from './components/ControlBoard';
-
+import { isTokenValid } from './utils/constants';
 
 const App = () => {
 
@@ -24,6 +24,16 @@ const App = () => {
 
   const [currentUser, setCurrentUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      const data = isTokenValid();
+      
+      if (data.isValid) {
+        return JSON.parse(savedUser);
+      } else {
+        return null;
+      }
+    }
+
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
@@ -50,6 +60,7 @@ const App = () => {
   const handleLoginSuccess = (userData) => {
     console.log("Podaci pri prijavi:", userData);
     setCurrentUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
     closeModal();
   };
   const handleVerificationNeeded = (email) => {
