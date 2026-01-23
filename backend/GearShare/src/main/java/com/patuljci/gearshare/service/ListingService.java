@@ -176,8 +176,8 @@ public class ListingService {
 
         spec = spec.and(allFiltersPossible(categoryName, maxDailyPrice, currency, merchandID));
 
-        spec = spec.and(checkKeyword(keyword, "title"));
-        spec = spec.and(checkKeyword(keyword, "description"));
+        spec = spec.or(checkKeyword(keyword, "title"));
+        spec = spec.or(checkKeyword(keyword, "description"));
 
         if(spec==null){
             return List.of();
