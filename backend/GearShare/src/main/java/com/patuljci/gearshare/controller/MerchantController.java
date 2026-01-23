@@ -92,19 +92,24 @@ public class MerchantController {
 
 
     @PostMapping(value = "/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ListingImage> uploadListingImage(
+    public ResponseEntity<?> uploadListingImage(
             @RequestPart("file") MultipartFile file,
             @RequestParam("listingID") Long listingID
-    ) throws IOException {
-        if(file == null || listingID==null) {
-            System.out.println("file or listing id is null");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    ) {
+        if (file == null || file.isEmpty()) {
+            System.out.println("Received empty file for listingID: " + listingID);
+            return ResponseEntity.badRequest().body("No file received or file is empty");
         }
-        ListingImage image = imageService.addListingImage(file, listingID);
-        if(image == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        try {
+            ListingImage image = imageService.addListingImage(file, listingID);
+            if (image == null) {
+                return ResponseEntity.badRequest().body("Failed to save image (ownership or listing issue)");
+            }
+            return ResponseEntity.ok(image);
+        } catch (Exception e) {
+            System.err.println("Upload failed: " + e.getMessage());
+            return ResponseEntity.status(500).body("Server error: " + e.getMessage());
         }
-        return ResponseEntity.ok(image);
     }
 
 

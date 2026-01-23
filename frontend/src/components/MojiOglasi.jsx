@@ -93,11 +93,16 @@ const MojiOglasi = ({ currentUser }) => {
     }
   };
     const uploadImage = async (listingId, file) => {
-        if (!file) return true;
+        if (!file) {
+            console.log("No file provided → skipping upload");
+            return true;
+        }
         const formData = new FormData();
         formData.append("file", file);
         formData.append("listingID", listingId);
-
+        if (newProduct.photoFile) {
+            console.log("Uploading file:", newProduct.photoFile.name, "size:", newProduct.photoFile.size);
+        }
         try {
             const token = localStorage.getItem("token");
             const response = await fetch(`${BASE_URL}/merchant/upload-image`, {
