@@ -63,26 +63,23 @@ const AdminPanel = () => {
         }
     };
 
-    const handleRejectReport = async (reportID) => {
+    const handleDeleteReport = async (reportID) => {
         if (!window.confirm("Jeste li sigurni da želite obrisati report?")) return;
 
         try {
-            const response = await apiRequest(
-                `/admin/delete-report?reportID=${reportID}`,
-                "POST"
-            );
-
+            const response = await apiRequest(`/admin/delete-report?reportID=${reportID}`, "POST");
             if (!response.ok) {
                 const text = await response.text();
                 throw new Error(text || `Greška: ${response.status}`);
             }
 
             alert("Report je obrisan.");
-            setReports(prev => prev.filter(r => r.id !== reportID));
+            setReports(prev => prev.filter(report => report.reservationID !== reportID));
         } catch (err) {
             alert(err.message || "Greška pri brisanju reporta");
         }
     };
+
 
     if (loading) return <p>Učitavanje...</p>;
     if (error) return <p style={{ color: "red" }}>Greška: {error}</p>;
@@ -119,11 +116,9 @@ const AdminPanel = () => {
 
                                 <button
                                     className="decline-btn"
-                                    onClick={() =>
-                                        handleRejectReport(report.id)
-                                    }
+                                    onClick={() => handleDeleteReport(report.id)}
                                 >
-                                    Reject report
+                                    Reject Report
                                 </button>
                             </td>
                         </tr>
