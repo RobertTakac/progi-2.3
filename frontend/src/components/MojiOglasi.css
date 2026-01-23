@@ -48,9 +48,8 @@
 }
 
 .form-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr; 
-  gap: 30px;
+  display: flex;
+  flex-direction: column;
   margin-top: 20px;
 }
 
@@ -60,12 +59,30 @@
   gap: 15px;
 }
 
-.form-inputs input, .form-inputs textarea, .form-inputs select {
+.form-inputs input, .form-inputs textarea, .form-inputs select, .form-image-preview input {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
+}
+
+.form-inputs .addr {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.cityInput {
+  flex: 2
+}
+
+.addrInput {
+  flex: 2
+}
+
+.postCodeInput {
+  flex: 1
 }
 
 .form-inputs textarea {
@@ -77,6 +94,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 10px;
 }
 
 .preview-box {
