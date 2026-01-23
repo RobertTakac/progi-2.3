@@ -51,6 +51,8 @@ public class ReportService {
 
         report = reportRepository.save(report);
 
+        reservation.setStatus("REPORTED");
+        reservationRepository.save(reservation);
 
         return reportToDTO(report);
     }

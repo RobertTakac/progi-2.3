@@ -115,7 +115,7 @@ public class MerchantService {
 
         Optional<Merchant> merchantOptional = merchantRepository.findMerchantByUserId(user.getId());
         if (merchantOptional.isEmpty()) {
-            System.out.println("User is not a merhant");
+            System.out.println("User is not a merchant");
             return null;
         }
         Merchant merchant = merchantOptional.get();
