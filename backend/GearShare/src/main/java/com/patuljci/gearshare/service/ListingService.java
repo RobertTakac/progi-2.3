@@ -72,6 +72,8 @@ public class ListingService {
         dto.setReturnLatitude(listing.getReturnLatitude());
         dto.setReturnLongitude(listing.getReturnLongitude());
 
+        dto.setProdImg(listing.getImagePath());
+
         return dto;
     }
 
@@ -140,8 +142,6 @@ public class ListingService {
         }
 
         List<ListingDto> response = new java.util.ArrayList<>(List.of());
-
-
 
         for(EquipmentListing listing : lista.get()){
             response.add(equipmentListingToListingDTO(listing));

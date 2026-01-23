@@ -1,6 +1,8 @@
 package com.patuljci.gearshare.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -8,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ListingDto {
     private Long id;
     private Long merchantID;
@@ -15,6 +19,7 @@ public class ListingDto {
     private String categoryName;
     private String title;
     private String description;
+    private String prodImg;
     private BigDecimal dailyPrice;
     private BigDecimal depositAmount;
     private String currency;

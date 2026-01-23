@@ -58,6 +58,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/merchant/**").hasRole("MERCHANT")
                         .requestMatchers("/client/**").hasRole("CLIENT")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/userImages/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -81,9 +82,6 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-
-
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -102,6 +100,4 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-
 }

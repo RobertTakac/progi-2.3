@@ -9,7 +9,9 @@ import com.patuljci.gearshare.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -21,14 +23,16 @@ public class MerchantService {
     private final EquipmentCategoryRepository equipmentCategoryRepository;
     private final EquipmentListingRepository equipmentListingRepository;
     private final ReviewRepository reviewRepository;
+    private final ImageStorageService imgService;
 
-    MerchantService (MerchantRepository merchantRepository, UserRepository userRepository, ListingService listingService, EquipmentCategoryRepository equipmentCategoryRepository, EquipmentListingRepository equipmentListingRepository, ReviewRepository reviewRepository) {
+    MerchantService (MerchantRepository merchantRepository, UserRepository userRepository, ListingService listingService, EquipmentCategoryRepository equipmentCategoryRepository, EquipmentListingRepository equipmentListingRepository, ReviewRepository reviewRepository, ImageStorageService imgService) {
         this.merchantRepository = merchantRepository;
         this.userRepository = userRepository;
         this.listingService = listingService;
         this.equipmentCategoryRepository = equipmentCategoryRepository;
         this.equipmentListingRepository = equipmentListingRepository;
         this.reviewRepository = reviewRepository;
+        this.imgService = imgService;
     }
 
     Merchant getMerchant(Long id){ //ovo uzima userID, a ne id
@@ -166,11 +170,10 @@ public class MerchantService {
         return listingService.equipmentListingToListingDTO(updated);
     }
 
-    public ListingDto addListing(Merchant merchant, ListingDto newListingDto){
+    public ListingDto addListing(Merchant merchant, ListingDto newListingDto, MultipartFile img) {
 
         EquipmentListing listing = new EquipmentListing();
         listing.setMerchant(merchant);
-
 
         Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(newListingDto.getCategoryName());
         if(category.isEmpty()){
@@ -179,7 +182,6 @@ public class MerchantService {
         }
 
         listing.setCategory(category.get());
-
         
         listing.setTitle(newListingDto.getTitle());
         listing.setDescription(newListingDto.getDescription());
@@ -190,7 +192,6 @@ public class MerchantService {
         listing.setAvailableUntil(newListingDto.getAvailableUntil());
         listing.setQuantityAvailable(newListingDto.getQuantityAvailable());
         listing.setIsActive(newListingDto.getIsActive() != null ? newListingDto.getIsActive() : true);
-
 
         listing.setPickupAddress(newListingDto.getPickupAddress());
         listing.setPickupArea(newListingDto.getPickupArea());
@@ -204,10 +205,15 @@ public class MerchantService {
         listing.setReturnPostalCode(newListingDto.getReturnPostalCode());
         listing.setReturnCountry(newListingDto.getReturnCountry() != null ? newListingDto.getReturnCountry() : "Croatia");
 
-       
-        EquipmentListing saved = equipmentListingRepository.save(listing);
+        if (img != null) {
+            try {
+                listing.setImagePath(imgService.saveImage(img));
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Image saving failed!");
+            }
+        }
 
-       
+        EquipmentListing saved = equipmentListingRepository.save(listing);
         ListingDto listingDto = new ListingDto();
 
         listingDto.setId(saved.getListingId());

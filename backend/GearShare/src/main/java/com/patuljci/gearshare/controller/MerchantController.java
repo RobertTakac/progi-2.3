@@ -8,12 +8,16 @@ import com.patuljci.gearshare.service.ListingService;
 import com.patuljci.gearshare.service.MerchantService;
 import com.patuljci.gearshare.service.ReportService;
 import com.patuljci.gearshare.service.ReservationService;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @RequestMapping("/merchant")
 @RestController
@@ -59,17 +63,14 @@ public class MerchantController {
         return ResponseEntity.ok(listingService.getListingsByMerchantUsername(merchant));
     }
 
-    @PostMapping(value="/create-listing")
-    public ResponseEntity<ListingDto> createListing(@RequestBody ListingDto dto){
-
-
+    @PostMapping(value="/create-listing", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ListingDto> createListing(@RequestParam("prodImg") MultipartFile prodImg, @RequestPart("dto") ListingDto dto){
         Optional<Merchant> merchant = merchantService.optionalMerchant();
         if (!merchant.isPresent()) {
             return  ResponseEntity.notFound().build();
         }
-        //System.out.println(merchant.get().getBusinessName());
 
-        ListingDto newListingDto = merchantService.addListing(merchant.get(), dto);
+        ListingDto newListingDto = merchantService.addListing(merchant.get(), dto, prodImg);
 
         return ResponseEntity.ok(newListingDto);
     }

@@ -68,10 +68,4 @@ public class ListingController {
 
         return ResponseEntity.ok(listingService.filterMerchantsEquipment(merchantUsername,category, maxDailyPrice, currency));
     }
-
-    @PostMapping
-    public ListingDto createListing(@RequestBody ListingDto newListing) {
-        return listingService.createListing(newListing);
-    }
-
 }

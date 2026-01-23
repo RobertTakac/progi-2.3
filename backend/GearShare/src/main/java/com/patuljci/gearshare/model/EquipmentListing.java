@@ -36,6 +36,9 @@ public class EquipmentListing {
     @Column(length = 1000, nullable = false)
     private String description;
 
+    @Column(name = "image_path", length = 250, nullable = false)
+    private String imagePath;
+
     @Column(name = "daily_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal dailyPrice;
 
