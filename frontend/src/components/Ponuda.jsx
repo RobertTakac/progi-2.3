@@ -97,29 +97,6 @@ const Ponuda = ({ currentUser }) => {
             return;
         }
 
-
-        const reservationStart = new Date(reservationData.startDate);
-        const reservationEnd = new Date(reservationData.endDate);
-        const availableFrom = selectedListing.availableFrom ? new Date(selectedListing.availableFrom) : null;
-        const availableUntil = selectedListing.availableUntil ? new Date(selectedListing.availableUntil) : null;
-
-
-        if (reservationStart >= reservationEnd) {
-            alert('Datum početka mora biti prije datuma završetka!');
-            return;
-        }
-
-
-        if (availableFrom && reservationStart < availableFrom) {
-            alert(`Oprema je dostupna tek od ${availableFrom.toLocaleDateString('hr-HR')}!`);
-            return;
-        }
-
-        if (availableUntil && reservationEnd > availableUntil) {
-            alert(`Oprema je dostupna samo do ${availableUntil.toLocaleDateString('hr-HR')}!`);
-            return;
-        }
-
         try {
             const payload = {
                 listingID: selectedListing.id,
