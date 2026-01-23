@@ -22,6 +22,18 @@ public class ImageStorageService {
         }
     }
 
+    public void deleteOldImg(String imgPath) throws IOException {
+        if (imgPath == null || imgPath.isEmpty()) {
+            return;
+        }
+
+        Path dest = this.imagesPath.resolve(imgPath);
+
+        if (Files.exists(dest)) {
+            Files.delete(dest);
+        }
+    }
+
     public String saveImage(MultipartFile img) throws IOException {
         String filename = img.getOriginalFilename();
         String extension = filename.substring(filename.lastIndexOf('.'));

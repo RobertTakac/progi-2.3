@@ -44,15 +44,15 @@ public class MerchantController {
         return ResponseEntity.ok("Listing is deleted");
     }
 
-    @PostMapping(value="/updateListing")
-    public ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) {
+    @PostMapping(value="/updateListing", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ListingDto> updateListing(@RequestParam(value = "prodImg", required = false) MultipartFile prodImg, @RequestPart("dto") ListingDto dto) {
 
-        System.out.println(listingDto.getTitle());
-        System.out.println(listingDto.getDescription());
+        System.out.println(dto.getTitle());
+        System.out.println(dto.getDescription());
 
         //return ResponseEntity.ok(listingDto);
 
-        return ResponseEntity.ok(merchantService.updateListing(listingDto));
+        return ResponseEntity.ok(merchantService.updateListing(dto, prodImg));
     }
 
     @GetMapping(value="/get-all-listings")

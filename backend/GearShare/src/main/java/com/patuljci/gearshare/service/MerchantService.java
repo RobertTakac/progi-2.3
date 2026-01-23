@@ -82,7 +82,7 @@ public class MerchantService {
         return true;
     }
 
-    public ListingDto updateListing(ListingDto listingDto) {
+    public ListingDto updateListing(ListingDto listingDto, MultipartFile img) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity user = userRepository.findByUsername(authentication.getName());
 
@@ -163,6 +163,14 @@ public class MerchantService {
         if (listingDto.getReturnCountry() != null)
             equipmentListing.setReturnCountry(listingDto.getReturnCountry());
 
+        if (img != null && !img.isEmpty()) {
+            try {
+                imgService.deleteOldImg(equipmentListing.getImagePath());
+                equipmentListing.setImagePath(imgService.saveImage(img));
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Image saving failed!");
+            }
+        }
 
         EquipmentListing updated = equipmentListingRepository.save(equipmentListing);
 
@@ -204,12 +212,14 @@ public class MerchantService {
         listing.setReturnPostalCode(newListingDto.getReturnPostalCode());
         listing.setReturnCountry(newListingDto.getReturnCountry() != null ? newListingDto.getReturnCountry() : "Croatia");
 
-        if (img != null) {
+        if (img != null && !img.isEmpty()) {
             try {
                 listing.setImagePath(imgService.saveImage(img));
             } catch (IOException e) {
                 throw new IllegalArgumentException("Image saving failed!");
             }
+        } else {
+            throw new IllegalArgumentException("No image!");
         }
 
         EquipmentListing saved = equipmentListingRepository.save(listing);
