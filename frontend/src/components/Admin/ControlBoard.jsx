@@ -14,7 +14,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import CategoryIcon from '@mui/icons-material/Category';
 import ClassIcon from '@mui/icons-material/Class';
 
-
 const navigationOptions = [
     { name: "Kategorije", path: "categories", icon: <CategoryIcon/>}, 
     { name: "Upravljanje korisnicima", path: "usermanagement", icon: <AdminPanelSettingsIcon/> },
@@ -50,30 +49,29 @@ const ControlBoard = ({ currentUser }) => {
                 variant="permanent"
                 anchor="left"
             >
-            <Divider />
-            <List>
-                {navigationOptions.map(({name, path, icon}, index) => (
-                    <ListItem key={name} disablePadding>
-                        <ListItemButton
-                            onClick={() => setCurrRouteName(path)}
-                            component={Link}
-                            to={path}
-                            selected={currRouteName == name}
-                        >
-                            {icon}
-                            <ListItemText primary={name} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Drawer>
+                <Divider />
+                <List>
+                    {navigationOptions.map(({name, path, icon}, index) => (
+                        <ListItem key={name} disablePadding>
+                            <ListItemButton
+                                onClick={() => setCurrRouteName(path)}
+                                component={Link}
+                                to={path}
+                                selected={currRouteName == name}
+                            >
+                                {icon}
+                                <ListItemText primary={name} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
             
-        <Box
-            sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-        >
-            <Outlet/>
-        </Box>
-            
+            <Box
+                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+            >
+                <Outlet/>
+            </Box>
         </Box>
     );
 };
