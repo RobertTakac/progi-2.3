@@ -8,7 +8,6 @@ const AdminPanel = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // --- Fetch reports ---
     useEffect(() => {
         const fetchReports = async () => {
             try {
@@ -26,7 +25,6 @@ const AdminPanel = () => {
         fetchReports();
     }, []);
 
-    // --- Fetch merchants (ADMIN DTO) ---
     useEffect(() => {
         const fetchMerchants = async () => {
             try {
@@ -58,10 +56,31 @@ const AdminPanel = () => {
 
             alert("Korisnik je banan.");
             setReports(prev =>
-                prev.filter(report => report.reservationID !== reservationID)
+                prev.filter(r => r.reservationID !== reservationID)
             );
         } catch (err) {
             alert(err.message || "Greška pri bananju korisnika");
+        }
+    };
+
+    const handleRejectReport = async (reportID) => {
+        if (!window.confirm("Jeste li sigurni da želite obrisati report?")) return;
+
+        try {
+            const response = await apiRequest(
+                `/admin/delete-report?reportID=${reportID}`,
+                "POST"
+            );
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text || `Greška: ${response.status}`);
+            }
+
+            alert("Report je obrisan.");
+            setReports(prev => prev.filter(r => r.id !== reportID));
+        } catch (err) {
+            alert(err.message || "Greška pri brisanju reporta");
         }
     };
 
@@ -80,22 +99,31 @@ const AdminPanel = () => {
                     <tr>
                         <th>Reservation ID</th>
                         <th>Opis</th>
-                        <th>Akcija</th>
+                        <th>Akcije</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {reports.map((report, index) => (
-                        <tr key={index}>
+                    {reports.map(report => (
+                        <tr key={report.id}>
                             <td>{report.reservationID}</td>
                             <td>{report.description}</td>
-                            <td>
+                            <td style={{ display: "flex", gap: "8px" }}>
                                 <button
-                                    className="ban-button"
+                                    className="approve-btn"
                                     onClick={() =>
                                         handleBanUser(report.reservationID)
                                     }
                                 >
-                                    Ban User
+                                    Ban user
+                                </button>
+
+                                <button
+                                    className="decline-btn"
+                                    onClick={() =>
+                                        handleRejectReport(report.id)
+                                    }
+                                >
+                                    Reject report
                                 </button>
                             </td>
                         </tr>
@@ -126,11 +154,7 @@ const AdminPanel = () => {
                             <td>{m.businessName}</td>
                             <td>{m.city}</td>
                             <td>{m.country}</td>
-                            <td>
-                                {m.averageRating !== null
-                                    ? m.averageRating
-                                    : "N/A"}
-                            </td>
+                            <td>{m.averageRating ?? "N/A"}</td>
                         </tr>
                     ))}
                     </tbody>
