@@ -168,6 +168,54 @@
   background-color: #e48f0f;
 }
 
+/* Novi stilovi za cijene i izračun */
+.input-calc-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.usd-hint {
+    font-size: 0.75rem;
+    color: #888;
+    font-style: italic;
+    padding-left: 5px;
+}
+
+.price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.price-eur {
+    font-weight: 800;
+    color: #fe9e0d;
+    font-size: 1.3rem;
+}
+
+.price-usd {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+/* Stilovi za datume unutar forme */
+.date-inputs {
+    background: #fdf7ee;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #f9e3c5;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
 @media (max-width: 900px) {
   .form-location-wrapper {
     grid-template-columns: 1fr;

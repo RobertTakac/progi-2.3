@@ -74,7 +74,7 @@ const MojeRezervacijeMerchant = () => {
                 description: reportData.description
             };
 
-            const res = await apiRequest('/merchant/report', 'POST', payload);
+            const res = await apiRequest('/merchant/report-user', 'POST', payload);
 
             if (res && res.ok) {
                 alert('Prijava uspješno poslana!');
@@ -147,6 +147,8 @@ const MojeRezervacijeMerchant = () => {
                                             Odbij
                                         </button>
                                     </div>
+                                ) : reservation.status === 'REPORTED' ? (
+                                    <span>Prijavljeno</span>
                                 ) : (
                                     <span>-</span>
                                 )}
