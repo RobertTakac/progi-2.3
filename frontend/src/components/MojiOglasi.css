@@ -1,3 +1,11 @@
+button:disabled {
+  background-color: grey;
+  color: darkgrey;
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

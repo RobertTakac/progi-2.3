@@ -11,7 +11,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { API_BASE_URL, ENDPOINTS } from "../utils/constants";
 
 const emptyProduct = { 
-  name: "", 
+  title: "", 
   dailyPrice: "", 
   description: "", 
   prodImg: "",
@@ -64,18 +64,26 @@ const MojiOglasi = ({ currentUser }) => {
   }, []);
 
   const startEdit = (product) => {
-    setIsEditing(true);
+    console.log("Product: ", product);
     setEditId(product.id);
-    setNewProduct(structuredClone(product));
+    setNewProduct({
+      ...product,
+      availableFrom: dayjs(product.availableFrom),
+      availableUntil: dayjs(product.availableUntil),
+      previewImgUrl: `${API_BASE_URL}${ENDPOINTS.USER_IMAGES}/${product.prodImg}`,
+      prodImg: null
+    });
     setShowAddForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    setIsEditing(true);
   };
 
   const handleDelete = async (itemid) => {
     if (window.confirm("Jeste li sigurni?")) {
       try {
         await merchantDeleteListing(itemid);
-        setMyAds(myAds.filter((item) => item.id !== itemid));
+        await fetchAds();
+        await fetchCats();
       } catch(err) {
         toast.error(err);
       }
@@ -87,21 +95,21 @@ const MojiOglasi = ({ currentUser }) => {
 
     const adData = {
       ...(isEditing && { id: editId }),
-      title: newProduct.name,
+      title: newProduct.title,
       description: newProduct.description,
       categoryName: newProduct.categoryName,
-      dailyPrice: parseFloat(newProduct.dailyPrice),
-      depositAmount: parseFloat(newProduct.deposit) || 0, 
       pickupCity: newProduct.pickupCity,
       pickupAddress: newProduct.pickupAddress,
       pickupPostalCode: newProduct.pickupPostalCode,
       returnCity: newProduct.returnCity,
       returnAddress: newProduct.returnAddress,
       returnPostalCode: newProduct.returnPostalCode,
-      currency: "EUR",
-      isActive: true,
       availableFrom: newProduct.availableFrom,
       availableUntil: newProduct.availableUntil, 
+      dailyPrice: parseFloat(newProduct.dailyPrice),
+      depositAmount: parseFloat(newProduct.deposit) || 0, 
+      currency: "EUR",
+      isActive: true,
       returnCountry: "Croatia",
       pickupCountry: "Croatia"
     };
@@ -110,14 +118,15 @@ const MojiOglasi = ({ currentUser }) => {
       let res = null;
 
       if (isEditing) {
-        res = await merchantUpdateListing(adData);
+        res = await merchantUpdateListing(adData, newProduct.prodImg);
       } else {
         res = await merchantCreateListing(adData, newProduct.prodImg);
       }
 
       console.log("res:", res);
       resetForm();
-      await fetchAds(); 
+      await fetchAds();
+      await fetchCats();
     } catch (err) {
       console.error("Greška pri slanju:", err);
       toast.error("Spremanje nije uspjelo. Greska: ", err);
@@ -155,7 +164,7 @@ const MojiOglasi = ({ currentUser }) => {
           <form onSubmit={handleSave}>
             <div className="form-grid">
               <div className="form-inputs">
-                <input required name="name" type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
+                <input required name="title" type="text" placeholder="Naziv" value={newProduct.title} onChange={updateProductField("title")} />
                 <input required name="dailyPrice" type="number" placeholder="Cijena (€)" value={newProduct.dailyPrice} onChange={updateProductField("dailyPrice")} />
                 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -241,8 +250,8 @@ const MojiOglasi = ({ currentUser }) => {
               <h1>{item.title}</h1>
               <p className="price-tag">€{Number(item.dailyPrice || 0).toFixed(2)}</p>
               <div className="card-actions">
-                <button className="edit-btn" onClick={() => startEdit(item)}>Uredi</button>
-                <button className="delete-btn" onClick={() => handleDelete(item.id)}>Ukloni</button>
+                <button className="edit-btn" onClick={() => startEdit(item)} disabled={isEditing}>Uredi</button>
+                <button className="delete-btn" onClick={() => handleDelete(item.id)} disabled={isEditing}>Ukloni</button>
               </div>
             </div>
           </div>
