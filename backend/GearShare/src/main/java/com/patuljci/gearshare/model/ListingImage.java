@@ -13,15 +13,14 @@ import org.hibernate.annotations.OnDeleteAction;
 public class ListingImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Basic
     @Lob
-    @Column(name = "image",nullable = false, columnDefinition = "BYTEA")
+    @Column(name = "image", nullable = false, columnDefinition = "bytea")
     private byte[] image;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "listing_id", nullable = false)
     private EquipmentListing equipmentListing;

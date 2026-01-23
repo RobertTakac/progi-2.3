@@ -5,6 +5,7 @@ import com.patuljci.gearshare.model.ListingImage;
 import com.patuljci.gearshare.model.Merchant;
 import com.patuljci.gearshare.service.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -90,8 +91,11 @@ public class MerchantController {
     }
 
 
-    @PostMapping(value="/upload-image")
-    public ResponseEntity<ListingImage> uploadListingImage(@RequestParam("file") MultipartFile file, @RequestParam Long  listingID) throws IOException {
+    @PostMapping(value = "/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ListingImage> uploadListingImage(
+            @RequestPart("file") MultipartFile file,
+            @RequestParam("listingID") Long listingID
+    ) throws IOException {
         if(file == null || listingID==null) {
             System.out.println("file or listing id is null");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
