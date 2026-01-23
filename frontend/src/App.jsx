@@ -15,8 +15,11 @@ import VerifyCodeForm from './components/VerifyCodeForm';
 import OAuth2Redirect from "./components/OAuth2Redirect";
 import AuthorisationGuard from './components/AuthorisationGuard';
 import RoleGuard from './components/RoleGuard';
-import ControlBoard from './components/ControlBoard';
+import ControlBoard from './components/Admin/ControlBoard';
 import { isTokenValid } from './utils/constants';
+import Categories from './components/Admin/Categories';
+import UserManagement from './components/Admin/UserManagement';
+import Reports from './components/Admin/Reports';
 
 const App = () => {
 
@@ -121,7 +124,11 @@ const App = () => {
             </Route>
 
             <Route element={<RoleGuard user={currentUser} allowedRoles={["admin"]} />}>
-              <Route path="/controlboard" element={<ControlBoard currentUser={currentUser} anchor="left" />} />
+              <Route path="/controlboard" element={<ControlBoard currentUser={currentUser}/>}>
+                <Route path="categories" element={<Categories currentUser={currentUser}/>} />
+                <Route path="usermanagement" element={<UserManagement currentUser={currentUser}/>} />
+                <Route path="reports" element={<Reports currentUser={currentUser}/>} />
+              </Route>
             </Route>
           </Route>
 
