@@ -15,21 +15,69 @@ const Ponuda = ({ currentUser }) => {
         quantity: 1
     });
 
-  const fetchPublicAds = async () => {
-    setLoading(true);
-    try {
-      const res = await apiRequest('/listing/all', 'GET'); 
-      
-      if (res && res.ok) {
-        const data = await res.json();
-        setAvailableAds(data);
-      }
-    } catch (error) {
-      console.error("Greška pri dohvaćanju ponude:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const [keyword, setKeyword] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+    const categories = [
+        'Kampiranje i boravak u prirodi',
+        'Planinarenje i trekking',
+        'Biciklizam',
+        'Vodeni sportovi',
+        'Zimski sportovi',
+        'Penjanje i alpinizam',
+        'Fitness i trening',
+        'Timski sportovi',
+        'Sportska odjeća i zaštitna oprema',
+        'Navigacija i sigurnosna oprema'
+    ];
+
+    const fetchPublicAds = async () => {
+        setLoading(true);
+        try {
+            let endpoint;
+
+
+            if (!selectedCategory && !keyword) {
+                endpoint = '/listing/all';
+            } else {
+
+                endpoint = '/listing/';
+                const params = new URLSearchParams();
+
+                if (selectedCategory) {
+                    params.append('category', selectedCategory);
+                }
+                if (keyword) {
+                    params.append('keyword', keyword);
+                }
+
+                const queryString = params.toString();
+                if (queryString) {
+                    endpoint += '?' + queryString;
+                }
+            }
+
+            const res = await apiRequest(endpoint, 'GET');
+
+            if (res && res.ok) {
+                const data = await res.json();
+                setAvailableAds(data);
+            }
+        } catch (error) {
+            console.error("Greška pri dohvaćanju ponude:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSearch = () => {
+        fetchPublicAds();
+    };
+
+    const handleClearFilters = () => {
+        setKeyword('');
+        setSelectedCategory('');
+    };
 
     const handleReserveClick = (listing) => {
         setSelectedListing(listing);
@@ -82,6 +130,39 @@ const Ponuda = ({ currentUser }) => {
         <h2>Dostupna Oprema</h2>
         <p>Pronađi savršenu opremu za svoju sljedeću avanturu</p>
       </div>
+
+        <div className="search-filter-section">
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Pretraži opremu..."
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    className="search-input"
+                />
+            </div>
+
+            <div className="filter-row">
+                <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="category-select"
+                >
+                    <option value="">Sve kategorije</option>
+                    {categories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                </select>
+
+                <button onClick={handleSearch} className="search-btn">
+                    Pretraži
+                </button>
+
+                <button onClick={handleClearFilters} className="clear-btn">
+                    Očisti filtere
+                </button>
+            </div>
+        </div>
 
       <div className="grid-container">
         {loading ? (

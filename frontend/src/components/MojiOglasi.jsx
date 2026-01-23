@@ -190,9 +190,9 @@ const MojiOglasi = ({ currentUser }) => {
                   <input type="number" placeholder="Količina" value={newProduct.quantityAvailable} onChange={(e) => setNewProduct({...newProduct, quantityAvailable: e.target.value})} />
                 </div>
 
-                <div className="date-inputs" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '15px' }}>
+                <div className="date-inputs">
                   <div className="form-group">
-                    <label style={{ fontSize: '0.8rem', color: '#666' }}>Dostupno od:</label>
+                    <label>Dostupno od:</label>
                     <input 
                       type="datetime-local" 
                       value={newProduct.availableFrom} 
@@ -200,7 +200,7 @@ const MojiOglasi = ({ currentUser }) => {
                     />
                   </div>
                 <div className="form-group">
-                  <label style={{ fontSize: '0.8rem', color: '#666' }}>Dostupno do:</label>
+                  <label>Dostupno do:</label>
                   <input 
                     type="datetime-local" 
                     value={newProduct.availableUntil} 
