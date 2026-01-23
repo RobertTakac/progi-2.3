@@ -3,6 +3,7 @@ package com.patuljci.gearshare.security;
 import com.patuljci.gearshare.model.UserEntity;
 import com.patuljci.gearshare.service.AuthenticationService;
 import com.patuljci.gearshare.service.JwtService;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Lazy;
@@ -32,7 +33,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication
-    ) throws IOException {
+    ) throws IOException, ServletException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
@@ -45,12 +46,18 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 email,
                 name
         );
-
-
         String jwt = jwtService.generateToken(user);
-        clearAuthenticationAttributes(request);
-        response.sendRedirect(
+
+        setDefaultTargetUrl(
                 "https://progi-2-3-ah5i.onrender.com/oauth2/redirect?token=" + jwt
         );
+
+        super.onAuthenticationSuccess(request, response, authentication);
+
+        //String jwt = jwtService.generateToken(user);
+        //clearAuthenticationAttributes(request);
+        //response.sendRedirect(
+          //      "https://progi-2-3-ah5i.onrender.com/oauth2/redirect?token=" + jwt
+        //);
     }
 }
