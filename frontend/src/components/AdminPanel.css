@@ -139,3 +139,31 @@
 .cancel-btn:hover {
     background: #da190b;
 }
+
+.approve-btn {
+    padding: 6px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.approve-btn:hover {
+    background-color: #45a049;
+}
+
+.decline-btn {
+    padding: 6px 12px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.decline-btn:hover {
+    background-color: #da190b;
+}
