@@ -12,7 +12,7 @@ const HomePage = ({ currentUser, openLoginModal }) => {
     if (currentUser) {
       navigate('/ponuda'); 
     } else {
-      openLoginModal('login'); 
+      openLoginModal('signup');
     }
   };
 

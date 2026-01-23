@@ -33,11 +33,15 @@ const App = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [emailToVerify, setEmailToVerify] = useState(null);
 
-  const openModal = (view) => {
-    setModalView(view);
-    setSelectedRole(null); 
-    setEmailToVerify(null); 
-  };
+    const openModal = (view) => {
+        setModalView(view);
+        if (view === 'login') {
+            setSelectedRole('user');
+        } else {
+            setSelectedRole(null);
+        }
+        setEmailToVerify(null);
+    };
   const closeModal = () => {
     setModalView(null);
     setSelectedRole(null);
