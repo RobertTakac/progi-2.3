@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import dayjs from 'dayjs';
 import "./MojiOglasi.css";
 import { getMerchantAllListings, merchantUpdateListing, merchantCreateListing, merchantDeleteListing, getAllCategories } from '../services/apiService';
 import { toast } from 'react-toastify';
@@ -6,7 +7,22 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const emptyProduct = { name: "", price: "", date: "", description: "", photo: "", deposit: "", location: "", categoryName: "" };
+const emptyProduct = { 
+  name: "", 
+  price: "", 
+  description: "", 
+  photo: "", 
+  deposit: "", 
+  pickupAddress: "",
+  pickupCity: "",
+  pickupPostalCode: "",
+  categoryName: "",
+  availableFrom: dayjs('2026-01-22'),
+  availableUntil: dayjs('2026-01-22'),
+  returnAddress: "",
+  returnCity: "",
+  returnPostalCode: ""
+};
 
 const MojiOglasi = ({ currentUser }) => {
   
@@ -64,8 +80,6 @@ const MojiOglasi = ({ currentUser }) => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    
-    if (!newProduct.name || !newProduct.price) return alert("Ime i cijena su obavezni.");
 
     const adData = {
       ...(isEditing && { id: editId }),
@@ -74,11 +88,18 @@ const MojiOglasi = ({ currentUser }) => {
       categoryName: newProduct.categoryName,
       dailyPrice: parseFloat(newProduct.price),
       depositAmount: parseFloat(newProduct.deposit) || 0, 
-      pickupCity: newProduct.location,
+      pickupCity: newProduct.pickupCity,
+      pickupAddress: newProduct.pickupAddress,
+      pickupPostalCode: newProduct.pickupPostalCode,
+      returnCity: newProduct.returnCity,
+      returnAddress: newProduct.returnAddress,
+      returnPostalCode: newProduct.returnPostalCode,
       currency: "EUR",
       isActive: true,
-      availableFrom: new Date().toISOString(),
-      availableUntil: new Date(Date.now() + 7*24*60*60*1000).toISOString(), 
+      availableFrom: newProduct.availableFrom,
+      availableUntil: newProduct.availableUntil, 
+      returnCountry: "Croatia",
+      pickupCountry: "Croatia"
     };
 
     try {
@@ -110,6 +131,10 @@ const MojiOglasi = ({ currentUser }) => {
     setNewProduct({...newProduct, [field]: e.target.value});
   }
 
+   const updateProductFieldDate = (field) => (e) => {
+    setNewProduct({...newProduct, [field]: e});
+  }
+
   return (
     <div className="moja-oglasna-ploca">
       <div className="ads-header">
@@ -128,15 +153,26 @@ const MojiOglasi = ({ currentUser }) => {
               <div className="form-inputs">
                 <input required name="name" type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
                 <input required name="price" type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={updateProductField("price")} />
-                <input required name="date" type="text" placeholder="Dostupnost" value={newProduct.date} onChange={updateProductField("date")} />
                 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker required name="availableFrom" label="Dostupno od:" />
-                  <DatePicker required name="availableTo" label="Dostupno do:" />
+                  <DatePicker minWidth required name="availableFrom" label="Dostupno od:" value={newProduct.availableFrom} onChange={updateProductFieldDate("availableFrom")}/>
+                  <DatePicker minWidth required name="availableUntil" label="Dostupno do:" value={newProduct.availableUntil} onChange={updateProductFieldDate("availableUntil")}/>
                 </LocalizationProvider>
                 
                 <textarea required placeholder="Opis" value={newProduct.description} onChange={updateProductField("description")} />
-                <input required name="location" type="text" placeholder="Lokacija" value={newProduct.location} onChange={updateProductField("location")} />
+                
+                <div className="addr">
+                  <input required className="cityInput" name="pickupCity" type="text" placeholder="Grad preuzimanja" value={newProduct.pickupCity} onChange={(updateProductField("pickupCity"))} />
+                  <input required className="addrInput" name="pickupAddress" type="text" placeholder="Adresa preuzimanja" value={newProduct.pickupAddress} onChange={(updateProductField("pickupAddress"))} />
+                  <input required className="postCodeInput" name="pickupPostalCode" type="text" placeholder="Postanski broj" value={newProduct.pickupPostalCode} onChange={(updateProductField("pickupPostalCode"))} />
+                </div>
+                
+                <div className="addr">
+                  <input required className="cityInput" name="returnCity" type="text" placeholder="Grad povratka" value={newProduct.returnCity} onChange={(updateProductField("returnCity"))} />
+                  <input required className="addrInput" name="returnAddress" type="text" placeholder="Adresa povratka" value={newProduct.returnAddress} onChange={(updateProductField("returnAddress"))} />
+                  <input required className="postCodeInput" name="returnPostalCode" type="text" placeholder="Postanski broj" value={newProduct.returnPostalCode} onChange={(updateProductField("returnPostalCode"))} />
+                </div>
+
                 <select required name="categories" id="category-select" value={newProduct.categoryName} onChange={updateProductField("categoryName")}>
                   <option value="">Izaberite kategoriju</option>
                   {
