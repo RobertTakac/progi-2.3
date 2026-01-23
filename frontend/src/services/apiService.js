@@ -31,16 +31,16 @@ apiClient.interceptors.request.use(
     }
 );
 
-// apiClient.interceptors.response.use(
-//     (response) => response,
-//     (error) => {
-//         if (error.response && error.response.status === 401) {
-//             tokenExpired();
-//         }
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            tokenExpired();
+        }
 
-//         return Promise.reject(error);
-//     }
-// );
+        return Promise.reject(error);
+    }
+);
 
 /*
  *  API Calls
@@ -141,9 +141,24 @@ export const merchantUpdateListing = async(adData) => {
     }
 }
 
-export const merchantCreateListing = async(adData) => {
+export const merchantCreateListing = async(adData, prodImg) => {
     try {
-        const res = await apiClient.post(ENDPOINTS.MERCHANT_CREATE_LISTING, adData);
+        const formData = new FormData();
+
+        if (prodImg) {
+            formData.append('prodImg', prodImg);
+        } else {
+            throw new Error("Image must be set!");
+        }
+
+        const jsonBlob = new Blob([ JSON.stringify(adData) ], { type: "application/json" });
+        formData.append("dto", jsonBlob);
+
+        const res = await apiClient.post(`${API_BASE_URL}${ENDPOINTS.MERCHANT_CREATE_LISTING}`, formData, {
+            headers: {
+                "Content-Type": undefined
+            }
+        });
         return res.data;
     } catch(err) {
         console.error("Merchant create listing error: ", err.response?.data || err.message);

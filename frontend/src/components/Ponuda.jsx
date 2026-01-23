@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './MojiOglasi.css';
 import { getAllListings } from '../services/apiService';
 import { toast } from 'react-toastify';
+import { API_BASE_URL, ENDPOINTS } from "../utils/constants";
 
 const Ponuda = ({ currentUser }) => {
   const [availableAds, setAvailableAds] = useState([]);
@@ -39,8 +40,9 @@ const Ponuda = ({ currentUser }) => {
             <div className="card public-card" key={item.id}>
               <div className="card-image-wrapper">
                 <img 
-                  src={item.imageUrl || "https://placehold.co/600x400?text=Nema+slike"} 
-                  alt={item.title} 
+                  src={`${API_BASE_URL}${ENDPOINTS.USER_IMAGES}/${item.prodImg}`}
+                  alt={item.title}
+                  style={{ objectFit: "contain" }}
                 />
                 {item.pickupCity && (
                   <span className="location-badge"> {item.pickupCity}</span>
