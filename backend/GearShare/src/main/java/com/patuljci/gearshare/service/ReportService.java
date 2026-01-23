@@ -127,7 +127,7 @@ public class ReportService {
         ReportDTO dto = new ReportDTO();
         dto.setDescription(report.getDescription());
         dto.setReservationID(report.getReservation().getId());
-        dto.setId(dto.getId());
+        dto.setId(report.getId());
         return dto;
     }
 
