@@ -6,12 +6,16 @@ import { toast } from 'react-toastify';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Button } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { API_BASE_URL, ENDPOINTS } from "../utils/constants";
 
 const emptyProduct = { 
   name: "", 
-  price: "", 
+  dailyPrice: "", 
   description: "", 
-  photo: "", 
+  prodImg: "",
+  previewImgUrl: "", 
   deposit: "", 
   pickupAddress: "",
   pickupCity: "",
@@ -86,7 +90,7 @@ const MojiOglasi = ({ currentUser }) => {
       title: newProduct.name,
       description: newProduct.description,
       categoryName: newProduct.categoryName,
-      dailyPrice: parseFloat(newProduct.price),
+      dailyPrice: parseFloat(newProduct.dailyPrice),
       depositAmount: parseFloat(newProduct.deposit) || 0, 
       pickupCity: newProduct.pickupCity,
       pickupAddress: newProduct.pickupAddress,
@@ -108,7 +112,7 @@ const MojiOglasi = ({ currentUser }) => {
       if (isEditing) {
         res = await merchantUpdateListing(adData);
       } else {
-        res = await merchantCreateListing(adData);
+        res = await merchantCreateListing(adData, newProduct.prodImg);
       }
 
       console.log("res:", res);
@@ -152,11 +156,11 @@ const MojiOglasi = ({ currentUser }) => {
             <div className="form-grid">
               <div className="form-inputs">
                 <input required name="name" type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
-                <input required name="price" type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={updateProductField("price")} />
+                <input required name="dailyPrice" type="number" placeholder="Cijena (€)" value={newProduct.dailyPrice} onChange={updateProductField("dailyPrice")} />
                 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker minWidth required name="availableFrom" label="Dostupno od:" value={newProduct.availableFrom} onChange={updateProductFieldDate("availableFrom")}/>
-                  <DatePicker minWidth required name="availableUntil" label="Dostupno do:" value={newProduct.availableUntil} onChange={updateProductFieldDate("availableUntil")}/>
+                  <DatePicker required name="availableFrom" label="Dostupno od:" value={newProduct.availableFrom} onChange={updateProductFieldDate("availableFrom")}/>
+                  <DatePicker required name="availableUntil" label="Dostupno do:" value={newProduct.availableUntil} onChange={updateProductFieldDate("availableUntil")}/>
                 </LocalizationProvider>
                 
                 <textarea required placeholder="Opis" value={newProduct.description} onChange={updateProductField("description")} />
@@ -188,9 +192,36 @@ const MojiOglasi = ({ currentUser }) => {
               </div>
               
               <div className="form-image-preview">
-                  <input required name="photo" type="text" placeholder="URL slike" value={newProduct.photo} onChange={updateProductField("photo")} />
+                  <div className="upload-btn">
+                    <Button
+                      component="label"
+                      variant="contained"
+                      startIcon={<CloudUploadIcon />}
+                      sx={{ marginBottom: 2 }}
+                    >
+                      Uploadaj sliku
+                      
+                      <input
+                          type="file"
+                          hidden
+                          accept="image/*"
+                          onChange={(e) => {
+                            console.log("Img uploaded? ", e);
+                            const file = e.target.files[0];
+                            if (file) {
+                              setNewProduct({
+                                ...newProduct,
+                                prodImg: file,
+                                previewImgUrl: URL.createObjectURL(file)
+                              });
+                            }
+                          }}
+                      />
+                    </Button>
+                  </div>
+
                   <div className="preview-box">
-                      {newProduct.photo && <img src={newProduct.photo} alt="Preview" style={{ objectFit: "contain" }} />}
+                      {newProduct.previewImgUrl && <img src={newProduct.previewImgUrl} alt="Preview" style={{ objectFit: "contain" }} />}
                   </div>
               </div>
             </div>
@@ -205,7 +236,7 @@ const MojiOglasi = ({ currentUser }) => {
       <div className="grid-container">
         {myAds?.map((item) => (
           <div className="card" key={item.id}>
-            <img src={item.imageUrl} alt={item.title} />
+            <img src={`${API_BASE_URL}${ENDPOINTS.USER_IMAGES}/${item.prodImg}`} alt={item.title} style={{ objectFit: "contain" }} />
             <div className="card-content">
               <h1>{item.title}</h1>
               <p className="price-tag">€{Number(item.dailyPrice || 0).toFixed(2)}</p>

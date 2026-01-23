@@ -97,6 +97,13 @@
   margin-top: 10px;
 }
 
+.upload-btn {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+
 .preview-box {
   width: 100%;
   height: 250px;

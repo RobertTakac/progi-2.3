@@ -12,7 +12,8 @@ export const ENDPOINTS = {
     MERCHANT_DELETE_LISTING: "/merchant/deleteListing",
     ALL_CATEGORIES: "/listing/categories",
     NEW_CATEGORY: "/admin/categories",
-    DELETE_CATEGORY: "/admin/categories"
+    DELETE_CATEGORY: "/admin/categories",
+    USER_IMAGES: "/userImages"
 };
 
 export const ERROR_MSGS = {
