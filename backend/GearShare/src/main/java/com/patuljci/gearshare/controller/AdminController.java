@@ -1,6 +1,7 @@
 package com.patuljci.gearshare.controller;
 
 import com.patuljci.gearshare.dto.ReportDTO;
+import com.patuljci.gearshare.dto.ClientDataDTO;
 import com.patuljci.gearshare.service.ReportService;
 
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.patuljci.gearshare.dto.EquipmentCategoryDTO;
+import com.patuljci.gearshare.service.ClientService;
 import com.patuljci.gearshare.service.ListingService;
 
 @RequestMapping("/admin")
@@ -25,10 +27,12 @@ public class AdminController {
 
     private final ReportService reportService;
     private final ListingService listingService;
+    private final ClientService clientService;
 
-    public AdminController(ReportService reportService, ListingService listingService) {
+    public AdminController(ReportService reportService, ListingService listingService, ClientService clientService) {
         this.reportService = reportService;
         this.listingService = listingService;
+        this.clientService = clientService;
     }
 
     @GetMapping(value = "/get-reports")
@@ -39,6 +43,11 @@ public class AdminController {
     @GetMapping(value = "/ban-user")
     public ResponseEntity<String> banUser(@RequestParam Long clientID) {
         return ResponseEntity.ok(reportService.banUser(clientID));
+    }
+    
+    @GetMapping(value = "/all-clients")
+    public ResponseEntity<List<ClientDataDTO>> allClients() {
+        return ResponseEntity.ok(clientService.getAllClients());
     }
 
     @PostMapping("/categories")

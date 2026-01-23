@@ -31,6 +31,8 @@ public class UserEntity implements UserDetails {
     private String verificationCode;
     @Column(name  = "verification_expiration")
     private String verificationCodeExpiresAt;
+    @Column(name="is_blocked", nullable = false)
+    private boolean isBlocked = false;
 
     private Collection<? extends GrantedAuthority> authorities;
 

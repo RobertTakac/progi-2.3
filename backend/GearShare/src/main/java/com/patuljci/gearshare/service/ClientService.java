@@ -10,11 +10,14 @@ import com.patuljci.gearshare.repository.ClientRepository;
 import com.patuljci.gearshare.repository.EquipmentListingRepository;
 import com.patuljci.gearshare.repository.ReservationRepository;
 import com.patuljci.gearshare.repository.UserRepository;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.patuljci.gearshare.dto.ClientDataDTO;
 
 @Service
 public class ClientService {
@@ -73,7 +76,23 @@ public class ClientService {
         return response;
     }
 
+    public List<ClientDataDTO> getAllClients() {
+        List<ClientDataDTO> clients = clientRepository.findAll()
+                                        .stream()
+                                        .map((client) -> {
+                                            ClientDataDTO toMap = new ClientDataDTO();
 
+                                            toMap.setCanRent(client.getCanRent());
+                                            toMap.setClient_id(client.getClient_id());
+                                            toMap.setUsername(client.getUser().getUsername());
+                                            toMap.setEmail(client.getUser().getEmail());
+
+                                            return toMap;
+                                        })
+                                        .toList();
+
+        return clients;
+    }
 
     public ReservationDTO reservationToDTO(Reservation reservation){
         ReservationDTO dto = new ReservationDTO();
