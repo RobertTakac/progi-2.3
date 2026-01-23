@@ -147,6 +147,8 @@ const MojeRezervacijeMerchant = () => {
                                             Odbij
                                         </button>
                                     </div>
+                                ) : reservation.status === 'REPORTED' ? (
+                                    <span>Prijavljeno</span>
                                 ) : (
                                     <span>-</span>
                                 )}
