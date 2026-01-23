@@ -21,8 +21,8 @@ CREATE TABLE clients (
   );
 
 
-CREATE TABLE merchants (
-    merchant_id SERIAL PRIMARY KEY,
+CREATE TABLE merchant (
+    id SERIAL PRIMARY KEY,
     user_id INTEGER UNIQUE NOT NULL REFERENCES users(user_id),
     busines_name VARCHAR(250) NOT NULL,
     address VARCHAR(500) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE membership_prices (
 
 CREATE TABLE membership_payments (
     payment_id SERIAL PRIMARY KEY,
-    merchAnt_id INTEGER NOT NULL REFERENCES merchants(merchant_id),
+    merchant_id INTEGER NOT NULL REFERENCES merchant(id),
     amount DECIMAL(10, 2) NOT NULL,
     currency VARCHAR(3) DEFAULT 'EUR',
     payment_method VARCHAR(50) NOT NULL, 
@@ -68,25 +68,29 @@ CREATE TABLE equipment_cateories (
 
 CREATE TABLE equipment_listings (
 	listing_id SERIAL PRIMARY KEY,
-	merchant_id INTEGER NOT NULL REFERENCES merchants(merchant_id),
+	merchant_id INTEGER NOT NULL REFERENCES merchant(id),
 	category_id INTEGER NOT NULL REFERENCES equipment_cateories(category_id),
 	title VARCHAR(250),
 	description VARCHAR(1000) NOT NULL,
-	dAily_price DECIMAL(10, 2) NOT NULL,
+	daily_price DECIMAL(10, 2) NOT NULL,
 	deposit_amount DECIMAL(10, 2) DEFAULT 0.00,
 	currency VARCHAR(3) DEFAULT 'EUR',
 	available_from DATE NOT NULL,
 	available_until DATE NOT NULL,
-	pickup_location VARCHAR(500) NOT NULL,
+	pickup_address VARCHAR(500) NOT NULL,
+	pickup_city VARCHAR(250) NOT NULL,
+	pickup_postal_code VARCHAR(20) NOT NULL,
+	return_address VARCHAR(500) NOT NULL,
+	return_city VARCHAR(250) NOT NULL,
+	return_postal_code VARCHAR(20) NOT NULL,
 	--vjv latitude longitude kasnije ali provjeri s drugima
-	return_location VARCHAR(500) NOT NULL,
 	quantity_available INTEGER DEFAULT 1,
-    is_active BOOLEAN DEFAULT true,
-    average_rating DECIMAL(3, 2) DEFAULT 0.00,
-    total_reviews INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	);
+        is_active BOOLEAN DEFAULT true,
+    	average_rating DECIMAL(3, 2) DEFAULT 0.00,
+    	total_reviews INTEGER DEFAULT 0,
+    	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE listing_images (
     image_id SERIAL PRIMARY KEY,
@@ -99,7 +103,7 @@ CREATE TABLE reservations (
     reservation_id SERIAL PRIMARY KEY,
     listing_id INTEGER NOT NULL REFERENCES equipment_listings(listing_id),
     client_id INTEGER NOT NULL REFERENCES clients(client_id),
-    merchant_id INTEGER NOT NULL REFERENCES merchants(merchant_id),
+    merchant_id INTEGER NOT NULL REFERENCES merchant(id),
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     quantity INTEGER DEFAULT 1,
@@ -136,7 +140,7 @@ CREATE TABLE reviews (
     review_id SERIAL PRIMARY KEY,
     reservation_id INTEGER NOT NULL REFERENCES reservations(reservation_id),
     client_id INTEGER NOT NULL REFERENCES clients(client_id),
-    merchant_id INTEGER NOT NULL REFERENCES merchants(merchant_id),
+    merchant_id INTEGER NOT NULL REFERENCES merchant(id),
     listing_id INTEGER NOT NULL REFERENCES equipment_listings(listing_id),
     rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5), -- vjerovatno biti neke opcije unosa ali provjera 
     comment VARCHAR(1000),
@@ -147,7 +151,7 @@ CREATE TABLE reviews (
 CREATE TABLE reports (
     report_id SERIAL PRIMARY KEY,
     reservation_id INTEGER NOT NULL REFERENCES reservations(reservation_id),
-    merchant_id INTEGER NOT NULL REFERENCES merchants(merchant_id),
+    merchant_id INTEGER NOT NULL REFERENCES merchant(id),
     reported_client_id INTEGER NOT NULL REFERENCES clients(client_id),
     reason VARCHAR(100) NOT NULL, 
     description VARCHAR(1000) NOT NULL,
