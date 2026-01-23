@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
+import { FaBars, FaTimes } from "react-icons/fa";
 import "./Navbar.css";
 
 const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false); 
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const closeMenu = () => setIsMenuOpen(false);
 
     const getNavigationLinks = () => {
         if (!currentUser) {
@@ -39,12 +45,18 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
     return (
         <>
             <nav className="navbar">
-                <Link to="/" className="navbar-logo">
+                <Link to="/" className="navbar-logo" onClick={closeMenu}>
                     <img src={assets.logo} alt="Logo" className="logo-image" />
                 </Link>
+
+                <div className="menu-icon" onClick={toggleMenu}>
+                    {isMenuOpen ? <FaTimes /> : <FaBars />}
+                </div>
+
+              <div className={isMenuOpen ? "nav-menu active" : "nav-menu"}>
                 <div className="navbar-links">
                     {navigationLinks.map((link) => (
-                        <Link key={link.name} to={link.path} className="nav-item">
+                        <Link key={link.name} to={link.path} className="nav-item" onClick={closeMenu}>
                             {link.name}
                         </Link>
                     ))}
@@ -53,24 +65,24 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
                 <div className="navbar-auth">
                     {currentUser ? (
                         <>
-                            <Link to="/profil" className="nav-item button-secondary">
+                            <Link to="/profil" className="nav-item button-secondary" onClick={closeMenu}>
                                 Moj profil
                             </Link>
 
-                            <button onClick={handleSignOut} className="nav-item button-primary">
+                            <button onClick={() => { handleSignOut(); closeMenu(); }} className="nav-item button-primary logout-btn">
                                 Sign Out
                             </button>
                         </>
                     ) : (
                         <>
                             <button
-                                onClick={() => openLoginModal("login")}
+                                onClick={() => { openLoginModal("login"); closeMenu(); }}
                                 className="nav-item button-secondary"
                             >
                                 Prijavi se
                             </button>
                             <button
-                                onClick={() => openLoginModal("signup")}
+                                onClick={() => { openLoginModal("signup"); closeMenu(); }}
                                 className="nav-item button-primary"
                             >
                                 Registriraj se
@@ -78,6 +90,7 @@ const Navbar = ({ currentUser, openLoginModal, handleSignOut }) => {
                         </>
                     )}
                 </div>
+              </div>
             </nav>
         </>
     );

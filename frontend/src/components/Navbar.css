@@ -6,6 +6,9 @@
   background-color: #1a237e; 
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar-logo {
@@ -49,4 +52,71 @@
 
 .button-primary:hover {
   background-color: #e65100; 
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 30px; 
+}
+
+.menu-icon {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+@media (max-width: 950px) {
+  .navbar {
+    padding: 10px 20px;
+  }
+
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 60px;
+    left: -100%;
+    flex-direction: column;
+    background-color: #1a237e;
+    width: 100%;
+    height: calc(100vh - 60px);
+    text-align: center;
+    transition: all 0.4s ease;
+    gap: 0;
+    padding-top: 2rem;
+  }
+
+  .nav-menu.active {
+    left: 0;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .navbar-auth {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+  }
+
+  .nav-item {
+    display: block;
+    width: 80%;
+    margin: 5px auto;
+    padding: 15px;
+    font-size: 1.2rem;
+  }
+
+  .button-primary, .button-secondary {
+    width: 80% !important;
+    margin: 0 auto;
+    text-align: center;
+  }
 }
