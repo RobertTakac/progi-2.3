@@ -3,6 +3,7 @@ import "./MojiOglasi.css";
 import { apiRequest } from '../api/apiService';
 
 const MojiOglasi = ({ currentUser }) => {
+    const BASE_URL = import.meta.env.VITE_BASE_URL
   
   const [allAds, setAllAds] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -30,7 +31,8 @@ const MojiOglasi = ({ currentUser }) => {
   depositAmount: "",
   currency: "EUR",
   quantityAvailable: 1,
-  photo: "", 
+      photoFile: null,
+      photoPreview: "",
   availableFrom: "", 
   availableUntil: "",
   pickupAddress: "", pickupArea: "", pickupCity: "", pickupPostalCode: "", pickupCountry: "Hrvatska",
@@ -64,7 +66,8 @@ const MojiOglasi = ({ currentUser }) => {
       title: product.title || "",
       dailyPrice: product.dailyPrice || "",
       description: product.description || "",
-      photo: product.imageUrl || "",
+        photoFile: null,
+        photoPreview: "",
       depositAmount: product.depositAmount || "",
       currency: product.currency || "EUR",
       quantityAvailable: product.quantityAvailable || 1,
@@ -89,6 +92,32 @@ const MojiOglasi = ({ currentUser }) => {
       }
     }
   };
+    const uploadImage = async (listingId, file) => {
+        if (!file) return true;
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("listingID", listingId);
+
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`${BASE_URL}/merchant/upload-image`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                console.error("Upload failed", response.status);
+                return false;
+            }
+            return true;
+        } catch (err) {
+            console.error("Upload error:", err);
+            return false;
+        }
+    };
 
   const handleSave = async () => {
     if (!newProduct.title || !newProduct.dailyPrice) return alert("Ime i cijena su obavezni.");
@@ -103,7 +132,6 @@ const MojiOglasi = ({ currentUser }) => {
       currency: newProduct.currency,
       quantityAvailable: parseInt(newProduct.quantityAvailable),
       isActive: true,
-      imageUrl: newProduct.photo,
       availableFrom: newProduct.availableFrom,
       availableUntil: newProduct.availableUntil,
       pickupAddress: newProduct.pickupAddress,
@@ -120,18 +148,32 @@ const MojiOglasi = ({ currentUser }) => {
 
   const endpoint = isEditing ? '/merchant/updateListing' : '/merchant/create-listing';
 
-    try {
-      const res = await apiRequest(endpoint, 'POST', adData);
-      if (res && res.ok) {
-        alert("Oglas uspješno objavljen!");
-        await fetchAds(); 
-        resetForm();
-      } else {
-        alert("Spremanje nije uspjelo.");
+      try {
+          const res = await apiRequest(endpoint, "POST", adData);
+          if (res && res.ok) {
+              const savedListing = await res.json();
+
+
+              let imageOk = true;
+              if (newProduct.photoFile) {
+                  imageOk = await uploadImage(savedListing.id, newProduct.photoFile);
+              }
+
+              if (imageOk) {
+                  alert("Oglas uspješno objavljen!");
+              } else {
+                  alert("Oglas spremljen, ali slika nije uspjela uploadati.");
+              }
+
+              await fetchAds();
+              resetForm();
+          } else {
+              alert("Spremanje nije uspjelo.");
+          }
+      } catch (err) {
+          console.error("Greška pri slanju:", err);
+          alert("Došlo je do greške.");
       }
-    } catch (err) {
-      console.error("Greška pri slanju:", err);
-    }
   };
 
   const resetForm = () => {
@@ -229,9 +271,43 @@ const MojiOglasi = ({ currentUser }) => {
             </div>
           </div>
 
-          <div className="form-image-preview">
-            <input type="text" placeholder="URL slike opreme" value={newProduct.photo} onChange={(e) => setNewProduct({...newProduct, photo: e.target.value})} />
-          </div>
+            <div className="form-image-preview">
+                <label>Slika opreme:</label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                            setNewProduct({
+                                ...newProduct,
+                                photoFile: file,
+                                photoPreview: URL.createObjectURL(file),
+                            });
+                        }
+                    }}
+                />
+
+                {newProduct.photoPreview && (
+                    <div style={{ marginTop: "10px" }}>
+                        <img
+                            src={newProduct.photoPreview}
+                            alt="Preview"
+                            style={{ maxWidth: "220px", maxHeight: "220px", objectFit: "cover", borderRadius: "6px" }}
+                        />
+                    </div>
+                )}
+
+                {isEditing && !newProduct.photoPreview && newProduct.imageUrl && (
+                    <div style={{ marginTop: "10px" }}>
+                        <img
+                            src={`${BASE_URL}/listing/get-image?listingID=${editId}`}
+                            alt="Trenutna slika"
+                            style={{ maxWidth: "220px", maxHeight: "220px", objectFit: "cover", borderRadius: "6px" }}
+                        />
+                    </div>
+                )}
+            </div>
 
           <button onClick={handleSave} className="publish-btn">
             {isEditing ? "Spremi promjene" : "Objavi Oglas"}
@@ -242,7 +318,13 @@ const MojiOglasi = ({ currentUser }) => {
       <div className="grid-container">
         {allAds.map((item) => (
           <div className="card" key={item.id}>
-            <img src={item.imageUrl} alt={item.title} />
+              <img
+                  src={item.imageUrl || `${BASE_URL}/listing/get-image?listingID=${item.id}` || "https://placehold.co/400x300?text=Nema+slike"}
+                  alt={item.title}
+                  onError={(e) => {
+                      e.target.src = "https://placehold.co/400x300?text=Greška";
+                  }}
+              />
             <div className="card-content">
               <h1>{item.title}</h1>
               <div className="price-container">

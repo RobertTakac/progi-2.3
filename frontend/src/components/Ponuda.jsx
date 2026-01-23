@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './MojiOglasi.css';
 import { apiRequest } from '../api/apiService';
 import './Ponuda.css';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Ponuda = ({ currentUser }) => {
   const [availableAds, setAvailableAds] = useState([]);
@@ -194,10 +195,25 @@ const Ponuda = ({ currentUser }) => {
           availableAds.map((item) => (
             <div className="card public-card" key={item.id}>
               <div className="card-image-wrapper">
-                <img 
-                  src={item.imageUrl || "https://placehold.co/600x400?text=Nema+slike"} 
-                  alt={item.title} 
-                />
+                  jsx<div className="card-image-wrapper">
+                  <img
+                      src={
+                          item.imageUrl ||
+                          (item.id
+                              ? `${BASE_URL}/listing/get-image?listingID=${item.id}`
+                              : "https://placehold.co/600x400?text=Nema+slike")
+                      }
+                      alt={item.title}
+                      onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "https://placehold.co/600x400?text=Slika+nije+dostupna";
+                      }}
+                      style={{ objectFit: 'cover', width: '100%', height: '180px' }}
+                  />
+                  {item.pickupCity && (
+                      <span className="location-badge">{item.pickupCity}</span>
+                  )}
+              </div>
                 {item.pickupCity && (
                   <span className="location-badge"> {item.pickupCity}</span>
                 )}
