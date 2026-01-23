@@ -102,7 +102,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
   padding: 20px 0;
   max-width: 1250px;
@@ -265,4 +265,20 @@
   padding: 100px;
   color: #7f8c8d;
   font-size: 1.2rem;
+}
+
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: 1fr; 
+        gap: 20px;
+        padding: 10px;
+    }
+    
+    .card {
+        margin: 0 5px; 
+    }
+    
+    .card img {
+        height: 200px; 
+    }
 }

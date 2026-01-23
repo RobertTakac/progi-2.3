@@ -162,3 +162,23 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
+
+
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+        gap: 15px; 
+    }
+    .category-select,
+    .search-btn,
+    .clear-btn {
+        width: 100%;
+        flex: none; 
+    }
+}
+
+@media (max-width: 480px) {
+    .search-filter-section {
+        padding: 15px;
+    }
+}
