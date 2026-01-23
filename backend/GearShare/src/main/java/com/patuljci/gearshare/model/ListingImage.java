@@ -16,14 +16,13 @@ public class ListingImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
-    @Column(name = "image", nullable = false, columnDefinition = "bytea")
-    private byte[] image;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "listing_id", nullable = false)
     private EquipmentListing equipmentListing;
 
-
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "image", nullable = false)
+    private byte[] image;
 }

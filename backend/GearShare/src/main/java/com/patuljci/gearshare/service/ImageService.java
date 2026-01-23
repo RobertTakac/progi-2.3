@@ -80,8 +80,17 @@ public class ImageService {
     }
 
     public byte[] getImage(Long listingID){
-        EquipmentListing equipmentListing =  equipmentListingRepository.findEquipmentListingBylistingId(listingID);
-        return (listingImageRepository.findByEquipmentListing(equipmentListing)).getImage();
+        EquipmentListing equipmentListing = equipmentListingRepository.findEquipmentListingBylistingId(listingID);
+        if (equipmentListing == null) {
+            return null;
+        }
+
+        ListingImage listingImage = listingImageRepository.findByEquipmentListing(equipmentListing);
+        if (listingImage == null) {
+            return null;
+        }
+
+        return listingImage.getImage();
     }
 
 }
