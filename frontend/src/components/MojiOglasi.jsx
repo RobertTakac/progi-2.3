@@ -78,6 +78,7 @@ const MojiOglasi = ({ currentUser }) => {
       returnPostalCode: product.returnPostalCode || "",
     }); 
     alert("Uredi oglas u formi ispod i klikni 'Spremi promjene'");
+    setShowAddForm(true);
   };
 
   const handleDelete = async (itemid) => {
