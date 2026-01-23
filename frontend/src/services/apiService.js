@@ -131,9 +131,22 @@ export const merchantSignup = async(data) => {
     }
 }
 
-export const merchantUpdateListing = async(adData) => {
+export const merchantUpdateListing = async(adData, prodImg) => {
     try {
-        const res = await apiClient.post(ENDPOINTS.MERCHANT_UPDATE_LISTING, adData);
+        const formData = new FormData();
+
+        if (prodImg) {
+            formData.append('prodImg', prodImg);
+        }
+
+        const jsonBlob = new Blob([ JSON.stringify(adData) ], { type: "application/json" });
+        formData.append("dto", jsonBlob);
+
+        const res = await apiClient.post(ENDPOINTS.MERCHANT_UPDATE_LISTING, formData, {
+            headers: {
+                "Content-Type": undefined
+            }
+        });
         return res.data;
     } catch(err) {
         console.error("Merchant update listing error: ", err.response?.data || err.message);
@@ -154,7 +167,7 @@ export const merchantCreateListing = async(adData, prodImg) => {
         const jsonBlob = new Blob([ JSON.stringify(adData) ], { type: "application/json" });
         formData.append("dto", jsonBlob);
 
-        const res = await apiClient.post(`${API_BASE_URL}${ENDPOINTS.MERCHANT_CREATE_LISTING}`, formData, {
+        const res = await apiClient.post(ENDPOINTS.MERCHANT_CREATE_LISTING, formData, {
             headers: {
                 "Content-Type": undefined
             }
