@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getAllCategories, newCategory, deleteCategory } from "../../services/apiService";
-import { toast } from 'react-toastify';
 import { DialogActions, DialogContent } from '@mui/material';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -14,6 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { toast } from 'react-toastify';
 
 function NewCatModal(props) {
     const { handleClose, open, loading, handleSubmit, newCat, setNewCat } = props;
@@ -118,7 +118,7 @@ const Categories = () => {
         try {
             await deleteCategory(id);
         } catch (err) {
-            toast.error(err);
+            toast.error("Brisanje nije uspjelo! Vjerojatno neka ponuda ovisi o ovoj kategoriji!");
         }
 
         await fetchCats();
