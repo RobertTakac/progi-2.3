@@ -4,18 +4,16 @@ import "./AdminPanel.css";
 
 const AdminPanel = () => {
     const [reports, setReports] = useState([]);
+    const [merchants, setMerchants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // --- Fetch reports ---
     useEffect(() => {
         const fetchReports = async () => {
             try {
                 const response = await apiRequest("/admin/get-reports", "GET");
-
-                if (!response.ok) {
-                    throw new Error(`Greška: ${response.status}`);
-                }
-
+                if (!response.ok) throw new Error(`Greška: ${response.status}`);
                 const data = await response.json();
                 setReports(data);
             } catch (err) {
@@ -28,6 +26,33 @@ const AdminPanel = () => {
         fetchReports();
     }, []);
 
+    // --- Fetch merchants ---
+    useEffect(() => {
+        const fetchMerchants = async () => {
+            try {
+                const response = await apiRequest("/users/all", "GET"); // ako postoji ruta za sve korisnike
+                if (!response.ok) throw new Error(`Greška: ${response.status}`);
+                const allUsers = await response.json();
+
+                const merchantsOnly = allUsers.filter(u => u.role === "ROLE_MERCHANT");
+
+                const merchantsWithRating = await Promise.all(
+                    merchantsOnly.map(async (merchant) => {
+                        const res = await apiRequest(`/users/merchant-rating?merchantID=${merchant.merchantID}`, "GET");
+                        const rating = res.ok ? await res.json() : "N/A";
+                        return { ...merchant, rating };
+                    })
+                );
+
+                setMerchants(merchantsWithRating);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchMerchants();
+    }, []);
+
     const handleBanUser = async (reservationID) => {
         if (!window.confirm("Jeste li sigurni da želite banati korisnika?")) return;
 
@@ -36,7 +61,6 @@ const AdminPanel = () => {
                 `/admin/ban-user-by-reservation?reservationID=${reservationID}`,
                 "POST"
             );
-
             if (!response.ok) {
                 const text = await response.text();
                 throw new Error(text || `Greška: ${response.status}`);
@@ -49,8 +73,7 @@ const AdminPanel = () => {
         }
     };
 
-
-    if (loading) return <p>Učitavanje reportova...</p>;
+    if (loading) return <p>Učitavanje...</p>;
     if (error) return <p style={{ color: "red" }}>Greška: {error}</p>;
 
     return (
@@ -81,6 +104,32 @@ const AdminPanel = () => {
                                     Ban User
                                 </button>
                             </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            )}
+
+            <h2>Merchanti i ocjene</h2>
+            {merchants.length === 0 ? (
+                <p>Nema merchanta.</p>
+            ) : (
+                <table className="merchants-table">
+                    <thead>
+                    <tr>
+                        <th>Business Name</th>
+                        <th>City</th>
+                        <th>Country</th>
+                        <th>Average Rating</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {merchants.map((m, index) => (
+                        <tr key={index}>
+                            <td>{m.businessName}</td>
+                            <td>{m.city}</td>
+                            <td>{m.country}</td>
+                            <td>{m.rating}</td>
                         </tr>
                     ))}
                     </tbody>
