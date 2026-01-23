@@ -1,156 +1,7 @@
-button:disabled {
-  background-color: grey;
-  color: darkgrey;
-  cursor: not-allowed;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 30px;
-  padding: 20px;
-  max-width: 1250px;
-  margin: 0 auto;
-}
-
-.card {
-  background-color: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-}
-
-.card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-}
-
-.card-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.add-ad-container {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  margin-bottom: 40px;
-  max-width: 1250px;
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px solid #e0e0e0;
-}
-
-.form-grid {
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
-}
-
-.form-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form-inputs input, .form-inputs textarea, .form-inputs select, .form-image-preview input {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-.form-inputs .addr {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-}
-
-.cityInput {
-  flex: 2
-}
-
-.addrInput {
-  flex: 2
-}
-
-.postCodeInput {
-  flex: 1
-}
-
-.form-inputs textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.form-image-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.upload-btn {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: center;
-}
-
-.preview-box {
-  width: 100%;
-  height: 250px;
-  border: 2px dashed #ccc;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f9f9f9;
-  overflow: hidden;
-}
-
-.preview-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.publish-btn {
-  margin-top: 25px;
-  width: 100%;
-  padding: 15px;
-  background-color: #fe9e0d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.publish-btn:hover {
-  background-color: #e48f0f;
-}
-
 .moja-oglasna-ploca {
-  padding: 40px 20px;
-  background-color: #fff;
+  padding: 120px 20px 40px;
+  background-color: #fcfcfc;
+  min-height: 100vh;
 }
 
 .ads-header {
@@ -159,79 +10,275 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 10;
 }
 
 .add-toggle-btn {
-  padding: 10px 25px;
+  padding: 12px 28px;
   background-color: #2c3e50;
   color: white;
-  border-radius: 5px;
+  border-radius: 8px;
   border: none;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-toggle-btn:hover {
+  background-color: #34495e;
+  transform: translateY(-2px);
+}
+
+.add-ad-container.expanded-form {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  margin-bottom: 50px;
+  max-width: 1250px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #eee;
+}
+
+.form-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.form-section h4 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  border-left: 4px solid #fe9e0d;
+  padding-left: 10px;
+}
+
+.form-grid-main {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-grid-main select,
+.form-grid-main input,
+.location-section input,
+.form-image-preview input,
+.form-grid-main textarea {
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.form-grid-main select:focus,
+.form-grid-main input:focus {
+  outline: none;
+  border-color: #fe9e0d;
+}
+
+.inline-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.form-location-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.location-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  padding: 20px 0;
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+.card {
+  background-color: white;
+  border-radius: 20px; 
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid #f0f0f0;
+}
+
+.card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  border-color: #fe9e0d;
+}
+
+.card img {
+  width: 100%;
+  height: 240px; 
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.card-content h1 {
+  font-size: 1.25rem;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 12px;
+  margin-top: auto;
 }
 
 .edit-btn, .delete-btn {
-  flex: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
+  padding: 12px;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .edit-btn { background-color: #ebf5ff; color: #007bff; }
 .delete-btn { background-color: #fff5f5; color: #dc3545; }
 
-.ponuda-page {
-  background-color: #f8f9fa;
-  min-height: 100vh;
-  padding: 40px 0;
+.publish-btn {
+  margin-top: 30px;
+  width: 100%;
+  padding: 18px;
+  background-color: #fe9e0d;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(254, 158, 13, 0.3);
 }
 
-.public-card .card-header-info {
+.publish-btn:hover {
+  background-color: #e48f0f;
+}
+
+.input-calc-group {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.public-card h1 {
-  font-size: 1.4rem;
+.input-calc-group input {
+  margin-bottom: 0;
+}
+
+.usd-hint {
+  font-size: 0.8rem;
+  color: #fe9e0d;
+  font-weight: 600;
+  padding-left: 4px;
+}
+
+.price-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 15px 0;
+  padding: 10px 0;
+  border-top: 1px dashed #eee;
+}
+
+.price-eur {
+  font-weight: 900;
   color: #2c3e50;
-  margin: 0;
-  flex: 1;
+  font-size: 1.5rem;
 }
 
-.public-card .price-tag {
-  font-size: 1.3rem !important;
-  font-weight: 800 !important;
-  color: #fe9e0d !important; 
-  margin: 0 !important;
+.price-usd {
+  font-size: 0.95rem;
+  color: #fe9e0d;
+  background: #fff5e6;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  background: #fff9f0;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #ffe8cc;
+  margin-top: 10px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
+@media (max-width: 900px) {
+  .form-location-wrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .inline-inputs {
+    grid-template-columns: 1fr;
+  }
+  
+  .add-ad-container.expanded-form {
+    padding: 20px;
+  }
 }
 
 .price-tag {
-  font-weight: bold;
-  color: #2e7d32;
+  font-weight: 800;
+  color: #fe9e0d;
+  font-size: 1.3rem;
+  margin: 10px 0;
+}
+
+.no-ads-text {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 100px;
+  color: #7f8c8d;
   font-size: 1.2rem;
 }
 
-.description-text {
-  font-size: 0.95rem;
-  color: #5d6d7e;
-  line-height: 1.5;
-  margin: 15px 0;
-  min-height: 45px;
-}
-
-@media (max-width: 850px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: 1fr; 
+        gap: 20px;
+        padding: 10px;
+    }
+    
+    .card {
+        margin: 0 5px; 
+    }
+    
+    .card img {
+        height: 200px; 
+    }
 }

@@ -1,6 +1,7 @@
 package com.patuljci.gearshare.service;
 
 import com.patuljci.gearshare.dto.ListingDto;
+import com.patuljci.gearshare.dto.MerchantRegisterDTO;
 import com.patuljci.gearshare.model.EquipmentCategory;
 import com.patuljci.gearshare.model.EquipmentListing;
 import com.patuljci.gearshare.model.Merchant;
@@ -50,6 +51,36 @@ public class MerchantService {
         //UserEntity currentUser = userRepository.findByUsername(username);
     }
 
+    public MerchantRegisterDTO updateMerchantInfo(MerchantRegisterDTO dto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserEntity user = userRepository.findByUsername(authentication.getName());
+        Merchant merchant = merchantRepository.getMerchantsByUser(user);
+
+        if(dto.getBusinessName()!=null){
+            merchant.setBusinessName(dto.getBusinessName());
+        }
+        if(dto.getAddress()!=null){
+            merchant.setAddress(dto.getAddress());
+        }
+        if(dto.getCity()!=null){
+            merchant.setCity(dto.getCity());
+        }
+        if(dto.getPostalCode()!=null){
+            merchant.setPostalCode(dto.getPostalCode());
+        }
+        if(dto.getCountry()!=null){
+            merchant.setCountry(dto.getCountry());
+        }
+        if(dto.getDescription()!=null){
+            merchant.setDescription(dto.getDescription());
+        }
+        merchantRepository.save(merchant);
+
+        return dto;
+    }
+
+
     public boolean test(String categoryName){
         Optional<EquipmentCategory> category = equipmentCategoryRepository.findEquipmentCategoryByName(categoryName);
         if  (category.isPresent()){
@@ -84,7 +115,7 @@ public class MerchantService {
 
         Optional<Merchant> merchantOptional = merchantRepository.findMerchantByUserId(user.getId());
         if (merchantOptional.isEmpty()) {
-            System.out.println("User is not a merhant");
+            System.out.println("User is not a merchant");
             return null;
         }
         Merchant merchant = merchantOptional.get();

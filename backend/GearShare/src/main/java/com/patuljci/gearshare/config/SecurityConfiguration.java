@@ -71,7 +71,9 @@ public class SecurityConfiguration {
 
 
 
-                .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler))
+                .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler)
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/"))
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -80,7 +82,7 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID")
                 )
 
-
+                //.addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -100,8 +102,8 @@ public class SecurityConfiguration {
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("*"));
-        configuration.setAllowCredentials(false);
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

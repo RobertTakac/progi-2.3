@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useSearchParams, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from 'react';
+import { Routes, Route, useNavigate , Navigate} from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
 import MojiOglasi from './components/MojiOglasi';
-import Ponuda from './components/Ponuda';
-import Modal from './components/Modal';
+import Ponuda from './components/Ponuda'; 
+import Modal from './components/Modal'; 
 import ChooseRole from './components/ChooseRole';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import VerifyCodeForm from './components/VerifyCodeForm';
 import OAuth2Redirect from "./components/OAuth2Redirect";
-import AuthorisationGuard from './components/AuthorisationGuard';
-import RoleGuard from './components/RoleGuard';
-import ControlBoard from './components/Admin/ControlBoard';
-import { isTokenValid } from './utils/constants';
-import Categories from './components/Admin/Categories';
-import UserManagement from './components/Admin/UserManagement';
-import Reports from './components/Admin/Reports';
+import UserProfile from "./components/UserProfile.jsx";
+import ListingsMap from "./components/ListingsMap.jsx";
+import HomeRouter from './components/HomeRouter';
+import {apiRequest} from "./api/apiService.js";
+import AdminPanel from "./components/AdminPanel.jsx";
+import MojeRezervacijeClient from './components/MojeRezervacijeClient.jsx';
+import MojeRezervacijeMerchant from './components/MojeRezervacijeMerchant.jsx';
+
 
 const App = () => {
 
@@ -27,120 +26,156 @@ const App = () => {
 
   const [currentUser, setCurrentUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      const data = isTokenValid();
-      
-      if (data.isValid) {
-        return JSON.parse(savedUser);
-      } else {
-        return null;
-      }
-    }
-
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const [modalView, setModalView] = useState(null);
+  const [modalView, setModalView] = useState(null); 
   const [selectedRole, setSelectedRole] = useState(null);
   const [emailToVerify, setEmailToVerify] = useState(null);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const openModal = (view) => {
-    setModalView(view);
-    setSelectedRole(null);
-    setEmailToVerify(null);
-  };
+    const openModal = (view) => {
+        setModalView(view);
+        if (view === 'login') {
+            setSelectedRole('user');
+        } else {
+            setSelectedRole(null);
+        }
+        setEmailToVerify(null);
+    };
   const closeModal = () => {
     setModalView(null);
     setSelectedRole(null);
-    setEmailToVerify(null);
+    setEmailToVerify(null); 
   };
 
   const handleRoleSelect = (role) => setSelectedRole(role);
   const switchForm = (newView) => setModalView(newView);
 
-  const handleLoginSuccess = (userData) => {
-    console.log("Podaci pri prijavi:", userData);
-    setCurrentUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
-    closeModal();
-  };
+    const handleLoginSuccess = async (loginData) => {
+        console.log("Login response:", loginData);
+
+
+        const token = loginData.token || loginData.accessToken;
+
+        if (!token) {
+            console.error("No token received from login");
+            return;
+        }
+
+
+        localStorage.setItem("token", token);
+
+
+        try {
+            const response = await apiRequest('/users/me');
+
+            if (!response) {
+                console.error("Failed to fetch user (401 or network error)");
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`Status ${response.status}`);
+            }
+
+            const user = await response.json();
+            console.log("Fetched user from /users/me:", user);
+
+
+            setCurrentUser(user);
+            localStorage.setItem("user", JSON.stringify(user));
+
+        } catch (err) {
+            console.error("Error fetching user after login:", err);
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setCurrentUser(null);
+        }
+
+        closeModal();
+        navigate('/', { replace: true });
+    };
   const handleVerificationNeeded = (email) => {
     setEmailToVerify(email);
     setModalView('verify');
   };
   const handleSignOut = () => {
     setCurrentUser(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("tokenExpiration");
+    localStorage.removeItem("user"); 
     navigate('/');
   };
 
   const renderModalContent = () => {
     if (!selectedRole && modalView !== 'verify') {
-      return <ChooseRole action={modalView} onSelect={handleRoleSelect} />;
+        return <ChooseRole action={modalView} onSelect={handleRoleSelect} />;
     } else if (selectedRole && modalView === 'login') {
-      return <LoginForm role={selectedRole} onSwitch={() => switchForm('signup')} onSuccess={handleLoginSuccess} />;
+        return <LoginForm role={selectedRole} onSwitch={() => switchForm('signup')} onSuccess={handleLoginSuccess} />;
     } else if (selectedRole && modalView === 'signup') {
-      return <SignupForm role={selectedRole} onSwitch={() => switchForm('login')} onSuccess={handleVerificationNeeded} />;
+        return <SignupForm role={selectedRole} onSwitch={() => switchForm('login')} onSuccess={handleVerificationNeeded} />;
     } else if (modalView === 'verify') {
-      return <VerifyCodeForm email={emailToVerify} onSuccess={() => switchForm('login')} onCancel={() => openModal('signup')} />;
+        return <VerifyCodeForm email={emailToVerify} onSuccess={() => switchForm('login')} onCancel={() => openModal('signup')} />;
     }
     return null;
   };
 
-  useEffect(() => {
-    if (searchParams.get("login") === "true") {
-      handleSignOut();
-      openModal('login');
-
-      searchParams.delete("login");
-      setSearchParams(searchParams, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
-
-
   return (
     <div className='App'>
-      <Navbar
+      <Navbar 
         currentUser={currentUser}
-        openLoginModal={openModal}
-        handleSignOut={handleSignOut}
+        openLoginModal={openModal} 
+        handleSignOut={handleSignOut} 
       />
-
       <main>
-        <Routes>
-          <Route path="/" element={<HomePage currentUser={currentUser} openLoginModal={openModal} />} />
-          <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess} />} />
+          <Routes>
+              <Route
+                  path="/"
+                  element={<HomeRouter currentUser={currentUser} openLoginModal={openModal} />}
+              />
 
-          <Route element={<AuthorisationGuard handleSignOut={handleSignOut} openLoginModal={openModal} />}>
-            <Route element={<RoleGuard user={currentUser} allowedRoles={["admin", "merchant"]} />}>
-              <Route path="/moji-oglasi" element={<MojiOglasi currentUser={currentUser} />} />
-            </Route>
+              <Route
+                  path="/moji-oglasi"
+                  element={
+                      currentUser?.role === 'ROLE_MERCHANT' ? (
+                          <MojiOglasi currentUser={currentUser} />
+                      ) : (
+                          <Navigate to="/" replace />
+                      )
+                  }
+              />
 
-            <Route element={<RoleGuard user={currentUser} allowedRoles={["admin", "merchant", "client"]} />}>
+              <Route
+                  path="/moje-rezervacije-client"
+                  element={
+                      currentUser ? (
+                          <MojeRezervacijeClient currentUser={currentUser} />
+                      ) : (
+                          <Navigate to="/" replace />
+                      )
+                  }
+              />
+
+              <Route
+                  path="/moje-rezervacije-merchant"
+                  element={
+                      currentUser ? (
+                          <MojeRezervacijeMerchant currentUser={currentUser} />
+                      ) : (
+                          <Navigate to="/" replace />
+                      )
+                  }
+              />
+
               <Route path="/ponuda" element={<Ponuda currentUser={currentUser} />} />
-            </Route>
-
-            <Route element={<RoleGuard user={currentUser} allowedRoles={["admin"]} />}>
-              <Route path="/controlboard" element={<ControlBoard currentUser={currentUser}/>}>
-                <Route path="categories" element={<Categories currentUser={currentUser}/>} />
-                <Route path="usermanagement" element={<UserManagement currentUser={currentUser}/>} />
-                <Route path="reports" element={<Reports currentUser={currentUser}/>} />
-              </Route>
-            </Route>
-          </Route>
-
-          <Route path="*" element={<h1>404: stranica nije pronadena</h1>} />
+          <Route path="/oauth2/redirect" element={<OAuth2Redirect setCurrentUser={handleLoginSuccess}/>} />
+            <Route path="/profil" element={<UserProfile currentUser={currentUser} />} />
+            <Route path="/mapa" element={<ListingsMap />} />
+              <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </main>
-
       <Modal isOpen={!!modalView} onClose={closeModal}>
         {renderModalContent()}
       </Modal>
-
-      <ToastContainer position="top-right" autoClose={3000}></ToastContainer>
     </div>
   )
 }

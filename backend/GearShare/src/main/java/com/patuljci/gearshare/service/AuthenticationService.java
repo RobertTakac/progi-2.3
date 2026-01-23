@@ -222,7 +222,6 @@ public class AuthenticationService {
             return userRepository.save(user);
         }
 
-        // 3️⃣ Novi user (Google signup)
         UserEntity user = new UserEntity();
         user.setGoogleId(googleId);
         user.setEmail(email);

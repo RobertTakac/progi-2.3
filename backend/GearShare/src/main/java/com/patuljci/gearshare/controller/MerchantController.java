@@ -1,17 +1,17 @@
 package com.patuljci.gearshare.controller;
 
-import com.patuljci.gearshare.dto.ListingDto;
-import com.patuljci.gearshare.dto.ReportDTO;
-import com.patuljci.gearshare.dto.ReservationDTO;
+import com.patuljci.gearshare.dto.*;
+import com.patuljci.gearshare.model.ListingImage;
 import com.patuljci.gearshare.model.Merchant;
-import com.patuljci.gearshare.service.ListingService;
-import com.patuljci.gearshare.service.MerchantService;
-import com.patuljci.gearshare.service.ReportService;
-import com.patuljci.gearshare.service.ReservationService;
+import com.patuljci.gearshare.service.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +23,14 @@ public class MerchantController {
     private final MerchantService  merchantService;
     private final ReservationService reservationService;
     private final ReportService reportService;
+    private final ImageService imageService;
 
-    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService, ReportService reportService) {
+    MerchantController(ListingService listingService, MerchantService merchantService, ReservationService reservationService, ReportService reportService, ImageService imageService) {
         this.listingService = listingService;
         this.merchantService = merchantService;
         this.reservationService = reservationService;
         this.reportService = reportService;
+        this.imageService = imageService;
     }
 
 
@@ -76,15 +78,55 @@ public class MerchantController {
 
     @GetMapping(value="/reservations")
     public ResponseEntity<List<ReservationDTO>> getMerchantsReservations(@RequestParam(required = false) String category,
-                                                                         @RequestParam(required = false) Long listingID){
+                                                                         @RequestParam(required = false) Long listingID,
+                                                                         @RequestParam(required=false) String status){
 
-        return ResponseEntity.ok(reservationService.getReservationsOfMyListings(category, listingID));
+        return ResponseEntity.ok(reservationService.getReservationsOfMyListings(category, listingID, status));
     }
 
 
     @PostMapping(value="/report-user")
     public ResponseEntity<ReportDTO> reportUser(@RequestBody ReportDTO reportDTO){
         return ResponseEntity.ok(reportService.createNewReport(reportDTO));
+    }
+
+
+    @PostMapping(value = "/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadListingImage(
+            @RequestPart("file") MultipartFile file,
+            @RequestParam("listingID") Long listingID
+    ) {
+        if (file == null || file.isEmpty()) {
+            System.out.println("Received empty file for listingID: " + listingID);
+            return ResponseEntity.badRequest().body("No file received or file is empty");
+        }
+        try {
+            ListingImage image = imageService.addListingImage(file, listingID);
+            if (image == null) {
+                return ResponseEntity.badRequest().body("Failed to save image (ownership or listing issue)");
+            }
+            return ResponseEntity.ok(image);
+        } catch (Exception e) {
+            System.err.println("Upload failed: " + e.getMessage());
+            return ResponseEntity.status(500).body("Server error: " + e.getMessage());
+        }
+    }
+
+
+    @PostMapping(value="/update-info")
+    public ResponseEntity<UserDTO> updateInfo(@RequestBody MerchantRegisterDTO dto){
+        merchantService.updateMerchantInfo(dto);
+        return  ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value="/approve")
+    public ResponseEntity<String> approveReservation(@RequestParam Long reservationID){
+        return ResponseEntity.ok(reservationService.approveReservation(reservationID));
+    }
+
+    @PostMapping(value="/disapprove")
+    public ResponseEntity<String> disapproveReservation(@RequestParam Long reservationID){
+        return ResponseEntity.ok(reservationService.disapproveReservation(reservationID));
     }
 
     /*

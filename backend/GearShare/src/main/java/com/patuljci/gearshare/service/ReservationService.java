@@ -34,14 +34,20 @@ public class ReservationService {
     }
 
 
-    public List<ReservationDTO> getReservationsOfMyListings(String category, Long listingID){
+    public List<ReservationDTO> getReservationsOfMyListings(String category, Long listingID, String status){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         UserEntity user = userRepository.findByUsername(authentication.getName());
         Merchant merchant = merchantRepository.findMerchantByUserId(user.getId()).orElse(null);
 
-        Specification spec = hasMerchant(merchant);
+        Specification spec = hasMerchantSpecial(merchant);
+
         spec = spec.and(allReservationFilters(category, listingID));
+
+        if(status!=null){
+            spec.and(hasStatus(status));
+        }
+
         if(spec==null){
             return List.of();
         }
@@ -77,7 +83,23 @@ public class ReservationService {
         return spec;
 
     }
+    public static Specification<Reservation> hasStatus(String status) {
+        return (root, query, cb) -> {
+            if (status == null) {
+                return cb.conjunction(); // no-op
+            }
+            return cb.equal(root.get("status"), status);
+        };
+    }
 
+    public static Specification<Reservation> hasMerchantSpecial(Merchant merchant) {
+        return (root, query, cb) -> {
+            if (merchant == null) {
+                return cb.conjunction(); // no-op
+            }
+            return cb.equal(root.join("equipmentListing").get("merchant"), merchant);
+        };
+    }
 
     public static Specification<Reservation> hasMerchant(Merchant merchant) {
         return (root, query, cb) -> {
@@ -104,6 +126,39 @@ public class ReservationService {
             }
             return cb.equal(root.get("equipmentListing"), listing);
         };
+    }
+
+    public String approveReservation(Long reservationID){
+        Reservation reservation = reservationRepository.findReservationById(reservationID);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = userRepository.findByUsername(authentication.getName());
+        Merchant merchant = merchantRepository.findMerchantByUserId(user.getId()).orElse(null);
+        if(merchant.getId() != reservation.getEquipmentListing().getMerchant().getId()){
+            return "This reservations equipment doesnt belong to this merchant";
+        }
+
+        reservation.setStatus("ACTIVE");
+
+        reservationRepository.save(reservation);
+
+
+        return "Reservation approved";
+    }
+
+    public String disapproveReservation(Long reservationID){
+        Reservation reservation = reservationRepository.findReservationById(reservationID);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = userRepository.findByUsername(authentication.getName());
+        Merchant merchant = merchantRepository.findMerchantByUserId(user.getId()).orElse(null);
+        if(merchant.getId() != reservation.getEquipmentListing().getMerchant().getId()){
+            return "This reservations equipment doesnt belong to this merchant";
+        }
+        
+        reservationRepository.delete(reservation);
+
+        return "Reservation deleted";
     }
 
 

@@ -16,7 +16,7 @@ const SignupForm = ({ role, onSwitch, onSuccess }) => {
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [postalCode, setPostalCode] = useState('');
-    const [country, setCountry] = useState('Hrvatska'); // default
+    const [country, setCountry] = useState('Hrvatska'); 
     const [description, setDescription] = useState('');
 
     const isMerchant = role === 'merchant';

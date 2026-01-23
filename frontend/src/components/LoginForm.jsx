@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './AuthForms.css';
-import { apiLogin } from '../services/apiService';
+import { apiRequest } from '../api/apiService';
 
-const LoginForm = ({ type, onSwitch, onSuccess }) => {
+const LoginForm = ({ role, onSwitch, onSuccess }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -14,10 +14,52 @@ const LoginForm = ({ type, onSwitch, onSuccess }) => {
         setLoading(true);
 
         try {
-            const res = await apiLogin(email, password, type);
-            onSuccess(res);
+            const res = await apiRequest('/auth/login', 'POST', {
+                email,
+                password,
+            });
+
+            if (!res || !res.ok) {
+
+                let errorMessage = `Greška: ${res.status}`;
+                try {
+                    const errorData = await res.json();
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+
+                }
+                throw new Error(errorMessage);
+            }
+
+
+            const data = await res.json();
+
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+
+                const roleRes = await apiRequest('/users/me', 'GET');
+
+                if (roleRes && roleRes.ok) {
+                    const userFullData = await roleRes.json();
+
+                    const finalUser = {
+                        token: data.token,
+                        ...userFullData 
+                    };
+                    
+                    console.log("Konačni korisnik koji ide u state:", finalUser);
+                    onSuccess(finalUser);
+
+                } else {
+                    throw new Error("Neuspješno dohvaćanje podataka o korisniku.");
+                }
+            }
+
+            onSuccess(data);
+
         } catch (err) {
-            setError(err.message);
+            console.error('Greška pri prijavi:', err);
+            setError(err.message || 'Prijava nije uspjela. Provjerite podatke.');
         } finally {
             setLoading(false);
         }
@@ -25,7 +67,7 @@ const LoginForm = ({ type, onSwitch, onSuccess }) => {
 
     return (
         <div className="auth-container">
-            <h2>Prijava ({type === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
+            <h2>Prijava ({role === 'user' ? 'Korisnik' : 'Trgovac'})</h2>
 
             <button
                 className="google-btn"

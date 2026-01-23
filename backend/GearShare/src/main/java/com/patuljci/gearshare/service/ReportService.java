@@ -6,6 +6,7 @@ import com.patuljci.gearshare.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +51,12 @@ public class ReportService {
 
         report = reportRepository.save(report);
 
+        reservation.setStatus("REPORTED");
+        reservationRepository.save(reservation);
 
         return reportToDTO(report);
     }
-
+    @Transactional
     public String banUser(Long clientID){
         if(clientID==null){
             return "ClientID cannot be null";
@@ -68,6 +71,45 @@ public class ReportService {
         client.setCanRent(false);
         clientRepository.save(client);
         return "Client has been banned";
+    }
+
+    @Transactional
+    public String banUserByReservationID(Long reservationID) {
+        if (reservationID == null) return "ReservationID cannot be null";
+
+        Reservation reservation = reservationRepository.findReservationById(reservationID);
+        if (reservation == null) {
+            return "Reservation does not exist";
+        }
+
+        List<Report> reports = reportRepository.findReportByReservation(reservation);
+        for (Report report : reports) {
+            reportRepository.deleteById(report.getId());
+        }
+
+        Client client = reservation.getClient();
+        if (client == null) {
+            return "Reservation has no client";
+        }
+
+        Long clientId = client.getClient_id();
+        if (clientId == null) {
+            return "Client ID is null";
+        }
+
+        client.setCanRent(false);
+        clientRepository.save(client);
+
+        return "Client has been banned!";
+        //return banUser(clientId);
+    }
+
+    @Transactional
+    public String deleteReport(Long reportID){
+
+        reportRepository.deleteById(reportID);
+
+        return "Report deleted";
     }
 
 
@@ -85,6 +127,7 @@ public class ReportService {
         ReportDTO dto = new ReportDTO();
         dto.setDescription(report.getDescription());
         dto.setReservationID(report.getReservation().getId());
+        dto.setId(report.getId());
         return dto;
     }
 

@@ -1,6 +1,12 @@
 package com.patuljci.gearshare.controller;
 
+import com.patuljci.gearshare.dto.LoginUserDto;
+import com.patuljci.gearshare.dto.NewPasswordDTO;
+import com.patuljci.gearshare.dto.UserDTO;
+import com.patuljci.gearshare.model.Client;
 import com.patuljci.gearshare.model.UserEntity;
+import com.patuljci.gearshare.repository.UserRepository;
+import com.patuljci.gearshare.service.AuthenticationService;
 import com.patuljci.gearshare.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -8,14 +14,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RequestMapping("/users")
 @RestController
 public class UserController {
     private final UserService userService;
-    public UserController(UserService userService) {
+    private final AuthenticationService authenticationService;
+
+    public UserController(UserService userService, AuthenticationService authenticationService) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     /*
@@ -35,13 +45,48 @@ public class UserController {
     } */
 
     @GetMapping("/me")
-    public String getMyRole(Authentication authentication) {
+    public UserDTO getMyRole(Authentication authentication) {
 
-        return authentication.getAuthorities().stream()
+
+        String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
-                .orElse("ROLE_NOROLE"); //ne bi se smjelo dogodit
+                .orElse("ROLE_NOROLE");
+
+
+        UserDTO userDTO = userService.myInfo();
+        userDTO.setRole(role);
+
+        return userDTO;
     }
+
+    @PostMapping(value="/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody NewPasswordDTO newPasswordDTO) {
+
+        if(newPasswordDTO.getNewPassword().isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        UserEntity user = userService.myUserEntity();
+
+        LoginUserDto loginUserDto = new LoginUserDto();
+        loginUserDto.setEmail(user.getEmail());
+        loginUserDto.setPassword(newPasswordDTO.getPassword());
+
+        user = authenticationService.authenticate(loginUserDto);
+        if(user == null){
+            ResponseEntity.badRequest().build();
+        }
+
+        userService.newPassword(newPasswordDTO.getNewPassword());
+        return ResponseEntity.ok("Password changed");
+    }
+
+    @GetMapping(value="/merchant-rating")
+    public ResponseEntity<BigDecimal> getRating(@RequestParam Long merchantID){
+        return ResponseEntity.ok(userService.getMerchantRating(merchantID));
+    }
+
+
 
     @GetMapping("/test")
     public ResponseEntity<String> testing() {
