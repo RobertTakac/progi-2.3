@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./MojiOglasi.css";
 import { getMerchantAllListings, merchantUpdateListing, merchantCreateListing, merchantDeleteListing, getAllCategories } from '../services/apiService';
 import { toast } from 'react-toastify';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const emptyProduct = { name: "", price: "", date: "", description: "", photo: "", deposit: "", location: "", categoryName: "" };
 
@@ -126,6 +129,12 @@ const MojiOglasi = ({ currentUser }) => {
                 <input required name="name" type="text" placeholder="Naziv" value={newProduct.name} onChange={updateProductField("name")} />
                 <input required name="price" type="number" placeholder="Cijena (€)" value={newProduct.price} onChange={updateProductField("price")} />
                 <input required name="date" type="text" placeholder="Dostupnost" value={newProduct.date} onChange={updateProductField("date")} />
+                
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker required name="availableFrom" label="Dostupno od:" />
+                  <DatePicker required name="availableTo" label="Dostupno do:" />
+                </LocalizationProvider>
+                
                 <textarea required placeholder="Opis" value={newProduct.description} onChange={updateProductField("description")} />
                 <input required name="location" type="text" placeholder="Lokacija" value={newProduct.location} onChange={updateProductField("location")} />
                 <select required name="categories" id="category-select" value={newProduct.categoryName} onChange={updateProductField("categoryName")}>
