@@ -8,10 +8,6 @@
     color: #333;
 }
 
-/* ========================= */
-/* TABLICE (reports + merchants) */
-/* ========================= */
-
 .reports-table,
 .merchants-table {
     width: 100%;
@@ -36,10 +32,6 @@
 .merchants-table tr:nth-child(even) {
     background-color: #fafafa;
 }
-
-/* ========================= */
-/* BUTTONI */
-/* ========================= */
 
 .rate-btn {
     padding: 6px 12px;
@@ -82,10 +74,6 @@
 .decline-btn:hover {
     background-color: #da190b;
 }
-
-/* ========================= */
-/* MODAL */
-/* ========================= */
 
 .modal-overlay {
     position: fixed;
