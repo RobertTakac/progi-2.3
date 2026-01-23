@@ -31,27 +31,52 @@ public class ImageService {
 
 
     public ListingImage addListingImage(MultipartFile file, Long listingID) throws IOException {
+        try {
+            String clientUser = SecurityContextHolder.getContext().getAuthentication().getName();
+            System.out.println("Uploading image for user: " + clientUser + ", listingID: " + listingID);
 
-        String clientUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity user = userRepository.findByUsername(clientUser);
-        Merchant merchant = merchantRepository.getMerchantsByUser(user);
+            UserEntity user = userRepository.findByUsername(clientUser);
+            if (user == null) {
+                System.out.println("User not found: " + clientUser);
+                return null;
+            }
 
-        EquipmentListing equipmentListing = equipmentListingRepository.findEquipmentListingBylistingId(listingID);
-        if(equipmentListing==null || merchant==null || equipmentListing.getMerchant().getId()!=merchant.getId()){
-            System.out.println("ili nema listinga ili nije merchantovo");
-            return null;
+            Merchant merchant = merchantRepository.getMerchantsByUser(user);
+            if (merchant == null) {
+                System.out.println("Merchant not found for user: " + clientUser);
+                return null;
+            }
+
+            EquipmentListing equipmentListing = equipmentListingRepository.findEquipmentListingBylistingId(listingID);
+            if (equipmentListing == null) {
+                System.out.println("Listing not found: " + listingID);
+                return null;
+            }
+
+            if (!equipmentListing.getMerchant().getId().equals(merchant.getId())) {
+                System.out.println("Listing does not belong to this merchant. Listing merchant ID: "
+                        + equipmentListing.getMerchant().getId() + ", current: " + merchant.getId());
+                return null;
+            }
+
+            ListingImage listingImage = listingImageRepository.findByEquipmentListing(equipmentListing);
+            if (listingImage == null) {
+                listingImage = new ListingImage();
+            }
+
+            System.out.println("Saving image, file size: " + file.getSize() + " bytes");
+            listingImage.setImage(file.getBytes());
+            listingImage.setEquipmentListing(equipmentListing);
+
+            ListingImage saved = listingImageRepository.save(listingImage);
+            System.out.println("Image saved successfully, ID: " + saved.getId());
+            return saved;
+
+        } catch (Exception e) {
+            System.err.println("Error in addListingImage: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to process image upload", e);  // or return null if you prefer 400
         }
-
-        ListingImage listingImage = listingImageRepository.findByEquipmentListing(equipmentListing);
-        if(listingImage==null){
-            listingImage=new ListingImage();
-        }
-        listingImage.setImage( file.getBytes() );
-        listingImage.setEquipmentListing(equipmentListing);
-
-
-
-        return listingImageRepository.save(listingImage);
     }
 
     public byte[] getImage(Long listingID){
