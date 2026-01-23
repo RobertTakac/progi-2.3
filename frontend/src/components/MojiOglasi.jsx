@@ -9,6 +9,12 @@ const MojiOglasi = ({ currentUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
 
+  const USD_RATE = 1.17;
+  const formatPrice = (price) => {
+    const num = parseFloat(price);
+    return isNaN(num) ? "0.00" : (num * USD_RATE).toFixed(2);
+  };
+
   const CATEGORIES = [
   "Kampiranje i boravak u prirodi", "Planinarenje i trekking", "Biciklizam",
   "Vodeni sportovi", "Zimski sportovi", "Penjanje i alpinizam",
@@ -96,8 +102,8 @@ const MojiOglasi = ({ currentUser }) => {
       quantityAvailable: parseInt(newProduct.quantityAvailable),
       isActive: true,
       imageUrl: newProduct.photo,
-      availableFrom: new Date().toISOString(),
-      availableUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      availableFrom: newProduct.availableFrom,
+      availableUntil: newProduct.availableUntil,
       pickupAddress: newProduct.pickupAddress,
       pickupArea: newProduct.pickupArea,
       pickupCity: newProduct.pickupCity,
@@ -168,9 +174,19 @@ const MojiOglasi = ({ currentUser }) => {
               <input type="text" placeholder="Naslov oglasa" value={newProduct.title} onChange={(e) => setNewProduct({...newProduct, title: e.target.value})} />
               <textarea placeholder="Opis opreme" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} />
               <div className="inline-inputs">
-                <input type="number" placeholder="Cijena po danu (€)" value={newProduct.dailyPrice} onChange={(e) => setNewProduct({...newProduct, dailyPrice: e.target.value})} />
-                <input type="number" placeholder="Polog (€)" value={newProduct.depositAmount} onChange={(e) => setNewProduct({...newProduct, depositAmount: e.target.value})} />
-                <input type="number" placeholder="Količina" value={newProduct.quantityAvailable} onChange={(e) => setNewProduct({...newProduct, quantityAvailable: e.target.value})} />
+                <div className="input-calc-group">
+                  <input type="number" placeholder="Cijena/dan (€)" value={newProduct.dailyPrice} onChange={(e) => setNewProduct({...newProduct, dailyPrice: e.target.value})} />
+                  <span className="usd-hint">${formatPrice(newProduct.dailyPrice)} USD</span>
+                </div>
+
+                <div className="input-calc-group">
+                  <input type="number" placeholder="Polog (€)" value={newProduct.depositAmount} onChange={(e) => setNewProduct({...newProduct, depositAmount: e.target.value})} />
+                  <span className="usd-hint">${formatPrice(newProduct.depositAmount)} USD</span>
+                </div>
+
+                <div className="input-calc-group">
+                  <input type="number" placeholder="Količina" value={newProduct.quantityAvailable} onChange={(e) => setNewProduct({...newProduct, quantityAvailable: e.target.value})} />
+                </div>
 
                 <div className="date-inputs" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '15px' }}>
                   <div className="form-group">
@@ -227,8 +243,11 @@ const MojiOglasi = ({ currentUser }) => {
             <img src={item.imageUrl} alt={item.title} />
             <div className="card-content">
               <h1>{item.title}</h1>
-              <p className="price-tag">€{Number(item.dailyPrice || 0).toFixed(2)}</p>
-              <div className="card-actions">
+              <div className="price-container">
+                <span className="price-eur">€{Number(item.dailyPrice || 0).toFixed(2)}</span>
+                <span className="price-usd">(${Number((item.dailyPrice || 0) * USD_RATE).toFixed(2)} USD)</span>
+              </div>
+                <div className="card-actions">
                 <button className="edit-btn" onClick={() => startEdit(item)}>Uredi</button>
                 <button className="delete-btn" onClick={() => handleDelete(item.id)}>Ukloni</button>
               </div>
