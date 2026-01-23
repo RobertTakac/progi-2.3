@@ -40,8 +40,10 @@ public class ReservationService {
         UserEntity user = userRepository.findByUsername(authentication.getName());
         Merchant merchant = merchantRepository.findMerchantByUserId(user.getId()).orElse(null);
 
-        Specification spec = hasMerchant(merchant);
+        Specification spec = hasMerchantSpecial(merchant);
+
         spec = spec.and(allReservationFilters(category, listingID));
+
         if(status!=null){
             spec.and(hasStatus(status));
         }
@@ -87,6 +89,15 @@ public class ReservationService {
                 return cb.conjunction(); // no-op
             }
             return cb.equal(root.get("status"), status);
+        };
+    }
+
+    public static Specification<Reservation> hasMerchantSpecial(Merchant merchant) {
+        return (root, query, cb) -> {
+            if (merchant == null) {
+                return cb.conjunction(); // no-op
+            }
+            return cb.equal(root.join("equipmentListing").get("merchant"), merchant);
         };
     }
 

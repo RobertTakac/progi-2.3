@@ -76,7 +76,7 @@ public class ReviewService {
     public List<ReviewDTO> getReviews(Long merchantID){
         Merchant merchant = merchantRepository.findMerchantByid(merchantID);
 
-        List<Review> reviews = reviewRepository.findReviewsByMerchant(merchant);
+        List<Review> reviews = reviewRepository.findReviewsByReservation_EquipmentListing_Merchant(merchant);
 
         List<ReviewDTO> reviewDTOS = new ArrayList<>();
         for(Review review : reviews){

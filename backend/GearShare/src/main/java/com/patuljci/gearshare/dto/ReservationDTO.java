@@ -20,4 +20,6 @@ public class ReservationDTO {
         private LocalDateTime endDate;
         private Integer quantity = 1;
 
+        private String status;
+
 }
